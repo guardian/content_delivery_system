@@ -301,8 +301,6 @@ puts "Imported asset can be found at #{fileRef.memberOfItem.id}"
 
 $store.set('meta', {'master_id' => fileRef.memberOfItem.id})
 
-$store.set('meta', {'username' => 'david_allison'})
-
 #once asset is imported, should update the metadata with project & commission names, etc.
 #exit(7)
 
