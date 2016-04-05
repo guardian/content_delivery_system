@@ -124,10 +124,16 @@ begin
 	$logger.info("Attempting to add the file with username: #{$username}")
 	storage.populate($destination_storage)
 rescue
-	$fixedusername = $username.split('_').map(&:capitalize).join('_')
-	$logger.info("Attempting to add the file with username: #{$fixedusername}")
-	storage = VSStorage.new($host,$port,$user,$passwd,run_as: $fixedusername)
-	storage.populate($destination_storage)
+	begin
+		$fixedusername = $username.split('_').map(&:capitalize).join('_')
+		$logger.info("Attempting to add the file with username: #{$fixedusername}")
+		storage = VSStorage.new($host,$port,$user,$passwd,run_as: $fixedusername)
+		storage.populate($destination_storage)
+	rescue
+		$logger.info("Attempting to add the file without a username.")
+		storage = VSStorage.new($host,$port,$user,$passwd)
+		storage.populate($destination_storage)
+	end
 end
 
 #ap storage
