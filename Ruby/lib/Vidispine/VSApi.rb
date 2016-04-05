@@ -67,7 +67,7 @@ end
 class VSApi
 attr_accessor :debug
 
-def initialize(host="localhost",port=8080,user="",passwd="",parent: nil)
+def initialize(host="localhost",port=8080,user="",passwd="",parent: nil,run_as: nil)
     #puts "debug: VSApi::initialize: #{host} #{port} #{user} #{passwd}"
    @id=nil
    
@@ -78,6 +78,7 @@ if(parent)
     @host=parent.host
     @port=parent.port
     @debug=parent.debug
+    @run_as=parent.run_as
  #   @retry_delay=parent.retry_delay
  #   @retry_times=parent.retry_times
 else
@@ -86,6 +87,7 @@ else
     @host=host
     @port=port
     @debug=false
+    @run_as=run_as
     @retry_delay=5
     @retry_times=10
     @attempt=0
@@ -113,6 +115,10 @@ if @debug
 end
 
 #headers['Authorization']="Basic #{auth}"
+
+if(@run_as!=nil)
+	headers['RunAs'] = @run_as
+end
 
 uri=URI(url)
 response=nil
