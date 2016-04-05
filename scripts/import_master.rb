@@ -75,6 +75,7 @@ $mediafileinput = $store.substitute_string(ENV['video_input'])
 $xmlfileinput = $store.substitute_string(ENV['xml_input'])
 $project = $store.substitute_string(ENV['project'])
 $categoryName = $store.substitute_string(ENV['gnm_category'])
+$username = $store.substitute_string(ENV['user'])
 
 if ($store.substitute_string(ENV['transcode_tags']) != nil)
 	$transcodeTags = $store.substitute_string(ENV['transcode_tags']).split(/\|/)
@@ -118,8 +119,16 @@ $logger.info("Project name is #{proj.metadata['gnm_project_headline']}, commissi
 
 
 $logger.info("Looking up target storage #{$destination_storage}")
-storage = VSStorage.new($host,$port,$user,$passwd)
-storage.populate($destination_storage)
+storage = VSStorage.new($host,$port,$user,$passwd,run_as: $username)
+begin
+	$logger.info("Attempting to add the file with username: #{$username}")
+	storage.populate($destination_storage)
+rescue
+	$fixedusername = $username.split('_').map(&:capitalize).join('_')
+	$logger.info("Attempting to add the file with username: #{$fixedusername}")
+	storage = VSStorage.new($host,$port,$user,$passwd,run_as: $fixedusername)
+	storage.populate($destination_storage)
+end
 
 #ap storage
 #raise StandardError("Testing")
@@ -291,6 +300,8 @@ end
 puts "Imported asset can be found at #{fileRef.memberOfItem.id}"
 
 $store.set('meta', {'master_id' => fileRef.memberOfItem.id})
+
+$store.set('meta', {'username' => 'david_allison'})
 
 #once asset is imported, should update the metadata with project & commission names, etc.
 #exit(7)

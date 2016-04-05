@@ -26,9 +26,9 @@ class VSStorage < VSApi
     attr_accessor :user
     attr_accessor :passwd
     
-    def initialize(host="localhost",port=8080,user="",passwd="",parent: nil)
+    def initialize(host="localhost",port=8080,user="",passwd="",parent: nil,run_as: nil)
         #super.initialize(host,post,user,passwd,parent: p)
-        super(host,port,user,passwd,parent: parent)
+        super(host,port,user,passwd,parent: parent,run_as: run_as)
         
     end #def initialize
     
