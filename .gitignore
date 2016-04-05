@@ -1,0 +1,14 @@
+db/*
+keys/*
+*.pem
+*.pub
+*.tmp
+*.trg
+*.meta
+*.inmeta
+*.orig
+*.out
+*.log
+*.gem
+*.db
+test_routes/*

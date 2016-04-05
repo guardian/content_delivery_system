@@ -1,0 +1,22 @@
+[% #USE THE --simple-meta OPTION WHEN PROCESSING THIS -%]
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE meta-data SYSTEM "meta.dtd">
+<meta-data version="1.0">
+	<meta name="meta-source" value="inmeta">
+[% FOREACH key = meta.keys val=meta_source -%]
+		<meta name="[% key %]" value="[% meta.$key %]"/>
+[% END -%]
+	</meta>
+	<meta name="movie" value="[% escaped_path %]">
+[% FOREACH key = movie.keys -%]
+		<meta name="[% key %]" value="[% movie.$key %]"/>
+[% END -%]
+[% FOREACH trackname = tracks.keys -%]
+		<meta name="track" value="[% tracks.$trackname.index %]">
+[% FOREACH key = tracks.$trackname.keys -%]
+			<meta name="[% key %]" value="[% tracks.$trackname.$key %]"/>
+[% END -%]
+		</meta>
+[% END -%]
+	</meta>
+</meta-data>

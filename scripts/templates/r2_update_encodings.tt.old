@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<video story-bundle="[% meta_source.octopus_ID %]" created-user="[% meta_source.author %]">
+[% FOREACH encoding=encodings -%]
+<encoding>
+	<format>[% encoding.format %]</format>
+	<video-file-url>[% encoding.url %]</video-file-url>
+</encoding>
+[% END -%]
+</video>
