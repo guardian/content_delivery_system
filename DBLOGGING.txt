@@ -1,0 +1,41 @@
+Logging to an external database with CDS 2.2.3 and higher
+-------------------------------------------------------
+
+Newer versions of CDS have the ability to output logging information to a database.  This has the advantage of using nicer tools to view status (Interactive Publisher and CDS Dashboards for example) especially across multiple servers and virtual node clusters.
+
+To set this up, you need to do the following steps:
+ 1. Check your database server is correctly installed and set up
+ 2. Prep the database to receive data
+ 3. Adjust your CDS configuration to point to the database
+ 4. Duplicate the installation as required
+ 5. Install any dashboard software, webserver, etc. to make use of it
+
+--------------------------------------------------------------
+
+1. Check your database server is correctly installed and set up
+
+The details of how to do this are beyond the scope of this document.
+If you are not familiar with using databases, I would recommend that you use MySQL; it is network-capable, secure and fast without being overly complex.
+Technically speaking, any system supported by the Perl DBI is compatible; proper testing has only been done on MySQL and PostGresQL though so your milage may vary on other systems.
+
+The easiest way to do this is to get your sysadmin to do it for you, and use an existing database server.
+
+If you are the sysadmin and still are not sure though,the easiest way to do this (on a Debian-based Linux system) is to run 'sudo apt-get install mysql-server'.  The RedHat equivalent is 'sudo yum install mysql-server'. If you're on a Mac, find the Mac package installer for your chosen database.
+Installing an admin system like phpMyAdmin (MySQL)/phpPgAdmin (PostGresQL) on Apache is also highly recommended:
+	sudo apt-get install phpMyAdmin apache
+or
+	sudo yum install phpMyAdmin apache
+
+If you're installing fresh, part of the install will ask for a root password for the database.  Keep this for later, you'll need it!
+
+You need to read the installation manuals for your chosen database, and ensure that it is set up to allow incoming TCP/IP connections and that the relevant users (see later)
+
+--------------------------------------------------------------
+
+2. Prep the database to receive data
+
+The relevant schemae can be found in the db/ subdirectory of the CDS installation directory.
+
+The easiest way to import these is via phpMyAdmin, phpPgAdmin or another admin UI if you have one available.
+
+For phpMyAdmin

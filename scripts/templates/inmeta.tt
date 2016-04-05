@@ -1,0 +1,19 @@
+[% #USE THE --simple-meta OPTION WHEN PROCESSING THIS -%]
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE meta-data SYSTEM "inmeta.dtd">
+
+<meta-data>
+	<meta-group type="movie meta">
+[% FOREACH key = meta.keys val=meta_source -%]
+		<meta name="[% key %]" value="[% meta.$key %]"/>
+[% END -%]
+	</meta-group>
+
+	<meta-movie-info>
+		<meta-movie tokens="format duration bitrate size tracks" />
+		<meta-track tokens="type format start duration bitrate size" />
+		<meta-video-track tokens="width height framerate" />
+		<meta-audio-track tokens="channels bitspersample samplerate" />
+		<meta-hint-track tokens="payload fmtp" />
+	</meta-movie-info>
+</meta-data>

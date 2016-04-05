@@ -1,0 +1,13 @@
+[% USE date -%]
+<?xml version="1.0" encoding="UTF-8" ?> 
+<items>
+	<item>
+		<title>[% meta.title %]</title> 
+		<pubDate>[% date.format(now,'%a, %d %b %Y %H:%M:%S %z') -%]</pubDate> 
+		<description>[% meta.description %]</description> 
+		<tags>[% meta.keyword -%]</tags> 
+		<link>http://www.guardian.co.uk/video</link> 
+		<medialink>[% filename %]</medialink> 
+		<category>[% meta.section %]</category> 
+	</item>
+</items>

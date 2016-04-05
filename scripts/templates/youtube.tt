@@ -1,0 +1,48 @@
+[% USE date -%]
+<rss version="2.0" 
+  xmlns:media="http://search.yahoo.com/mrss" 
+  xmlns:yt="http://www.youtube.com/schemas/yt/0.2">
+  <channel>
+  
+  <yt:notification_email>henry.barnes@guardian.co.uk alex.bourn@guardian.co.uk</yt:notification_email>
+    <yt:account>
+      <yt:username>TheGuardian</yt:username>
+      <yt:password>jenniecohen</yt:password>
+    </yt:account>  
+  
+  <item>
+  	<yt:action>Insert</yt:action>
+	<yt:target>upload,claim,fingerprint</yt:target>
+ 
+ 	<media:title>[% meta_source.title %]</media:title>
+ 	<media:content url="[% filename %]" >
+ 		<media:description type="plain">
+ 			[% meta_source.description %]
+ 		</media:description>
+		<media:keywords>[% FOREACH keyword=meta_source.keywords -%][% keyword -%],[% END -%]</media:keywords>
+ 		<media:category>News</media:category>
+ 		<media:rating scheme="urn:simple">nonadult</media:rating>
+     </media:content>
+     
+     <yt:start_time>[% date.format(now,'%Y-%m-%dT%H:%M:%SZ') -%]</yt:start_time>
+     
+     <yt:community>
+     	<yt:allow_comments>Approve</yt:allow_comments>
+     	<yt:allow_responses>Approve</yt:allow_responses>
+   	 	<yt:allow_ratings>true</yt:allow_ratings>
+		<yt:allow_embedding>false</yt:allow_embedding>
+	 </yt:community>
+     
+     <yt:web_metadata>
+        <yt:custom_id>[% meta_source.cms_link %]</yt:custom_id>
+        <yt:title>[% meta_source.title %]</yt:title>
+      </yt:web_metadata>
+
+		<yt:policy> 
+  		<yt:commercial>share</yt:commercial> 
+		 <yt:ugc>share</yt:ugc> 
+		</yt:policy> 
+    </item>
+ 
+  </channel>
+</rss>

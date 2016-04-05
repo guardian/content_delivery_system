@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<FinalCutServer>
+  <request reqId="setMd" entityId="[% FinalCutServer.entityId %]">
+    <params>
+[% FOREACH field=Fields -%]
+	<mdValue fieldName="[% field.name %]" dataType="[% field.type %]">[% field.data %]</mdValue>
+[% END -%]
+    </params>
+  </request>
+</FinalCutServer>

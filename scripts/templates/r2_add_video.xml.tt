@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+[% USE Math %]
+
+<video story-bundle="[% meta.octopus_ID %]" notes="[% meta.note %]" created-user="[% meta.author %]">
+	<tags>
+		[% FOREACH tag=meta.keyword_IDs_list -%]
+		<tag id="[% tag %]"/>
+		[% END -%]
+	</tags>
+	
+	<headline>[% meta.title %]</headline>
+	<standfirst>[% meta.synopsis %]</standfirst>
+	<byline>[% meta.author %]</byline>
+	<trail>[% meta.description %]</trail>
+	<linktext>[% meta.title %]</linktext>
+	
+	[%# <!-- HOW DO WE BREAK DURATION INTO MINS/SECONDS?? --> %]
+	[%- # this should allow us to calculate minutes and seconds from given data
+		dur=movie.duration / 60
+		mins=Math.int(dur)
+	-%]
+	[%-
+		seconds=movie.duration-(mins*60)
+	-%]
+	<video-duration minutes="[% mins %]" seconds="[% Math.int(seconds) %]"/>
+	
+	<trail-picture image-id="[% meta.r2_trailpic_id %]"/>
+	
+	<video-dimension width="[% tracks.vide.width %]" height="[% tracks.vide.height %]"/>
+	
+	<cdn-id>[% meta.Brightcove_ID %]</cdn-id>
+	
+	<video-source>[% meta.r2_original_source %]</video-source>
+	
+	<embeddable>false</embeddable>
+	<still-image-url>[% meta.poster_url %]</still-image-url>
+	<thumbnail-image-url>[% meta.thumbnail_url %]</thumbnail-image-url>
+
+	<encoding>
+		<format>mp4</format>
+		<video-file-url [% extra_args %]>[% meta.media_url %]</video-file-url>
+	</encoding>
+	
+</video>

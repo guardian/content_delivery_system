@@ -1,0 +1,2931 @@
+<HTML>
+<HEAD>
+<TITLE>Auto-extracted CDS module documentation</TITLE>
+<STYLE>
+	h1 { font-family:"DS7 Display Sans Black","Calibri","Verdana","Arial",sans-serif; font-style: bold; font-size:18pt; }
+	h2 { font-family:"DS5 Display Sans Semibold","Arial",sans-serif; font-size:14pt; }
+	body { font-family:"DS3 Display Sans","Verdana","Arial",sans-serif; font-size:12pt; }
+	table { border-color:#000000; }
+	td { padding-left: 12px; padding-right:12px; }
+	tr.even { background-color:#e5e5e5; };
+	tr.odd { background-color:#202020; };
+	.footer { font-size: 12pt; }
+	.regular { color:#000000; }
+	.error	{  color:#F00000; }
+	.success	{  color:#00F000; }
+	.inprogress	{  color:#8300FF; }
+	.undecided  {  color:#0000F0; }
+	.literal	{ padding-left:5em; background-color:#CCCCFF; }
+</STYLE></HEAD>
+<BODY>
+
+<P CLASS="descriptor">CDS module documentation auto-extracted at 03:43 PM on Thursday,  8th October 2015</P><A NAME="index"></A><H1>Index</H1>
+<TABLE>
+
+<TR CLASS="even"><TD><A HREF="#abort.sh">abort</A></TD><TD> This module simply returns an error.  It is normally used for testing, to stop a route from running...</TD><TD>VERSION=&quot;$Rev: 510 $ $LastChangedDate: 2013-09-20 18:17:45 +0100 (Fri, 20 Sep 2013) $&quot;
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#archive_to_san.pl">archive_to_san</A></TD><TD> This method will archive any specified files (media, meta etc.) using SAN-efficient commands if possible....</TD><TD>my $version='$Rev: 1029 $ $LastChangedDate: 2014-09-12 19:07:27 +0100 (Fri, 12 Sep 2014) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#brightcove_link.pl">brightcove_link</A></TD><TD> This module will create a Brightcove record and add two stills, connecting...</TD><TD>my $version='$Rev: 510 $ $LastChangedDate: 2013-09-20 18:17:45 +0100 (Fri, 20 Sep 2013) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#check_files.pl">check_files</A></TD><TD>  This CDS method checks to see if the specified files exist, and outputs their current known location...</TD><TD>my $version='$Rev: 1094 $ $LastChangedDate: 2014-11-11 19:19:05 +0000 (Tue, 11 Nov 2014) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#check_fix_size.pl">check_fix_size</A></TD><TD> This is a simple script to check if {media:size} is set, and to set it if not....</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#check_key.pl">check_key</A></TD><TD> This is a CDS module to check that the given keys exist within the metadata stream...</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#checksum.pl">checksum</A></TD><TD> This is a module to calculate SHA1 and/or MD5 checksums of given...</TD><TD>my $version='$Rev: 514 $ $LastChangedDate: 2013-09-24 13:13:20 +0100 (Tue, 24 Sep 2013) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#concat.sh">concat</A></TD><TD> This CDS method simply concatenates the given line(s) of text into the provided file...</TD><TD>VERSION=&quot;$Rev: 515 $ $LastChangedDate: 2013-09-24 13:18:15 +0100 (Tue, 24 Sep 2013) $&quot;
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#conditional_abort.pl">conditional_abort</A></TD><TD> this script tests the provided metadata, and causes the route to exit if a given condition is, or is not, met....</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#conformfilename.pl">conformfilename</A></TD><TD> This script ensures that the media file is conformed to a file name convention with no spaces, no characters other than letters or numbers...</TD><TD>my $version='$Rev: 651 $ $LastChangedDate: 2014-01-01 16:57:45 +0000 (Wed, 01 Jan 2014) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#contentapi_get_images.pl">contentapi_get_images</A></TD><TD> this module queries the Content API to get information about the images associated with a given video...</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#dailymotion_upload.pl">dailymotion_upload</A></TD><TD> This CDS module uploads a video and various associated data to Dailymotion via their API for display on a Dailymotion page....</TD><TD>$version='dailymotion_upload.pl $Rev: 1393 $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#datareport.sh">datareport</A></TD><TD> This module outputs an HTML report of the current contents of the datastore to the given folder....</TD><TD>VERSION=&quot;$Rev: 513 $ $LastChangedDate: 2013-09-24 09:45:15 +0100 (Tue, 24 Sep 2013) $&quot;
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#delete_cds_file.pl">delete_cds_file</A></TD><TD> This script will delete the media, inmeta, meta or XML files if they're specified in &lt;take-files&gt;....</TD><TD>my $version='$Rev: 651 $ $LastChangedDate: 2014-01-01 16:57:45 +0000 (Wed, 01 Jan 2014) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#delete_file.sh">delete_file</A></TD><TD> This is a simple CDS method to delete a given file....</TD><TD>VERSION=&quot;$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $&quot;
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#derive_aspect_ratio.rb">derive_aspect_ratio</A></TD><TD> This script attempts to derive the aspect ratio of a piece of content based on...</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#echo.sh">echo</A></TD><TD> This module simply echoes a message to the log, and if an XML file is present dumps its output as well....</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#elastic_transcode.rb">elastic_transcode</A></TD><TD> This method runs Amazon's Elastic Transcoder service on a given asset....</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#elastic_transcode_OLD.php">elastic_transcode_OLD</A></TD><TD> elastic_transcode $Rev: 687 $ $LastChangedDate: 2014-01-22 20:55:56 +0000 (Wed, 22 Jan 2014) $...</TD><TD>#elastic_transcode $Rev: 687 $ $LastChangedDate: 2014-01-22 20:55:56 +0000 (Wed, 22 Jan 2014) $
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#elemental_transcode.rb">elemental_transcode</A></TD><TD> This module allows media to be transcoded with Elemental appliances.  You need to specify a profile name, ID or permalink and the hostname of the server, plus user ID and password if required....</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#email_notify.sh">email_notify</A></TD><TD>  Sends a notification email to the addresses listed in the &lt;recipients&gt; argument using the sendmail program....</TD><TD>VERSION=&quot;$Rev: 651 $ $LastChangedDate: 2014-01-01 16:57:45 +0000 (Wed, 01 Jan 2014) $&quot;
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#encode_webm.sh">encode_webm</A></TD><TD> This script is a really simple CDS method to encode a video into WebM.  All arguments accept substitutions....</TD><TD>VERSION=&quot;$Rev: 517 $ $LastChangedDate: 2013-10-07 12:07:00 +0100 (Mon, 07 Oct 2013) $&quot;
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#encodingdotcom.pl">encodingdotcom</A></TD><TD> This script is a CDS method to send media to encoding.com and receive it back....</TD><TD>my $version='$Rev: 517 $ $LastChangedDate: 2013-10-07 12:07:00 +0100 (Mon, 07 Oct 2013) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#encodingdotcom_remove_from_cache.pl">encodingdotcom_remove_from_cache</A></TD><TD> This is a simple CDS method to remove the given URL portion from the encoding.com cache....</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#engine_transcode.pl">engine_transcode</A></TD><TD> This method encodes a file via Episode Engine, also handling metadata issues....</TD><TD>my $version='$Rev: 517 $ $LastChangedDate: 2013-10-07 12:07:00 +0100 (Mon, 07 Oct 2013) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#facebook_upload.pl">facebook_upload</A></TD><TD> This CDS module uploads a video and various associated data to Facebook via the Graph API for display on a Facebook page....</TD><TD>$version='facebook_upload.pl $Rev: 1371 $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#fastly_invalidate_cache.pl">fastly_invalidate_cache</A></TD><TD>  This CDS method requests that the Fastly CDN performs a cache invalidation on either the given URL or surrogate key....</TD><TD>my $version = 'fastly_invalidate_cache $Rev: 1236 $ $LastChangedDate: 2015-05-27 08:29:23 +0100 (Wed, 27 May 2015) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#fcs_to_inmeta.pl">fcs_to_inmeta</A></TD><TD> THIS METHOD HAS BEEN DEPRECATED. DO NOT USE....</TD><TD>my $version='$Rev: 517 $ $LastChangedDate: 2013-10-07 12:07:00 +0100 (Mon, 07 Oct 2013) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#ffmpeg2theora.sh">ffmpeg2theora</A></TD><TD> This script is a quick CDS method to run the ffmpeg2theora program to generate .ogv video...</TD><TD>VERSION=&quot;$Rev: 714 $ $LastChangedDate: 2014-01-29 10:47:10 +0000 (Wed, 29 Jan 2014) $&quot;
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#ffmpeg_transcode.sh">ffmpeg_transcode</A></TD><TD> Simple method to transcode media using ffmpeg.  You need to ensure that you have ffmpeg installed on your system, and that your version is compatible with the media formats you want encoded....</TD><TD>VERSION=&quot;$Rev: 1257 $ $LastChangedDate: 2015-07-17 16:59:34 +0100 (Fri, 17 Jul 2015) $&quot;
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#ffprobe.pl">ffprobe</A></TD><TD> This method runs ffmpeg's ffprobe command on the given media file, and outputs the...</TD><TD>our $version='ffprobe CDS method, $Rev: 1088 $ $LastChangedDate: 2014-11-03 19:17:11 +0000 (Mon, 03 Nov 2014) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#files_from_directory.pl">files_from_directory</A></TD><TD> This module is an input method which lists the contents of a given directory,...</TD><TD>my $version='$Rev: 517 $ $LastChangedDate: 2013-10-07 12:07:00 +0100 (Mon, 07 Oct 2013) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#find_corresponding_files.pl">find_corresponding_files</A></TD><TD> This module searches a given location for the file types specified....</TD><TD>my $version='$Rev: 967 $ $LastChangedDate: 2014-08-08 16:09:37 +0100 (Fri, 08 Aug 2014) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#ftp.pl">ftp</A></TD><TD> This CDS module uploads a given file, or set of files, via FTP....</TD><TD>$version='ftp.pl $Rev: 651 $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#ftp_delete.pl">ftp_delete</A></TD><TD>  This script attempts to delete the given file from the ftp server...</TD><TD>my $scriptName = 'ftp_delete $Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#ftp_pull.pl">ftp_pull</A></TD><TD>  ftp_pull.pl...</TD><TD>my $scriptName = 'ftp_pull version $Rev: 690 $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#ftp_pull_difference.pl">ftp_pull_difference</A></TD><TD>  This CDS method polls an FTP server, downloading all files that have appeared since the previous run. ...</TD><TD>my $version='$Rev: 949 $ $LastChangedDate: 2014-07-25 10:43:51 +0100 (Fri, 25 Jul 2014) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#get_brightcove_metadata.pl">get_brightcove_metadata</A></TD><TD> this script queries the Brightcove API to get metadata for an id number given in the .meta/.inmeta file...</TD><TD>my $version='$Rev: 559 $ $LastChangedDate: 2013-11-03 14:20:56 +0000 (Sun, 03 Nov 2013) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#get_mime_type.pl">get_mime_type</A></TD><TD> This CDS method attempts to use the system 'file' command to determine the mime type of the given media file...</TD><TD>my $version='$Rev: 1067 $ $LastChangedDate: 2014-09-26 11:59:03 +0100 (Fri, 26 Sep 2014) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#http_download.pl">http_download</A></TD><TD> this is a CDS module to pull down media or metadata via HTTP...</TD><TD>my $version='$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#http_post.pl">http_post</A></TD><TD> this is a CDS module to post key/value pairs to an HTTP/HTTPS form....</TD><TD>my $version='$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#image_crop_create.rb">image_crop_create</A></TD><TD> This module creates a crop of a provided image file. This is done as a new filename, and the paths of created files are output to the datastore....</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#image_from_video.pl">image_from_video</A></TD><TD> This method extracts an image as a jpeg from the given cf_media_file, and optionally...</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#input_test.pl">input_test</A></TD><TD>  test input process, only used for development purposes...</TD><TD>my $version='$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#level3_invalidate_cache.pl">level3_invalidate_cache</A></TD><TD> This is a CDS module to request level3 to invalidate given urls.  Whenever you upload to or delete from a CDN, you should send an invalidation request.  This tells the CDN servers that the original media has changed and that they need to re-load their copy...</TD><TD>my $version='$Rev: 698 $ $LastChangedDate: 2014-01-23 10:06:54 +0000 (Thu, 23 Jan 2014) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#log_to_finalcutserver.pl">log_to_finalcutserver</A></TD><TD> This script updates specified logging fields in Final Cut Server to...</TD><TD>my $version='$Rev: 897 $ $LastChangedDate: 2014-06-11 16:39:45 +0100 (Wed, 11 Jun 2014) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#lookup_value.pl">lookup_value</A></TD><TD> Sets a datastore key based on a lookup table...</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#make_symlink.pl">make_symlink</A></TD><TD> This method creates a symbolic link (alias) from the given file(s) to a specified target...</TD><TD>my $version='make_symlink.pl $Rev: 950 $ $LastChangedDate: 2014-07-27 10:35:04 +0100 (Sun, 27 Jul 2014) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#metaxform.pl">metaxform</A></TD><TD>  A script to read in metadata from the metadata stream and convert it using a template into another format...</TD><TD>my $version='$Rev: 958 $ $LastChangedDate: 2014-07-31 15:58:50 +0100 (Thu, 31 Jul 2014) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#move_to.pl">move_to</A></TD><TD> SUPERCEDED BY ARCHIVE_TO_SAN. This is a CDS method to move the media, inmeta, meta and/or xml files to a new location.  It will move anything specified in &lt;take-files&gt;....</TD><TD>my $version='$Rev: 651 $ $LastChangedDate: 2014-01-01 16:57:45 +0000 (Wed, 01 Jan 2014) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#octopus_get_r2_data.pl">octopus_get_r2_data</A></TD><TD> This is a CDS module which uses the octopusutil program (via the octopus_simple interface)...</TD><TD>my $version='$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#octopus_id_from_database.pl">octopus_id_from_database</A></TD><TD>   This is a CDS module to allocate an Octopus ID from the database used by the Pluto system, to make up for there being no current octopus libraries for the linux platform...</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#octopus_notify.pl">octopus_notify</A></TD><TD> This is a CDS method to use the octopustutil program to deliver a message to a user via Octopus Multimedia. ...</TD><TD>my $version='$Rev: 651 $ $LastChangedDate: 2014-01-01 16:57:45 +0000 (Wed, 01 Jan 2014) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#octopus_reserve_id.sh">octopus_reserve_id</A></TD><TD> This script uses the &quot;allocateoctopusid&quot; command supplied by David Blishen on 17/1/13...</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#octopus_set_brightcoveid.pl">octopus_set_brightcoveid</A></TD><TD> This module updates the Brightcove ID header field in Octopus based on info in the datastore...</TD><TD>my $version='$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#octopus_set_r2_data.pl">octopus_set_r2_data</A></TD><TD> This module sets the 'path' field in Octopus according to metadata from the datastore...</TD><TD>my $version='$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#output_test.pl">output_test</A></TD><TD>  output test process, only used for development purposes...</TD><TD>my $version='$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#pa_rename.sh">pa_rename</A></TD><TD> THIS HAS BEEN DEPRECATED, USE PREPEND_TO_FILE OR CONFORMFILENAME...</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#pluto_create_master.rb">pluto_create_master</A></TD><TD> This CDS method will import the given media file to Vidispine and then set it...</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#pluto_get_commission_info.rb">pluto_get_commission_info</A></TD><TD>  This CDS method allows us to look up the metadata associated with a given commission, or the commission associated with a given master...</TD><TD>VERSION = '$Rev: 1223 $ $LastChangedDate: 2015-05-16 12:59:54 +0100 (Sat, 16 May 2015) $'
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#pluto_get_image.rb">pluto_get_image</A></TD><TD> This method decodes the JSON object passed by PLUTO to identify an image,...</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#pluto_map_keywords.rb">pluto_map_keywords</A></TD><TD> This CDS method takes any number of R2 Tag IDs and uses the PLUTO endpoint to map their actual names....</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#pluto_notify.rb">pluto_notify</A></TD><TD> This CDS method outputs a notification into the PLUTO notification area for the given user(s) and group(s)...</TD><TD>version='$Rev: 959 $ $LastChangedDate: 2014-07-31 16:10:05 +0100 (Thu, 31 Jul 2014) $'
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#prepend_to_filename.sh">prepend_to_filename</A></TD><TD> This script renames the given files by pre-pending a string to the filename....</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#process_test.pl">process_test</A></TD><TD>  test input process, only used for development purposes...</TD><TD>my $version='$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#r2_map_capi_tags.rb">r2_map_capi_tags</A></TD><TD> r2_map_tag_ids $Rev: 1140 $ $LastChangedDate: 2015-01-14 13:25:19 +0000 (Wed, 14 Jan 2015) $...</TD><TD>#r2_map_tag_ids $Rev: 1140 $ $LastChangedDate: 2015-01-14 13:25:19 +0000 (Wed, 14 Jan 2015) $
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#r2_relaunch_if_live.pl">r2_relaunch_if_live</A></TD><TD> This method checks if a given page is live in R2.  If it is, then it will request it to be...</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#r2_update_multiple.pl">r2_update_multiple</A></TD><TD> This is a CDS method to create pages in the Guardian's R2 CMS....</TD><TD>my $version='$Rev: 1287 $ $LastChangedDate: 2015-07-30 14:53:13 +0100 (Thu, 30 Jul 2015) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#r2_upload_image.rb">r2_upload_image</A></TD><TD> This module uploads image(s) to the Guardian's R2 CMS....</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#read_fcs.pl">read_fcs</A></TD><TD> This CDS method imports a Final Cut Server &quot;write metadata&quot; format XML file into the data store, for use in templates and substitutions...</TD><TD>my $version='$Rev: 651 $ $LastChangedDate: 2014-01-01 16:57:45 +0000 (Wed, 01 Jan 2014) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#read_generic_xml.pl">read_generic_xml</A></TD><TD> This module reads an XML file using XML::Simple, folds the tree structure into...</TD><TD>my $version='$Rev: 1095 $ $LastChangedDate: 2014-11-11 19:25:14 +0000 (Tue, 11 Nov 2014) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#read_meta.pl">read_meta</A></TD><TD> This module uses the built-in Datastore functionality to read an...</TD><TD>my $version='$Rev: 882 $ $LastChangedDate: 2014-06-06 14:15:27 +0100 (Fri, 06 Jun 2014) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#read_triggerfile.pl">read_triggerfile</A></TD><TD> This module reads a &quot;trigger file&quot;.  A &quot;trigger file&quot; is defined as a file which...</TD><TD>my $version='$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#remove_filename_portions.pl">remove_filename_portions</A></TD><TD> This module is a CDS method to remove certain portions of the filename of incoming files,...</TD><TD>my $version='$Rev: 1258 $ $LastChangedDate';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#remove_octopus_id_from_filename.pl">remove_octopus_id_from_filename</A></TD><TD> This is a very simple script to remove the _{octid} portion of the video's...</TD><TD>my $version='$Rev: 498 $ $LastChangedDate: 2013-09-18 11:09:49 +0100 (Wed, 18 Sep 2013) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#rss_parse.pl">rss_parse</A></TD><TD> This script parses an RSS feed XML that is passed in as the route's XML file (it will usually have been downloaded with the http_get method)...</TD><TD>my $version='$Rev: 652 $ $LastChangedDate: 2014-01-01 17:10:27 +0000 (Wed, 01 Jan 2014) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#s3_get.rb">s3_get</A></TD><TD> This method downloads the given file from S3, and sets the current media file to the location of the downloaded file....</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#s3_put.rb">s3_put</A></TD><TD> This method uploads the given file(s) to Amazon S3....</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#s3_put_old.pl">s3_put_old</A></TD><TD> VERSION=$Rev: 1006 $ $LastChangedDate: 2014-09-05 14:34:12 +0100 (Fri, 05 Sep 2014) $...</TD><TD>#VERSION=$Rev: 1006 $ $LastChangedDate: 2014-09-05 14:34:12 +0100 (Fri, 05 Sep 2014) $
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#s3_put_simple.sh">s3_put_simple</A></TD><TD> VERSION=$Rev: 595 $ $LastChangedDate: 2013-11-28 18:47:10 +0000 (Thu, 28 Nov 2013) $...</TD><TD>#VERSION=$Rev: 595 $ $LastChangedDate: 2013-11-28 18:47:10 +0000 (Thu, 28 Nov 2013) $
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#s3_update_metadata.rb">s3_update_metadata</A></TD><TD> This is a CDS method to update metadata on the given S3 object...</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#set_key.pl">set_key</A></TD><TD> Simple module to set a value to a key in the data store....</TD><TD>my $version='$Rev: 1295 $ $LastChangedDate: 2015-08-07 22:02:33 +0100 (Fri, 07 Aug 2015) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#sftp.sh">sftp</A></TD><TD>  This module uploads files to a server via secure FTP....</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#sleep.sh">sleep</A></TD><TD> Simple method to pause execution for the given period.  Useful for testing and for locking....</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#smb_pull.pl">smb_pull</A></TD><TD>  This method is not implemented.  The intention is to download files from a Windows file-sharing (aka SMB) server....</TD><TD>my $version='$Rev: 517 $ $LastChangedDate: 2013-10-07 12:07:00 +0100 (Mon, 07 Oct 2013) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#sqs_send.pl">sqs_send</A></TD><TD> This CDS method pushes the route's metadata onto an Amazon SQS queue for further processing in the cloud....</TD><TD>my $version='$Rev: 660 $ $LastChangedDate: 2014-01-06 18:08:23 +0000 (Mon, 06 Jan 2014) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#test.rb">test</A></TD><TD>...</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#teststore.db">teststore</A></TD><TD>...</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#thumbor_crop.rb">thumbor_crop</A></TD><TD> This CDS method uses the Thumbor image cropping and manipulation service to crop...</TD><TD>$version = &quot;v1.0 $Rev: 1272 $ $LastChangedDate: 2015-07-24 10:45:36 +0100 (Fri, 24 Jul 2015) $&quot;
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#thumbor_delete.rb">thumbor_delete</A></TD><TD> This CDS method deletes an image that has either been previously uploaded to Thumbor...</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#thumbor_upload.rb">thumbor_upload</A></TD><TD> This CDS method performs an upload to an instance of the Thumbor image cropping and resizing...</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#tsunami_pull.sh">tsunami_pull</A></TD><TD> Tsunami is an open-source data transfer accellerator (kinda like Aspera), using UDP techniques to overcome latency issues on long-distance transfers...</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#validate_numeric_id.pl">validate_numeric_id</A></TD><TD> This CDS method ensures that the given datastore fields are, in fact, numeric IDs without any leading/trailing...</TD><TD>my $version = 'validate_numeric_id $Rev: 1195 $ $LastChangedDate$';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#vidispine_get_media.rb">vidispine_get_media</A></TD><TD> This CDS method attempts to get a media file from Vidispine by requesting a...</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#vidispine_notify.rb">vidispine_notify</A></TD><TD> This method will update metadata on a Vidispine item by either over-writing or appending/prepending values on a set of field(s)...</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#vs_map_cantemo_fields.rb">vs_map_cantemo_fields</A></TD><TD> This method connects to Vidispine and translates the names of keys in the datastore from...</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#wait_for_file.pl">wait_for_file</A></TD><TD> this script waits for a given file to exist in a given path.   Usual substitutions are allowed in the path specification...</TD><TD>my $version='$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#wait_for_s3.rb">wait_for_s3</A></TD><TD> This CDS method waits for a file to exist in S3.  Extra delays shouldn't be necessary, since S3 hides the file until it has finished writing...</TD><TD>$version = '$Rev: 1252 $ $LastChangedDate: 2015-07-16 16:35:56 +0100 (Thu, 16 Jul 2015) $'
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#watched_folder.sh">watched_folder</A></TD><TD> this expects the following environment variables:...</TD><TD>VERSION=&quot;$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $&quot;
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#webrick_sns_test.rb">webrick_sns_test</A></TD><TD>...</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#windows_push.sh">windows_push</A></TD><TD> This script uploads the given file(s) to a Windows SMB/CIFS server suing smbclient....</TD><TD>VERSION=&quot;$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $&quot;
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#write_meta.pl">write_meta</A></TD><TD> This module will write the contents of the datastore in .meta format to a given location...</TD><TD>my $version='$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $';
+</TD></TR>
+
+<TR CLASS="even"><TD><A HREF="#write_triggerfile.pl">write_triggerfile</A></TD><TD> This module writes out a &quot;trigger file&quot;.  A &quot;trigger file&quot; is defined as a file which...</TD><TD>my $version='$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $';
+</TD></TR>
+
+<TR CLASS="odd"><TD><A HREF="#youtube_upload.rb">youtube_upload</A></TD><TD> This method performs an update of the given video (specified as the current media file) to YouTube....</TD><TD></TD></TR>
+</TABLE>
+<HR>
+<A NAME="abort.sh"></A><H1>abort.sh</H1>
+
+<P> This module simply returns an error.  It is normally used for testing, to stop a route from running<BR>
+ at a certain point or to test failure methods.<BR>
+</P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="archive_to_san.pl"></A><H1>archive_to_san.pl</H1>
+
+<P> This method will archive any specified files (media, meta etc.) using SAN-efficient commands if possible.<BR>
+</P>
+<P> <BR>
+ Once &quot;archived&quot; in this way, a file is no longer accessible to the route.<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>{media|meta|inmeta|xml} </TD><TD>archive these files</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;archive-path&gt;</TD><TD>/path/to/archive </TD><TD>archive the files to this location (accepts substitutions)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;recurse-m3u/&gt;</TD><TD> </TD><TD>if the media file specified is an m3u8 playlist, read it and also archive all referenced content</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;basepath&gt;</TD><TD>/path/to/m3u8 </TD><TD>when archiving m3u8 playlists, use this is the base path - i.e., where the main index sits.  The main index stores paths relative to this.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;keep-original/&gt;</TD><TD> </TD><TD>copy the files, don't move them.  This will give you one 'archived' copy that is no longer managed by CDS and keep the original intact.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;archive-dated-folder/&gt;</TD><TD> </TD><TD>archive to a subfolder of archive-path, labelled with the current date/time</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;date_format&gt;</TD><TD>%y%m%d... </TD><TD>use the specified format to generate the name of the folder for archive-dated-folder.  Details on the format can be found by typing 'man date' at a unix prompt or searching the Web for 'date manpage'. No + is required at the start.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;prepend&gt;</TD><TD>extra_file_name </TD><TD>put this text onto the start of the archived copy of the file</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;conflict_append_number/&gt;</TD><TD> </TD><TD>if the given file exists in the location, then append a number to the filename to make a unique one</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="brightcove_link.pl"></A><H1>brightcove_link.pl</H1>
+
+<P> This module will create a Brightcove record and add two stills, connecting<BR>
+ TO AN EXISTING CDN URL.<BR>
+</P>
+<P> <BR>
+ parameters: <BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;keyfile&gt;</TD><TD>blah </TD><TD>secret key data to communicate with the API</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;retries&gt;</TD><TD> </TD><TD>retry this many times</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;retry-delay&gt;</TD><TD> </TD><TD>time to wait between retry attempts</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;title_key&gt;</TD><TD> </TD><TD>use this datastore key for title data. Defaults to 'title'</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;description_key&gt;</TD><TD> </TD><TD>use this datastore key for description data. Defaults to 'description'</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;refid_key&gt;</TD><TD> </TD><TD>use this datastore key for reference ID. Defaults to 'refid'</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;url_key&gt;</TD><TD>  </TD><TD>use this datastore key for the URL to link to. Defaults to 'video URL'</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;vidstill_key&gt;</TD><TD> </TD><TD>use this datastore key for the video still image URL (480x360px).  Defaults to 'still URL'</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;vidthumb_key&gt;</TD><TD> </TD><TD>use this datastore key for the video thumbnail image URL (120x90px).  Defaults to 'thumb URL'</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;filesize_key&gt;</TD><TD> </TD><TD>use this datastore key [in the media section] for file size. Defaults to media:size</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;duration_key&gt;</TD><TD> </TD><TD>use this datastore key [in the media section] for duration.  Defaults to media:duration</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;codec_key&gt;</TD><TD> </TD><TD>use this datastore key [in the tracks section] for codec.  Defaults to tracks:vide:format</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_id_key&gt;</TD><TD> </TD><TD>output the new Brightcove ID to this key name.  Defaults to 'Brightcove ID'</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="check_files.pl"></A><H1>check_files.pl</H1>
+
+<P>  This CDS method checks to see if the specified files exist, and outputs their current known location<BR>
+  to the log.  An error is returned if the file(s) do not exist, use &lt;nonfatal/&gt; to stop this aborting the route.<BR>
+</P>
+<P> <BR>
+  Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>{media|meta|inmeta|xml} </TD><TD>check the specified 'known' files</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;extra_files&gt;</TD><TD>/path/to/file1|/path/to/file2 </TD><TD>add this list of extra files (delimited by |) to the files to check.  Substitutions are accepted.</TD>
+<TR>
+<TR CLASS="even"><TD></TD><TD></TD><TD>get environment variable settings for the:  cf_media_file, cf_meta_file, cf_inmeta_file, cf_xml_file</TD></TR>
+</TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="check_fix_size.pl"></A><H1>check_fix_size.pl</H1>
+
+<P> This is a simple script to check if {media:size} is set, and to set it if not.<BR>
+ Remember to set &lt;take-files&gt;media&lt;/take-files&gt;!<BR>
+</P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="check_key.pl"></A><H1>check_key.pl</H1>
+
+<P> This is a CDS module to check that the given keys exist within the metadata stream<BR>
+ A later version will give the ability to verify them against regexes in the route file<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;key&gt;</TD><TD>keyname </TD><TD>check that this key exists (within the meta section)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;keys&gt;</TD><TD>keyname1|keyname2|etc. </TD><TD>check that the list of keys (separated by | characters) exist (within the meta section)</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="checksum.pl"></A><H1>checksum.pl</H1>
+
+<P> This is a module to calculate SHA1 and/or MD5 checksums of given<BR>
+ files in a CDS route<BR>
+ Arguments:<BR>
+</P>
+<P> <BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>{media}|{xml}|{inmeta}|{meta} </TD><TD>checksum these files</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;extra-files&gt;</TD><TD>file1.mp4|{media:filepath}|/path/to/{meta:random_file} </TD><TD>add the following to list (with substitutions)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;search-paths&gt;</TD><TD>/path/one|{meta:basepath}/path/two|{media:filepath} </TD><TD>search the following for files if not found (with substitutions)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;sha1/&gt;</TD><TD> </TD><TD>provide SHA1</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;md5/&gt;</TD><TD> </TD><TD>provide MD5</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;sha1-keys&gt;</TD><TD>output_key1|media:output_key2|{filename}_key3 [OPTIONAL] </TD><TD>output sha1 checksums to the following keys.  Used in this order:</TD>
+<TR>
+<TR CLASS="even"><TD></TD><TD></TD><TD>media,inmeta,meta,xml,extra1,extra2....</TD></TR>
+
+<TR CLASS="odd"><TD></TD><TD></TD><TD>if a file isn't specified then ignore it, so if no inmeta/meta 2nd arg is output for xml.</TD></TR>
+
+<TR CLASS="even"><TD></TD><TD></TD><TD>supports a special substitution of {filename}, i.e. the current filename.</TD></TR>
+
+<TR CLASS="odd"><TD></TD><TD></TD><TD>defaults to {type}:sha1 - e.g. media:sha1,xml:sha1 or {filename}:sha1 for extra-files</TD></TR>
+
+<TR CLASS="even"><TD></TD><TD></TD><TD>if only one file is input then also duplicated to {media:sha1}</TD></TR>
+
+<TR CLASS="odd"><TD>&lt;md5-keys&gt;</TD><TD> [OPTIONAL] </TD><TD>as above but for md5</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="concat.sh"></A><H1>concat.sh</H1>
+
+<P> This CDS method simply concatenates the given line(s) of text into the provided file<BR>
+ Substitutions are not only welcomed but encouraged<BR>
+</P>
+<P> <BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;text&gt;</TD><TD>blah </TD><TD>append this text.  Substitutions are allowed.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_file&gt;</TD><TD>	}</TD><TD></TD>
+<TR>
+<TR CLASS="even"><TD>&lt;file&gt;</TD><TD>			} the file path to output to. Substitutions are allowed.</TD><TD></TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="conditional_abort.pl"></A><H1>conditional_abort.pl</H1>
+
+<P> this script tests the provided metadata, and causes the route to exit if a given condition is, or is not, met.<BR>
+ arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;/take-files&gt;</TD><TD>	</TD><TD>which metadata files to check</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;check-field&gt;</TD><TD>blah			</TD><TD>check this field in the metadata</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;message&gt;</TD><TD>blah				</TD><TD>output this message if we stop processing</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;invert/&gt;</TD><TD> [OPTIONAL]				</TD><TD>exit the route if the field does NOT exist, or does NOT contain the data given</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;field-data&gt;</TD><TD>regex [OPTIONAL]		</TD><TD>only exit the route if the data in check-field matches this data. If this is not specified, then the route will exit if the given field exists.</TD>
+<TR>
+<TR CLASS="odd"><TD></TD><TD></TD><TD><LI>regex can be any perl-compatible regular expression; if you give a certain string</LI>
+</TD></TR>
+
+<TR CLASS="even"><TD></TD><TD></TD><TD><LI>it will match if that string occurs anywhere in the field.</LI>
+</TD></TR>
+
+<TR CLASS="odd"><TD></TD><TD></TD><TD><LI>NOTE: if you need to use / or . characters then you must escape them using a \, like this: \/ \.</LI>
+</TD></TR>
+</TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="conformfilename.pl"></A><H1>conformfilename.pl</H1>
+
+<P> This script ensures that the media file is conformed to a file name convention with no spaces, no characters other than letters or numbers<BR>
+ and with a YYMMDD date on the front<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-file&gt;</TD><TD>{media|meta|inmeta|xml} </TD><TD>conform the filenames of the given route files.  This will change the name on-disk and update CDS to use the new filename.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="contentapi_get_images.pl"></A><H1>contentapi_get_images.pl</H1>
+
+<P> this module queries the Content API to get information about the images associated with a given video<BR>
+ WARNING: for this to succeed, the video must be LIVE on the site.<BR>
+ A 'not found' error will be returned if the video page is not live.<BR>
+ Use of &lt;non-fatal/&gt; is recommended when using this module, and gracefully<BR>
+ handling the case when no data is returned<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;octopus_id_key&gt;</TD><TD>blah [optional] </TD><TD>use this datastore key to get the Octopus ID.  Defaults to 'octopus ID'.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_key_prefix&gt;</TD><TD>blah [optional] </TD><TD>prefix this to all keys that are output. Defaults to '' (blank string).</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_fields&gt;</TD><TD>field1|field2|field3... [optional] </TD><TD>only output these fields.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="dailymotion_upload.pl"></A><H1>dailymotion_upload.pl</H1>
+
+<P> This CDS module uploads a video and various associated data to Dailymotion via their API for display on a Dailymotion page.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;video_title&gt;</TD><TD>blah </TD><TD>the title of the video</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;video_description&gt;</TD><TD>blah </TD><TD>the description of the video</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;video_category&gt;</TD><TD>blah </TD><TD>the content category of the video</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;video_tags&gt;</TD><TD>blah </TD><TD>tags for the video. At least one is required</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;video_mobile&gt;</TD><TD>weather or not to ban mobile access to the video. Currently disabled due to partner status requirement</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;video_adult&gt;</TD><TD>weather or not the video contains adult content</TD><TD></TD>
+<TR>
+<TR CLASS="even"><TD>&lt;video_holding_image&gt;</TD><TD>blah </TD><TD>URL of an image for use with the video</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;client_id&gt;</TD><TD>blah Dailymotion app client id</TD><TD></TD>
+<TR>
+<TR CLASS="even"><TD>&lt;client_secret&gt;</TD><TD>blah Dailymotion app secret</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;username&gt;</TD><TD>blah Username of Dailymotion account</TD><TD></TD>
+<TR>
+<TR CLASS="even"><TD>&lt;password&gt;</TD><TD>blah Password of Dailymotion account</TD><TD></TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="datareport.sh"></A><H1>datareport.sh</H1>
+
+<P> This module outputs an HTML report of the current contents of the datastore to the given folder.<BR>
+ Commonly used as a fail-method to help in debugging route problems, but can be used to monitor data coming in and out over the live of a route<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;output_directory&gt;</TD><TD>/path/to/directory </TD><TD>output the data report to this directory.  The file name always consists of a CDS identifier, the route name and date/time of the run.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="delete_cds_file.pl"></A><H1>delete_cds_file.pl</H1>
+
+<P> This script will delete the media, inmeta, meta or XML files if they're specified in &lt;take-files&gt;.<BR>
+ You also need to specify a list of file extensions that will be deleted, to prevent accidental deletions.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;filetypes&gt;</TD><TD> = |</TD><TD>seperated list of file extensions (including the .) to delete</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="delete_file.sh"></A><H1>delete_file.sh</H1>
+
+<P> This is a simple CDS method to delete a given file.<BR>
+</P>
+<P> <BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;delete_file&gt;</TD><TD>filename </TD><TD>delete this file (substitutions accpted)</TD>
+<TR>
+<TR CLASS="odd"></TABLE>
+
+<P></P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="derive_aspect_ratio.rb"></A><H1>derive_aspect_ratio.rb</H1>
+
+<P> This script attempts to derive the aspect ratio of a piece of content based on<BR>
+ other metadata.  It is output as a string in the form x/y, where the / seperator can be over-ridden<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;width_key&gt;</TD><TD>blah [OPTIONAL] </TD><TD>use this key for the width (defaults to media:width)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;height_key&gt;</TD><TD>blah [OPTIONAL] </TD><TD>use this key for the height (defaults to media:height)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_key&gt;</TD><TD>blah [OPTIONAL] </TD><TD>use this key to output the result (defaults to meta:aspect_ratio)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;separator&gt;</TD><TD>c [OPTIONAL] </TD><TD>use this character instead of / as a seperator</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="echo.sh"></A><H1>echo.sh</H1>
+
+<P> This module simply echoes a message to the log, and if an XML file is present dumps its output as well.<BR>
+ If invoked as a fail-method, it will also output which method failed and what the error was.<BR>
+ Normally used for debugging but can be handy for other log-related uses<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;message&gt;</TD><TD>messagetext </TD><TD>Output this message to the log</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="elastic_transcode.rb"></A><H1>elastic_transcode.rb</H1>
+
+<P> This method runs Amazon's Elastic Transcoder service on a given asset.<BR>
+ Due to the way that ETS works, the asset must be available _in an s3 bucket_ before running this method, and finished assets are output to an S3 bucket.<BR>
+ See the documentation for s3_put and s3_get if you need to transport assets to or from S3 in order to use this method.<BR>
+</P>
+<P> <BR>
+ At the moment, this only directly runs on servicers that have access to AWS roles for permissions settings, but access_key and secret_key arguments will be supported soon.<BR>
+</P>
+<P> <BR>
+ Arguments (all support substitutions unless notes):<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;region&gt;</TD><TD>{aws</TD><TD>region} - use this region when connecting to ETS resources.  Defaults to eu-west-1 if no other region is supplied.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;pipeline&gt;</TD><TD>{name} </TD><TD>use the ETS pipeline with this name for transcoding.  ETS pipelines are configured in the Elastic Transcoder Service panel in the AWS web control system, and the name can be looked up from there.  Internally, this is mapped to the ID number of the pipeline.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;preset&gt;</TD><TD>{name} </TD><TD>use this ETS preset name for transcoding.  ETS presets are configured in the Elastic Transcoder Service panel in the AWS web control system, and the name can be looked up from there.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;presets&gt;</TD><TD>{preset1}|{preset2}|... </TD><TD>synonym for preset, useful when you are encoding HLS</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;preset_append&gt;</TD><TD>_{app1}|_{app2}|... </TD><TD>append this value to the output key of each preset to distinguish them. Normally something like the bitrate, e.g. _512k, 768k, 1M, etc.  Needed to encode HLS</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;playlist&gt;</TD><TD>{outputname} [OPTIONAL] </TD><TD>when using multiple presets, link them together in a playlist. Needed to encode HLS</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;playlist_format&gt;</TD><TD>HLSv3|HLSv4|Smooth [OPTIONAL] </TD><TD>use this format for the playlist</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;segment_duration&gt;</TD><TD>10 [OPTIONAL] </TD><TD>when encoding HLS, how long each 'chunk' should be, in seconds. Defaults to 10s.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;filename&gt;</TD><TD>/path/to/file </TD><TD>transcode this file.  This file must exist in Amazon S3, in the &quot;input bucket&quot; specified in the configuration for your selected pipeline (consult the ETS panel in the Amazon control centre to get at the pipeline configuration)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_prefix&gt;</TD><TD>{path} </TD><TD>Output the transcoded file to this path within the S3 bucket specified as the &quot;output bucket&quot; in the configuration for your selected pipeline.  Files are named by this method according to the following convention: {filebase}_{bitrate}_{codec}.{extension}, where {filebase} is the incoming filename minus its extension, {bitrate} is the video bitrate of the selected preset expressed as either kbit/s or Mbit/s, {codec} is the name of the video codec of the selected preset (with non alphanumeric characters removed) and {extension} is the file extension for the wrapper format specified in the selected preset</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;round_down/&gt;</TD><TD> </TD><TD>[optional] Round down the requested duration to the nearest second. Only effective if the media:duration key is set by the datastore at the point where the method is invoked</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_file_key&gt;</TD><TD>keyname </TD><TD>NOTE: this refers to a CDS datastore Key, not an S3 bucket key!! Output the final, transcoded filename into this key in the CDS datastore for use by future methods (like s3_get)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;acl_public/&gt;</TD><TD> </TD><TD>NOT YET IMPLEMENTED - If specified, tells the method to open up the permissions on the output files so that they are world-readable (i.e., published, available to anybody without any login)</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="elastic_transcode_OLD.php"></A><H1>elastic_transcode_OLD.php</H1>
+
+<P> elastic_transcode $Rev: 687 $ $LastChangedDate: 2014-01-22 20:55:56 +0000 (Wed, 22 Jan 2014) $<BR>
+ Converts the relevant media files via Amazon's Elastic Transcoder.<BR>
+ Requires the installation of the AWS SDK for PHP. This will be done automatically by<BR>
+ the installation script if phar etc. are installed<BR>
+</P>
+<P> <BR>
+ It expects the following arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;region&gt;</TD><TD>blah </TD><TD>AWS region where the pipeline is</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;presets&gt;</TD><TD>preset name 1|preset name 2|preset name 3 </TD><TD>Presets to use for transcoding</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;pipeline&gt;</TD><TD>blah </TD><TD>Name of the pipeline to submit the job to.</TD>
+<TR>
+<TR CLASS="odd"></TABLE>
+
+<P></P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;output_prefix&gt;</TD><TD>blah [optional] </TD><TD>'prefix', or path specification, for the outputs in the output bin.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;filename&gt;</TD><TD>blah [optional] </TD><TD>filename of the file to transcode. This is expected to exist in</TD>
+<TR>
+<TR CLASS="even"><TD></TD><TD></TD><TD>the S3 bucket that is designated as the input bucket of the pipeline.  If this is not specified,</TD></TR>
+
+<TR CLASS="odd"><TD>&lt;/take-files&gt;</TD><TD>)</TD><TD></TD>
+<TR>
+<TR CLASS="even"><TD>&lt;key&gt;</TD><TD>blah [optional] </TD><TD>AWS access key</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;secret&gt;</TD><TD>blah [optional] </TD><TD>AWS access secret. If key/secret are not specified, then the system</TD>
+<TR>
+<TR CLASS="even"><TD></TD><TD></TD><TD>attempts to use AWS Roles to obtain them</TD></TR>
+</TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="elemental_transcode.rb"></A><H1>elemental_transcode.rb</H1>
+
+<P> This module allows media to be transcoded with Elemental appliances.  You need to specify a profile name, ID or permalink and the hostname of the server, plus user ID and password if required.<BR>
+ When multiple files are output, the module can work in two ways.  You can specify it as an input-method, and it will set Batch mode which will run all process-methods and output-methods once, sequentially, for each output.<BR>
+ Alternatively, you can specify a &lt;chain_route&gt; option.  This will cause the method to run CDS with the given routes, and provide --input-media and --input-inmeta from the current state of this route.  These are run in parallel.<BR>
+ If using &lt;chain_route&gt;, you can also set &lt;asynchronous_chain/&gt; to exit with success once the routes are spawned.  If this option is not set, the method will wait until all chained routes have completed before exiting.<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;server&gt;</TD><TD>hostname_or_ip </TD><TD>Elemental server or cluster controller</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;port&gt;</TD><TD>n [OPTIONAL] </TD><TD>port number, defaults to 80</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;username&gt;</TD><TD>username [OPTIONAL] </TD><TD>log in with this username. Defaults to none.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;password&gt;</TD><TD>password [OPTIONAL] </TD><TD>log in with this password. Defaults to none.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;preroll_file&gt;</TD><TD>/path/to/preroll [OPTIONAL] </TD><TD>tell Elemental to use a preroll file. Defaults to none, substitutions are accepted.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;postroll_file&gt;</TD><TD>/path/to/postroll [OPTIONAL] </TD><TD>tell Elemental to use a postroll file. Defaults to none, substitutions are accepted.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;map_cds_path&gt;</TD><TD> argument below</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;map_cds_path&gt;</TD><TD>/path/on/cds [OPTIONAL] </TD><TD>see map_elemental_path</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;profileid&gt;</TD><TD>profile </TD><TD>Name, numeric ID or permalink of an Elemental Output Profile.  This is how the system determines the properties of the transcoded file(s)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;specific_chain_route&gt;</TD><TD>modifier:routename|modifier:routename [OPTIONAL] </TD><TD>use a specific route, given by 'routename', to chain to if the 'name modifier' of the Elemental profile matches 'modifier'. Useful to perform different post-encoding processing for different encoded formats.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;chain_route&gt;</TD><TD>routename [OPTIONAL] </TD><TD>use the given route name to continue processing transcoded media files, executing in parallel (see notes above). This route is invoked with --input-media set to the transcoded media file and --input-inmeta set to a freshly created .inmeta file with the current state of the datastore.  If you don't use this option, then call elemental_transcode as an input-method to take advantage of batch mode processing.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;chain_route&gt;</TD><TD>, don't wait for the chained routes to terminate but exit as soon as they're up and going</TD><TD></TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="email_notify.sh"></A><H1>email_notify.sh</H1>
+
+<P>  Sends a notification email to the addresses listed in the &lt;recipients&gt; argument using the sendmail program.<BR>
+  this script expects the following arguments (substitutions are allowed in ALL except date_format:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;recipients&gt;</TD><TD> </TD><TD>list of email addresses to send to</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;message&gt;</TD><TD> </TD><TD>text of message OR</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;message-file&gt;</TD><TD> </TD><TD>file which contains text of the message to send.  Normal substitutions are</TD>
+<TR>
+<TR CLASS="odd"><TD></TD><TD></TD><TD>valid both in the file name AND in the file contents.</TD></TR>
+
+<TR CLASS="even"><TD>&lt;from&gt;</TD><TD> </TD><TD>email address to appear to be from</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;subject&gt;</TD><TD> </TD><TD>subject line of email</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;date_format&gt;</TD><TD> </TD><TD>format to include date.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="encode_webm.sh"></A><H1>encode_webm.sh</H1>
+
+<P> This script is a really simple CDS method to encode a video into WebM.  All arguments accept substitutions.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD> media </TD><TD>use the media file.  This method does not affect other file types.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_path&gt;</TD><TD>blah </TD><TD>directory to output to (it sets cf_media_file to the transcoded file on output) - substitutions allowed</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;frame_size&gt;</TD><TD>{width}x{height} </TD><TD>frame size to output at</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;video_bitrate&gt;</TD><TD>{rate}k </TD><TD>maximum bitrate, e.g. 1024k</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;audio_bitrate&gt;</TD><TD>{rate}k </TD><TD>bitrate, e.g. 128k</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;ratefactor&gt;</TD><TD>n </TD><TD>the CRF value.  Can be from 4-63, lower values mean better quality. Defaults to 10.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;filename_append&gt;</TD><TD>name </TD><TD>append this string to the filename.  The string is appended directly so if you want e.g. _ padding, type it in the string. Substitutions allowed.  Useful for Episode Engine compatibility</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;two_pass/&gt;</TD><TD> </TD><TD>use two-pass encoding mode</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;ffmpeg_preset&gt;</TD><TD>blah [OPTIONAL] </TD><TD>use this file (under /usr/local/share/ffmpeg; not including the .ffpreset file extension) as a preset. Defaults to libvpx-720p</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="encodingdotcom.pl"></A><H1>encodingdotcom.pl</H1>
+
+<P> This script is a CDS method to send media to encoding.com and receive it back.<BR>
+ It is expected that the media has been put somewhere accessible to encoding.com by URL (e.g., by ftp)<BR>
+ and that another method (e.g., ftp_pull) will download the encoded media again.  See examples in the documentation for the best way of implementing this.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;keyfile&gt;</TD><TD>blah </TD><TD>get the encoding.com API key from this file.  should contain userid=nnn and userkey=nnnnn, separated by newlines.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;source_url&gt;</TD><TD>blah </TD><TD>substitutions allowed.  URL e.g. of the form ftp://user:password@server/path/to/file.mov</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_url_base&gt;</TD><TD>blah </TD><TD>substitutions allowed.  Base url of where to output to, e.g. ftp://user:password@server/path/to.  file.{format} is then created at this location.</TD>
+<TR>
+<TR CLASS="odd"><TD></TD><TD></TD><TD>you can list multiple destinations by creating a list, {dest1}|{dest2}|{dest3} etc.</TD></TR>
+
+<TR CLASS="even"><TD>&lt;output_url_key&gt;</TD><TD>blah </TD><TD>set this metadata key to the location of the returned media</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_append&gt;</TD><TD>blah [OPTIONAL] </TD><TD>substitutions allowed. append this string Episode-style to the end of the output name.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;passive/&gt;</TD><TD> </TD><TD>tell encoding.com to use passive ftp.  use this to help sort firewall probs.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;error_value&gt;</TD><TD>blah [OPTIONAL] </TD><TD>return this value (substitutions allowed) if an error occurs</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;encoding_profile&gt;</TD><TD>blah [OPTIONAL] </TD><TD>encoding settings are either specified by this XML file or by the following args</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;format&gt;</TD><TD>blah </TD><TD>encode to this format</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;vcodec&gt;</TD><TD>blah </TD><TD>encode to this video codec (see ffmpeg/encoding.com documentation)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;acodec&gt;</TD><TD>blah </TD><TD>encode to this audio codec</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;vbitrate&gt;</TD><TD>xxxk </TD><TD>(e.g., 1024k) - use this video bitrate for CBR or as average for VBR</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;vmaxrate&gt;</TD><TD>xxxk </TD><TD>as above, maximum bitrate for VBR</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;vminrate&gt;</TD><TD>xxxk </TD><TD>as above, minimum bitrate for VBR</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;vprofile&gt;</TD><TD>{main|baseline|high} </TD><TD>use this profile level for h.264. defaults to 'main'.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;vbframes&gt;</TD><TD>n </TD><TD>use this many b-frames to increase encoding efficiency (but not playable on some mobile devs)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;width&gt;</TD><TD>n </TD><TD>width of encoded video frame, in pixels</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;height&gt;</TD><TD>n </TD><TD>height of encoded video frame, in pixels</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;abitrate&gt;</TD><TD>xxxk </TD><TD>as vbitrate, use this audio bitrate</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;asamplerate&gt;</TD><TD>xxxx [OPTIONAL] </TD><TD>(e.g., 44100) - use this sample rate for audio encoding</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;achannels&gt;</TD><TD>n	[OPTIONAL] </TD><TD>(e.g., 5) - use this number of channels for audio encoding</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;vframerate&gt;</TD><TD>n [OPTIONAL] (e.g., 25) </TD><TD>use this output framerate</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;turbo/&gt;</TD><TD>	[OPTIONAL] </TD><TD>use turbo option.</TD>
+<TR>
+<TR CLASS="even"></TABLE>
+
+<P></P><TABLE CLASS="argument-list">
+
+<TR CLASS="odd"><TD>&lt;cache-timeout&gt;</TD><TD>n [OPTIONAL] </TD><TD>wait this long for a cached id to become available.  Default: 3600s (1 hour)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;cache-location&gt;</TD><TD>/path/to/cache/db [OPTIONAL] </TD><TD>use this location for the cache database.  Default: /var/spool/cds_backend/encodingdotcom.cache</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="encodingdotcom_remove_from_cache.pl"></A><H1>encodingdotcom_remove_from_cache.pl</H1>
+
+<P> This is a simple CDS method to remove the given URL portion from the encoding.com cache.<BR>
+ It is intended for use in master update routes, to invalidate the existence of a previous record.<BR>
+ It expects the following arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;cachefile&gt;</TD><TD>/path/to/relevant/cache </TD><TD>work on the file stored here</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;sourceurl&gt;</TD><TD>blah [OPTIONAL] </TD><TD>use this value as the source URL.  Anything in the cache that contains this string will be removed (blank strings not allowed). If this is not given, then the name of the current media file will be used instead.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="engine_transcode.pl"></A><H1>engine_transcode.pl</H1>
+
+<P> This method encodes a file via Episode Engine, also handling metadata issues.<BR>
+ Metadata from the datastore is output to a .inmeta file for encoding, and metadata from the output .meta file is read back into the datastore at the end.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;output-profile&gt;</TD><TD>profile_name </TD><TD>use this watchfolder for encoding.  The source file will be placed in ${EPISODE_INPUT_ROOT}/profile_name, and the encoded file will be waited for at ${EPISODE_OUTPUT_ROOT}/profile_name.  The subdirectory should contain only one output profile at present. ${EPISODE_INPUT_ROOT} and ${EPISODE_OUTPUT_ROOT} must be set by altering the static configuration lines in the script itself at /usr/local/lib/cds_backend/engine_transcode.pl</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;warn-time&gt;</TD><TD>nnnn </TD><TD>wait for this number of seconds before we start outputting warnings that the file hasn't been seen</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;nonfatal/&gt;</TD><TD> is set.</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;enforce-underscore-only/&gt;</TD><TD> </TD><TD>ensure that there are no - characters etc. in the filename. For improving compatibility, e.g. with GNM Octopus.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;ignore-file-extensions&gt;</TD><TD>jpg|JPG|tif|TIF.... etc. </TD><TD>if the media-file has one of these extensions, don't transcode it.  For use in feeds where e.g. stills are present.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;holding-path&gt;</TD><TD>/path/to/graveyard </TD><TD>if something fails, move the remnants to this location</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;keep-original/&gt;</TD><TD> </TD><TD>copy, instead of move, the source file into Episode</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;symlink/&gt;</TD><TD> </TD><TD>use a symlink instead of a copy/move to input the source file.  Improves reliability and speed, but only really useful in a SAN-based system where the file paths are the same for all clients and servers so the symlink will always resolve.</TD>
+<TR>
+<TR CLASS="even"></TABLE>
+
+<P> </P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="facebook_upload.pl"></A><H1>facebook_upload.pl</H1>
+
+<P> This CDS module uploads a video and various associated data to Facebook via the Graph API for display on a Facebook page.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;image_file&gt;</TD><TD> </TD><TD>upload the given image file for use as a thumbnail if present</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;access_token&gt;</TD><TD>blah </TD><TD>key for accessing the Facebook server</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;video_title&gt;</TD><TD>blah </TD><TD>the title of the video</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;video_description&gt;</TD><TD>blah </TD><TD>the description of the video</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;video_category&gt;</TD><TD>blah </TD><TD>the content category of the video</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;video_embed&gt;</TD><TD>n </TD><TD>A switch which allows (1) or disallows (0) video embedding of the video by the general public</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;video_no_story&gt;</TD><TD>n </TD><TD>A switch which controls weather a Facebook story for the video is posted (0) or not posted (1) </TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;page_id&gt;</TD><TD>n </TD><TD>Identification number of the Facebook page the video should be posted to</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;video_draft&gt;</TD><TD>Weather the video is a draft or not</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;video_scheduled&gt;</TD><TD>Weather the video is to be scheduled or not</TD><TD></TD>
+<TR>
+<TR CLASS="even"><TD>&lt;video_time&gt;</TD><TD>n Scheduled time to post the video</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;video_backdate&gt;</TD><TD>Weather the video is to be backdated or not</TD><TD></TD>
+<TR>
+<TR CLASS="even"><TD>&lt;video_backdate_time&gt;</TD><TD>n Time to backdate the video to</TD><TD></TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="fastly_invalidate_cache.pl"></A><H1>fastly_invalidate_cache.pl</H1>
+
+<P>  This CDS method requests that the Fastly CDN performs a cache invalidation on either the given URL or surrogate key.<BR>
+  This is necessary when uploading content to be shared over Fastly to ensure that old versions are removed and the correct version of content<BR>
+  is returned.<BR>
+</P>
+<P> <BR>
+  Purging can be done either on a specific URL, or a &quot;surrogate key&quot;.  This is an identifier which is provided to Fastly to link multiple<BR>
+  items of content together (for example, HLS components)<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;cdn_domain&gt;</TD><TD>cdn.mydomain.com </TD><TD>if a provided URL does not match this domain, then no request is sent.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;url&gt;</TD><TD>/url/to/invalidate </TD><TD>invalidate this specific URL. In this case, an API key is not required.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;service_id&gt;</TD><TD>nnnnn </TD><TD>if purging with a &quot;surrogate key&quot;, then you need to specify this to identify your service</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;surrogate_key&gt;</TD><TD>nnnn </TD><TD>if purging with a &quot;surrogate key&quot;, then you must specify it</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;api_key&gt;</TD><TD>nnnnn </TD><TD>if purging with a &quot;surrogate key&quot;, then you must specify a valid API key here.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;soft/&gt;</TD><TD> [OPTIONAL] </TD><TD>use a &quot;soft purge&quot; instead of a &quot;fast purge&quot; command</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="fcs_to_inmeta.pl"></A><H1>fcs_to_inmeta.pl</H1>
+
+<P> THIS METHOD HAS BEEN DEPRECATED. DO NOT USE.<BR>
+ Instead, you should use read_fcs to import the FCS XML file into the datastore.<BR>
+ this script takes the FCS XML file specified in cf_xml_file and converts it into a new .inmeta file, setting cf_inmeta_file in the process.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;template_path&gt;</TD><TD> [OPTIONAL] </TD><TD>path to the fcs2inmeta.tt template</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="ffmpeg2theora.sh"></A><H1>ffmpeg2theora.sh</H1>
+
+<P> This script is a quick CDS method to run the ffmpeg2theora program to generate .ogv video<BR>
+ NOTE: ffmpeg2theora is not compatible with e.g. ProRes.  This methid will fail if the media file is not in a compatible format.<BR>
+ OGGV should be considered a legacy format.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>media</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;videoqual&gt;</TD><TD>n </TD><TD>'video quality' number (6-8 recommended)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;audioqual&gt;</TD><TD>n </TD><TD>'audio quality' number (3-4 recommended)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;width&gt;</TD><TD>n </TD><TD>encode to this frame width</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;height&gt;</TD><TD>n </TD><TD>encode to this frame height</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_path&gt;</TD><TD>/path/to/output </TD><TD>output the encoded file to this local directory</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;preset&gt;</TD><TD>{preview|pro|videobin|padma|padma</TD><TD>stream} - select a builtin preset</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;suffix&gt;</TD><TD>_filesuffix </TD><TD>append this suffix to the filename as it's generated.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="ffmpeg_transcode.sh"></A><H1>ffmpeg_transcode.sh</H1>
+
+<P> Simple method to transcode media using ffmpeg.  You need to ensure that you have ffmpeg installed on your system, and that your version is compatible with the media formats you want encoded.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>media </TD><TD>you need to tell this method to act on the media.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_path&gt;</TD><TD>/path/to/output </TD><TD>output the transcoded file to this location.  You must specify this location.  If a file with the given name already exists here, the new file will be given a non-clashing name such as filename-2.mp4.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;format&gt;</TD><TD>formatname </TD><TD>output to the specified file format, e.g. mp4 or webm.  Run ffmpeg -formats from your commandline to see the formats that your ffmpeg supports.  This will also be used as the file extension of the transcoded file.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;vcodec&gt;</TD><TD>videocodec </TD><TD>use the specified video codec to encode.  Run ffmpeg -codecs from your commandline to see the codecs that your ffmpeg supports.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;acodec&gt;</TD><TD>audiocodec </TD><TD>use the specified audio codec to encode.  Run ffmpeg -codecs from your commandline to see the codecs that your ffmpeg supports.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;scale&gt;</TD><TD>widthxheight </TD><TD>scale the output to the given width and height</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;audioonly/&gt;</TD><TD> </TD><TD>assume that 'format' is an audio-only format and do not pass video options</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;videofilters&gt;</TD><TD> [OPTIONAL] </TD><TD>set of videofilters arguments that are passed to ffmpeg. For more information see https://ffmpeg.org/ffmpeg-filters.html#Video-Filters</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;audiofilters&gt;</TD><TD> [OPTIONAL] </TD><TD>set of audiofilters arguments that are passed to ffmpeg. For more information see https://ffmpeg.org/ffmpeg-filters.html#Audio-Filters</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;crf&gt;</TD><TD>n [OPTIONAL] </TD><TD>use &quot;constant rate factor&quot; setting for h.264. For more information see https://trac.ffmpeg.org/wiki/Encode/H.264</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;maxrate&gt;</TD><TD>4096k [OPTIONAL] </TD><TD>specify a maximum bitrate when using crf and h.264. For more information see https://trac.ffmpeg.org/wiki/Encode/H.264</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;avgrate&gt;</TD><TD>4096k [OPTIONAL] </TD><TD>specify target average bitrate. For more information see https://trac.ffmpeg.org/wiki/Encode/H.264</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;minrate&gt;</TD><TD>512k [OPTIONAL] </TD><TD>specify a minimum bitrate for h.264. For more information see https://trac.ffmpeg.org/wiki/Encode/H.264</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;priority&gt;</TD><TD>n [OPTIONAL] </TD><TD>use &quot;nice&quot; to change the OS priority. A higher value =&gt; more &quot;nice&quot; =&gt; lower system priority.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_path&gt;</TD><TD>/path/to/output </TD><TD>output transcoded media to this location</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;allow_experimental/&gt;</TD><TD> [OPTIONAL] </TD><TD>tell ffmpeg that it is allowed to use &quot;experimental&quot; codecs.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;profile&gt;</TD><TD>baseline|main|high [OPTIONAL] </TD><TD>restrict h.264 profile. For more information see https://trac.ffmpeg.org/wiki/Encode/H.264</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;profile_level&gt;</TD><TD>3.0|3.1|4.0|4.1|4.2 [OPTIONAL] </TD><TD>use with &quot;profile&quot;. Set a specific compatibility level. For more information see https://trac.ffmpeg.org/wiki/Encode/H.264</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="ffprobe.pl"></A><H1>ffprobe.pl</H1>
+
+<P> This method runs ffmpeg's ffprobe command on the given media file, and outputs the<BR>
+ results to the datastore.<BR>
+ It aims to provide Episode Engine-compatible metadata into the datastore<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>media </TD><TD>you need to supply a media file</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;debug/&gt;</TD><TD>	[OPTIONAL] </TD><TD>output lots of debugging information</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="files_from_directory.pl"></A><H1>files_from_directory.pl</H1>
+
+<P> This module is an input method which lists the contents of a given directory,<BR>
+ attempts to classify the files and triggers batch mode processing in cds_run<BR>
+ This works in the same way as ftp_pull, but when the files are available locally.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;input-path&gt;</TD><TD>/path/to/input </TD><TD>directory to watch</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;expect-files&gt;</TD><TD> {media|meta|inmeta|xml} </TD><TD>files to expect in the directory</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;holdoff-file&gt;</TD><TD>/path/to/holdoff.file </TD><TD>temp file to create while we are processing.  If this file exists, then we flag an error and exit.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;ditch-unexpected-files/&gt;</TD><TD> [optional] </TD><TD>whether to remove 'unexpected' files - NOT IMPLEMENTED.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;working-directory&gt;</TD><TD>/path/to/working/folder </TD><TD>place to move the files to, in order to work on them.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="find_corresponding_files.pl"></A><H1>find_corresponding_files.pl</H1>
+
+<P> This module searches a given location for the file types specified.<BR>
+ if using batch mode, then you should specify it as a &quot;process-method&quot; so that it is<BR>
+ run for each file in the batch.<BR>
+</P>
+<P> <BR>
+ It expects the following arguments from the route XML:<BR>
+   provided-file - {media|meta|inmeta|xml} - use this file to work out what the name should be<BR>
+   OR provided-name - {string} - take this as the expected name (e.g., &lt;provided-name&gt;{meta:File Name}&lt;/provided-name&gt;)<BR>
+   find-files - {media|meta|inmeta|xml} - set these files<BR>
+   library-path - search this location for files<BR>
+   recursive [OPTIONAL] - set this to do a recursive search under library-path.  WARNING: setting this could mean that each file search takes a long time.<BR>
+   continue-if-not-found [OPTIONAL] - set this to not report an error if the file cannot be found.<BR>
+   append-media-extension [OPTIONAL] - set this to append the given extension when searching for media etc., if it cannot be found otherwise.<BR>
+   remove-extension [OPTIONAL] - set this to remove the extension from the incoming file when searching<BR>
+   switch-extension [OPTIONAL] - change the incoming file's extension to this for the purposes of matching<BR>
+   no-auto-extension [OPTIONAL] - don't automatically assume a meta/inmeta/xml file has the right extension<BR>
+   max-retries [OPTIONAL] - if a file is not found, then wait this number of times for it to be present before failing.<BR>
+   retry-wait [OPTIONAL] - wait this number of seconds between retries (default: 3s)<BR>
+ It also expects the following from cds_run:<BR>
+ cf_{media|meta|inmeta|xml}_file - to work out what file we're looking for<BR>
+ cf_temp_file<BR>
+</P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="ftp.pl"></A><H1>ftp.pl</H1>
+
+<P> This CDS module uploads a given file, or set of files, via FTP.<BR>
+ If an M3U8 HLS file list is specified, it can be parsed and all referenced files are uploaded as well<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>{media|meta|inmeta|xml} </TD><TD>upload the given files</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;extra_files&gt;</TD><TD>/path/to/file1|/path/to/file2|{meta:anotherfilepath} </TD><TD>also upload files in this list.</TD>
+<TR>
+<TR CLASS="even"><TD></TD><TD></TD><TD>Datastore substitutions (including time/date) are allowed.</TD></TR>
+
+<TR CLASS="odd"><TD>&lt;hostname&gt;</TD><TD>blah </TD><TD>upload to this FTP server</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;username&gt;</TD><TD>blah </TD><TD>use this username to log in. Specify &quot;anonymous&quot; if using anonymous FTP</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;password&gt;</TD><TD>blah </TD><TD>use this password to log in.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;remote-path&gt;</TD><TD>/path/to/upload/files </TD><TD>change to this directory on the remote server before uploading.</TD>
+<TR>
+<TR CLASS="odd"><TD></TD><TD></TD><TD>Datastore substitutions are allowed.</TD></TR>
+
+<TR CLASS="even"><TD>&lt;throttle&gt;</TD><TD>n </TD><TD>limit upload speed to this number of MBits/sec</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;recurse_m3u/&gt;</TD><TD> </TD><TD>if ANY requested file ends in .m3u8, then parse it as an m3u8 and upload anything referenced.</TD>
+<TR>
+<TR CLASS="even"><TD></TD><TD></TD><TD>m3u8's are parsed recursively, i.e. if the first one references a second, that is passed as well, etc.</TD></TR>
+
+<TR CLASS="odd"><TD>&lt;basepath&gt;</TD><TD>/path/to/m3u/repository </TD><TD>you SHOULD SET THIS IF USING RECURSE_M3U8. Assume that all files</TD>
+<TR>
+<TR CLASS="even"><TD></TD><TD></TD><TD>referenced by the m3u8 can be found locally at this path.</TD></TR>
+
+<TR CLASS="odd"><TD>&lt;max-retries&gt;</TD><TD>n </TD><TD>retry FTP operation at most this many times</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;retry-delay&gt;</TD><TD>n </TD><TD>wait this many seconds before retrying</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;passive/&gt;</TD><TD> </TD><TD>use &quot;passive FTP&quot; mode.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;debug/&gt;</TD><TD> </TD><TD>output loads of debug information, including what's being uploaded from and to where.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="ftp_delete.pl"></A><H1>ftp_delete.pl</H1>
+
+<P>  This script attempts to delete the given file from the ftp server<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;specific-file&gt;</TD><TD>filename </TD><TD>ONLY attempt to download this file.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;specific-url&gt;</TD><TD>ftp://[username:password@]server/path/to/filename </TD><TD>ONLY attempt to download ths specific</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;password&gt;</TD><TD> option.</TD><TD></TD>
+<TR>
+<TR CLASS="odd"></TABLE>
+
+<P> use strict;<BR>
+  this sub gets called when a file has been sucessfully downloaded.<BR>
+  a name value pair gets written to a temporary file to be picked up by the parent process<BR>
+  set up details via environment variables<BR>
+  etc.<BR>
+  end config<BR>
+  open connection &amp; change to remote path<BR>
+</P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="ftp_pull.pl"></A><H1>ftp_pull.pl</H1>
+
+<P>  ftp_pull.pl<BR>
+</P>
+<P> <BR>
+  A script to poll an FTP server and trigger the route (via the commandline) when file(s) arrive(s). <BR>
+</P>
+<P> <BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;specific-file&gt;</TD><TD>filename </TD><TD>ONLY attempt to download this file.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;specific-url&gt;</TD><TD>ftp://[username:password@]server/path/to/filename </TD><TD>ONLY attempt to download ths specific</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;password&gt;</TD><TD> option.</TD><TD></TD>
+<TR>
+<TR CLASS="odd"></TABLE>
+
+<P>  Note: there could be multiple files present in the remote folder.  The script will download them all.<BR>
+  And then it will write the list of files to a temporary file which gets picked up by the cds_run script<BR>
+</P>
+<P>  <BR>
+  The first line in the file must be a name value pair which indicates to the parent process, multiple files are to<BR>
+  be processed.<BR>
+</P>
+<P> <BR>
+  The key name is &quot;batch&quot; and the value is set to &quot;true&quot;.&quot;<BR>
+</P>
+<P> <BR>
+  It is possible that there could be multiple files for each media clip. The files should all have the same basename.<BR>
+  If a file does not have a correpsonding media file, the file should be moved to a bit bucket and a warning logged.<BR>
+</P>
+<P> <BR>
+</P>
+<P> <BR>
+ use strict;<BR>
+  this sub gets called when a file has been sucessfully downloaded.<BR>
+  a name value pair gets written to a temporary file to be picked up by the parent process<BR>
+  set up details via environment variables<BR>
+  etc.<BR>
+  end config<BR>
+  open connection &amp; change to remote path<BR>
+  get directory listing<BR>
+   To get file and sub-directory information, simply loop from 0 to ftp.NumFilesAndDirs - 1<BR>
+ bundle the filenames into the global %collection hash<BR>
+ now build a download list<BR>
+  close connection<BR>
+  success or fail?<BR>
+</P>
+<P> <BR>
+  The one thing that the script currently does not do is handle if the number of files in the remote folder<BR>
+  matches the number of files successfully downloaded.<BR>
+</P>
+<P> <BR>
+</P>
+<P> <BR>
+  Based on the file type add name value pair to the temporary file.<BR>
+</P>
+<P> <BR>
+  The temporary file name is held in an environement variable.<BR>
+</P>
+<P> <BR>
+</P>
+<P> <BR>
+</P>
+<P> <BR>
+</P>
+<P> <BR>
+ 			ftp_pull: $VAR1 = {<BR>
+ 	ftp_pull:           '130111Ticket_7115695' =&gt; {<BR>
+ 	ftp_pull:                                       'cf_media_file' =&gt; '130111Ticket_7115695.mov'<BR>
+ 	ftp_pull:                                     }<BR>
+ 	ftp_pull:         };<BR>
+ 		@keyIndices = keys %collection;<BR>
+ 		print &quot;DEBUG: key indices @keyIndices\n&quot; if $debugLevel &gt; 0;<BR>
+ 		my %hashRecord =  $collection{$keyIndices[0]}; # get the record at index 0<BR>
+     	{<BR>
+ 	 		print CDS_TMP &quot;$key=$value\n&quot;;			<BR>
+ 	     }	    <BR>
+</P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="ftp_pull_difference.pl"></A><H1>ftp_pull_difference.pl</H1>
+
+<P>  This CDS method polls an FTP server, downloading all files that have appeared since the previous run. <BR>
+  The previous contents of the FTP server is stored in a text file, specified in the old-file-list option.<BR>
+</P>
+<P> <BR>
+  Note: there could be multiple files present in the remote folder.  The script will download them all.<BR>
+  And then it will write the list of files to a temporary file which gets picked up by the cds_run script<BR>
+</P>
+<P>  <BR>
+  It automatically detects bundles of files by looking for a common basename (e.g., myvideo.mp4/myvideo.xml/myvideo.inmeta).<BR>
+  You can adjust how basenames are matched by using the filename-skip-portions option (e.g., 1234-myvideo.mp4/5678-myvideo.xml etc.)<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;host&gt;</TD><TD>host.mydomain.com		</TD><TD>log into this FTP server</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;username&gt;</TD><TD>blah			</TD><TD>log in with this username</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;password&gt;</TD><TD>blah			</TD><TD>log in with this password</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;remote-path&gt;</TD><TD>/path/to/files		</TD><TD>files are located in this path</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;cache-path&gt;</TD><TD>/path/to/download		</TD><TD>download files to this local path.  CDS begins processing on them from here, and can then move them elsewhere</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;old-file-list&gt;</TD><TD>/path/to/oldlist	</TD><TD>store the current contents of the FTP server here and check this to see if a file has been 'seen'</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;new-file-list&gt;</TD><TD>/path/to/lockfile	</TD><TD>create this file as a lockfile while we are running.  If this file exists when the method starts up, it aborts, to avoid interfering with an on-going download.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;keep-original/&gt;</TD><TD>	[OPTIONAL] 	</TD><TD>don't delete the files after they have been successfully downloaded.  Since ftp_pull_difference is most useful for servers where you don't have write access, this argument is less useful than on others, but can be useful just to make the point in the routefile</TD>
+<TR>
+<TR CLASS="even"></TABLE>
+
+<P></P><TABLE CLASS="argument-list">
+
+<TR CLASS="odd"><TD>&lt;required-files&gt;</TD><TD>{media|meta|inmeta|xml} [OPTIONAL] </TD><TD>specify a list of files which must be present in order to trigger a download.  ftp_pull_difference detects 'bundles' of files with common basenames.  If you specify this option, then if the given file types are not present in the bundle, then NONE of the files will be downloaded.  Useful if e.g. metadata tends to arrive on the server later than media, but you asset management system requires metadata and media at the same time.  You would specify media|xml for this option, then only when BOTH media and XML are available for download would a package be downloaded</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;filename-portion-delimiter&gt;</TD><TD>	[OPTIONAL] </TD><TD>if skipping portions of a filename for matching, use the specified character (or regex) to separate out the portions of the filename</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;filename-skip-portions&gt;</TD><TD>n [OPTIONAL] </TD><TD>specify this many portions of the filename to skip before attempting a filename match.  Some services don't provide files with common basenames, using identifiers or timestamps in the fieldname.  So if you have 1234-mymedia.mp4 and 5678-mymedia.xml then they would not be detected as part of the same bundle.  In this case, you would specify a filename-portion-delimiter of '-' (a single hyphen) and filename-skip-portions of 1 (i.e., skip 1 portion when splitting the filename on '-' characters).</TD>
+<TR>
+<TR CLASS="even"></TABLE>
+
+<P></P><TABLE CLASS="argument-list">
+
+<TR CLASS="odd"><TD>&lt;attempts&gt;</TD><TD>n [OPTIONAL] </TD><TD>re-attempt file downloads this many times. Defaults to 2; FTP connection is re-initialised before each attempt.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;limit&gt;</TD><TD>n [OPTIONAL] </TD><TD>limit the number of bundles returned to this number</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="get_brightcove_metadata.pl"></A><H1>get_brightcove_metadata.pl</H1>
+
+<P> this script queries the Brightcove API to get metadata for an id number given in the .meta/.inmeta file<BR>
+</P>
+<P> <BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>{inmeta|meta} </TD><TD>use either the .meta/.inmeta file</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;brightcove-id-key&gt;</TD><TD>blah </TD><TD>use this metadata key to get the brightcove id</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;brightcove-key-prefix&gt;</TD><TD>blah </TD><TD>prepend this string to the fieldnames given by brightcove when outputting</TD>
+<TR>
+<TR CLASS="odd"><TD></TD><TD></TD><TD>to the .meta file</TD></TR>
+
+<TR CLASS="even"><TD>&lt;keyfile&gt;</TD><TD>blah			</TD><TD>this file contains the secret key data to communicate with API</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_template&gt;</TD><TD>blah </TD><TD>use this template to output metadata (usually meta.tt or inmeta.tt)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;template_path&gt;</TD><TD>blah [optional] </TD><TD>use a non-standard template path (default: /etc/cds_backend/templates)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;retries&gt;</TD><TD>n	[optional]	</TD><TD>keep trying this many times if communication fails (default: 5)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;retry-delay&gt;</TD><TD>n [optional] </TD><TD>wait this long between retries, in seconds (default: 5)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;debug/&gt;</TD><TD> [optional] </TD><TD>output tons of debugging information</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="get_mime_type.pl"></A><H1>get_mime_type.pl</H1>
+
+<P> This CDS method attempts to use the system 'file' command to determine the mime type of the given media file<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>media </TD><TD>you should give this access to the media file</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_key&gt;</TD><TD>keyname [OPTIONAL] </TD><TD>output the mime type to this key (default: movie:mimetype)</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="http_download.pl"></A><H1>http_download.pl</H1>
+
+<P> this is a CDS module to pull down media or metadata via HTTP<BR>
+ arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;url&gt;</TD><TD>blah </TD><TD>download from this URL.  Standard substitutions are allowed.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output-directory&gt;</TD><TD>blah </TD><TD>download to this location.  Standard substitutions.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;set-output&gt;</TD><TD>{media|meta|inmeta|xml}|{meta:key}... </TD><TD>set the given file selectors OR datastore keys with the output file path</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output-filename&gt;</TD><TD>blah [OPTIONAL] </TD><TD>over-ride the filename portion of the URL with this.  Standard substitutions.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;keyfile&gt;</TD><TD>blah [OPTIONAL] </TD><TD>use this file to get access keys.  NOT IMPLEMENTED YET.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;retries&gt;</TD><TD>n [OPTIONAL </TD><TD>defaults to 10]</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;retry-delay&gt;</TD><TD>n [OPTIONAL </TD><TD>defaults to 5]</TD>
+<TR>
+<TR CLASS="odd"><TD></TD><TD></TD><TD>convenience function to output any filenames</TD></TR>
+</TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="http_post.pl"></A><H1>http_post.pl</H1>
+
+<P> this is a CDS module to post key/value pairs to an HTTP/HTTPS form.<BR>
+ HTTPS support is built-in to LWP, if it doesn't work it means you don't have SSL modules<BR>
+ etc. installed.  Consult CDS documentation and make sure LWP::Protocol::https is installed.<BR>
+ arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;headers&gt;</TD><TD>header1|header2|header3... [optional] </TD><TD>use these headers (for authorisation etc.)</TD>
+<TR>
+<TR CLASS="odd"><TD></TD><TD></TD><TD>each item in the list is put on a newline and</TD></TR>
+
+<TR CLASS="even"><TD></TD><TD></TD><TD>used as a header</TD></TR>
+
+<TR CLASS="odd"><TD>&lt;url&gt;</TD><TD>blah </TD><TD>POST to this URL</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;form_fields&gt;</TD><TD>fieldname1|fieldname2|fieldname3|fieldname4... POST these field names</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;form_data&gt;</TD><TD>value1|{meta:value2}|{media:value3}|{track:vide:value4}... Use these values for the named fields</TD><TD></TD>
+<TR>
+<TR CLASS="even"><TD>&lt;retries&gt;</TD><TD>n </TD><TD>retry this number of times.  Default=5.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;retry_delay&gt;</TD><TD>n </TD><TD>wait this long between retries (in seconds). Default=5s.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;timeout&gt;</TD><TD>n </TD><TD>timeout a request after this time (in seconds). Default=30s.a</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;debug/&gt;</TD><TD> </TD><TD>spew debugging information</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_keys&gt;</TD><TD>key1|key2|key3 [optional] </TD><TD>output the webserver's response to this key in the datastore</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_delimiter&gt;</TD><TD>c [optional] </TD><TD>use this character/regex to split the servers output for multiple keys.  \n means newline, \t means tab.  Multiple delimiters can be specified like this: [&amp;\n:].  / characters must be escaped like this: \/  Defaults to none.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_skip&gt;</TD><TD>n [optional] </TD><TD>ignore this number of fields in the output.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="image_crop_create.rb"></A><H1>image_crop_create.rb</H1>
+
+<P> This module creates a crop of a provided image file. This is done as a new filename, and the paths of created files are output to the datastore.<BR>
+ It depends on ImageMagick being available on the local node (apt-get install ImageMagick or yum install ImageMagick or port install ImageMagick etc.), specifically the 'convert' command<BR>
+ It also depends on having the xmp and exifr ruby gems available<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;image_files&gt;</TD><TD>file1|/path/to/file2|{meta:FileNameKey} </TD><TD>use the provided image file(s)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;target_width&gt;</TD><TD>nnnn </TD><TD>the crop should be this width</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;target_height&gt;</TD><TD>nnnn </TD><TD>the crop should be this height</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;strict_crop/&gt;</TD><TD> </TD><TD>crop pixels from the top or sides to ensure that the image is target_width and target_height high exactly</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_path&gt;</TD><TD>/path/to/output/files </TD><TD>put the output files in this place</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_key&gt;</TD><TD>keyname </TD><TD>output the paths of the cropped files into this key in the meta: section of the datastore</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;no_array/&gt;</TD><TD> </TD><TD>do NOT append to an existing value of output_key, but over-write it</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="image_from_video.pl"></A><H1>image_from_video.pl</H1>
+
+<P> This method extracts an image as a jpeg from the given cf_media_file, and optionally<BR>
+ sets a key to say where it went.<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>media </TD><TD>you need to include this so that the media file is available</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_path&gt;</TD><TD>/path/to/file </TD><TD>where the image should be written to</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_key&gt;</TD><TD>keyname [OPTIONAL] </TD><TD>set this key in the datastore meta section to say where the image was saved.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;timecode&gt;</TD><TD>hh:mm:ss.ss [OPTIONAL] </TD><TD>take the image from this timecode as opposed to frame 1. NOTE: format is hours:mins:seconds, with DECIMAL POINT IN SECONDS (not frames!!)</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="input_test.pl"></A><H1>input_test.pl</H1>
+
+<P>  test input process, only used for development purposes<BR>
+  print the current environment variables that are set<BR>
+</P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="level3_invalidate_cache.pl"></A><H1>level3_invalidate_cache.pl</H1>
+
+<P> This is a CDS module to request level3 to invalidate given urls.  Whenever you upload to or delete from a CDN, you should send an invalidation request.  This tells the CDN servers that the original media has changed and that they need to re-load their copy<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;ni&gt;</TD><TD>        }</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;ag&gt;</TD><TD>        } identifier parameters for the CDN </TD><TD>Network Identifier, Access Group and something else.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;scid&gt;</TD><TD>            }</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;keyfile&gt;</TD><TD> </TD><TD>file which contains the level3 identity key</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;url-template&gt;</TD><TD>blah    } optional </TD><TD>generate the urls as above</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;url-key&gt;</TD><TD>blah        optional </TD><TD>get the urls from a key or keys in the cf_meta/inmeta_file.  Data can be seperated by |</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;only_directories/&gt;</TD><TD> optional </TD><TD>as opposed to individually invaldating every media file referenced in an m3u8, invalidate ALL files within the relevant paths.</TD>
+<TR>
+<TR CLASS="odd"><TD></TD><TD></TD><TD>For use with apple's bizarre http streaming system.</TD></TR>
+
+<TR CLASS="even"><TD>&lt;recurse-m3u/&gt;</TD><TD> </TD><TD>if a url   identifies a playlist file (.m3u,.m3u8,.m3u{x}) then add to the list any urls found within. </TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="log_to_finalcutserver.pl"></A><H1>log_to_finalcutserver.pl</H1>
+
+<P> This script updates specified logging fields in Final Cut Server to<BR>
+ tell it when a file has been uploaded.<BR>
+ It uses the data store to get the Asset ID of the file<BR>
+ and a .tt file to format the output.<BR>
+ It uses a temp filename for the output xml<BR>
+  it expects the following variables:<BR>
+  cf_media_file<BR>
+  cf_datastore_location<BR>
+  cf_routename<BR>
+</P>
+<P>  <BR>
+  date-format<BR>
+  message<BR>
+  fcs-field<BR>
+  fcs-read-path<BR>
+  fcs-id-key - use this metadata key to obtain the FCS ID.  defaults to 'FCS asset id'<BR>
+  datatype - tell FCS that 'message' is this type of data.  defaults to 'string'. but could be 'boolean', integer, etc.<BR>
+  messagetype - same as datatype<BR>
+  it supports the following transforms:<BR>
+  {date}<BR>
+  {media-file}<BR>
+  {meta-file}<BR>
+  {routename}<BR>
+  {meta-value-{keyname}}<BR>
+ config<BR>
+ end config<BR>
+</P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="lookup_value.pl"></A><H1>lookup_value.pl</H1>
+
+<P> Sets a datastore key based on a lookup table<BR>
+ You need to specify a source_table and a dest_table, each as an array.<BR>
+ when the input_string matches an entry in source_table, the meta key<BR>
+ given by output_key is set to the corresponding entry in dest_table.<BR>
+ Normally the matching is done by a straight string a=string b comparison,<BR>
+ but if you specify the &lt;regex/&gt; option then the entries in source_table are<BR>
+ compared as regexes.  This is the simplest way to do string a contains string b comparison; simply specifying &lt;regex/&gt; without putting any special characters in the source_table will match as string a contains string b.<BR>
+ For more information on regexes, google 'perl regex introduction'.<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;input_string&gt;</TD><TD> </TD><TD>the string to compare to the source table. Normally you would put in at least one substitution, e.g. {meta:title}.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_key&gt;</TD><TD> </TD><TD>the key in the meta section of the datastore to output to</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;source_table&gt;</TD><TD>input_a|input_b|... </TD><TD>a list of values to compare to the input_string. Normally string matching is done by =, but these can be interpreted as regexes.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;dest_table&gt;</TD><TD>output_a|output_b|... </TD><TD>a list of values to set output_key to if input_string matches the corresponding entry in source_table.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;default&gt;</TD><TD>output_z [OPTIONAL] </TD><TD>output this value if no entries in source_table match input_string</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;case_insensitive/&gt;</TD><TD> [OPTIONAL] </TD><TD>compare input_string and source_table entries case-insensitively</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;regex/&gt;</TD><TD> [OPTIONAL] </TD><TD>interpret the entries in the source_table list as regexes. The corresponding dest_table entry will be selected if input_string matches a given source_table regex.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="make_symlink.pl"></A><H1>make_symlink.pl</H1>
+
+<P> This method creates a symbolic link (alias) from the given file(s) to a specified target<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>{media|inmeta|meta|xml} </TD><TD>symlink from these files</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;target&gt;</TD><TD>/path/to/file|{meta:filepath} </TD><TD>create the symlink here.  Substitutions accepted. If multiple values are given, separate them with | characters; they are applied in the same order as the given take-files.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;destination&gt;</TD><TD> </TD><TD>same as target</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="metaxform.pl"></A><H1>metaxform.pl</H1>
+
+<P>  A script to read in metadata from the metadata stream and convert it using a template into another format<BR>
+  All output data should be escaped as XML-compliant.<BR>
+ FIXME: should implement a &lt;not_xml/&gt; option to disable the XML escaping.  This will need a change to CDS::Datastore.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;output_template&gt;</TD><TD>blah </TD><TD>use this .tt Template Toolkit format template to output</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output-template&gt;</TD><TD>blah </TD><TD>same as &lt;output_template&gt;</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;template-needs-simple/&gt;</TD><TD> </TD><TD>don't interpret or break-down data before passing to the template</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_file&gt;</TD><TD>blah [optional] </TD><TD>use this as the output filename.  Default is to output an XML file to the same directory as the current media file, using the filename of the current media file with an additional .xml extension.  This file is set to the current XML file for the route on a successful run.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;array_keys&gt;</TD><TD>key1|key2|key3.... [optional] </TD><TD>treat the listed datastore keys as arrays (normally delimited by a | symbol) and break them down.  The original key is still accessible, the array (e.g. for key1) can be accessed in the template as meta.key1_list.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="move_to.pl"></A><H1>move_to.pl</H1>
+
+<P> SUPERCEDED BY ARCHIVE_TO_SAN. This is a CDS method to move the media, inmeta, meta and/or xml files to a new location.  It will move anything specified in &lt;take-files&gt;.<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;dest-path&gt;</TD><TD>/path/to/archive </TD><TD>Move the files to this location. Substitutions are accepted.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;dest-dated-folder/&gt;</TD><TD>		</TD><TD>Move the files to a folder with today's date under &lt;dest-path&gt;</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;keep-original/&gt;</TD><TD>		</TD><TD>Copy, don't move, the files.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="octopus_get_r2_data.pl"></A><H1>octopus_get_r2_data.pl</H1>
+
+<P> This is a CDS module which uses the octopusutil program (via the octopus_simple interface)<BR>
+ to extract relevant r2 metadata from the octopus header and insert it into the datastore.<BR>
+ arguments:<BR>
+  octopus-id-key - key to extract octopus id from in meta file - normally 'octopus ID'<BR>
+  take-files - whether to use meta or inmeta file<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;allow-invalid-id/&gt;</TD><TD> </TD><TD>if this is set, then don't throw an error if the R2 id does not exist.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;r2-key-prefix&gt;</TD><TD>blah </TD><TD>prefix the r2 keys output with this value - optional</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;retries&gt;</TD><TD>n      </TD><TD>if the value does not exist or is 'none' then retry this many times before erroring - optional, default 5</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;retry-delay&gt;</TD><TD>n  </TD><TD>wait this long (in seconds) between retries - optional, default 5</TD>
+<TR>
+<TR CLASS="even"><TD></TD><TD></TD><TD>use strict;</TD></TR>
+
+<TR CLASS="odd"><TD></TD><TD></TD><TD>use XML::SAX;</TD></TR>
+
+<TR CLASS="even"><TD></TD><TD></TD><TD>use lib &quot;.&quot;;</TD></TR>
+
+<TR CLASS="odd"><TD></TD><TD></TD><TD>use saxmeta;</TD></TR>
+</TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="octopus_id_from_database.pl"></A><H1>octopus_id_from_database.pl</H1>
+
+<P>   This is a CDS module to allocate an Octopus ID from the database used by the Pluto system, to make up for there being no current octopus libraries for the linux platform<BR>
+   It allocates an ID and then outputs it to the datastore key specified, in the meta: section<BR>
+</P>
+<P> <BR>
+   Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;dbhost&gt;</TD><TD>hostname </TD><TD>connect to Postgres DB on this host</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;dbname&gt;</TD><TD>database [OPTIONAL] </TD><TD>connect to the database with this name. Default: 'octopusid'</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;dbuser&gt;</TD><TD>username </TD><TD>connect to the database with this username</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;dbpass&gt;</TD><TD>password </TD><TD>connect to the database with this password</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;identifier&gt;</TD><TD>blah </TD><TD>a string to record in the database what this has been allocated to. Should somehow evaluate to {commission-id}; {project-id}; {master-id}. Care needs to be taken to avoid duplicates.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_key&gt;</TD><TD>keyname [OPTIONAL] </TD><TD>output the acquired ID to this keyname in the meta: section. Defaults to 'octopus_ID'</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="octopus_notify.pl"></A><H1>octopus_notify.pl</H1>
+
+<P> This is a CDS method to use the octopustutil program to deliver a message to a user via Octopus Multimedia. <BR>
+ It is intended to be used for logging progress and errors in a user-readable manner.<BR>
+</P>
+<P> <BR>
+ arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;event&gt;</TD><TD>{queued|transcoded|uploaded} </TD><TD>Tell Octopus that the event is one of these. Required.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;message&gt;</TD><TD>blah </TD><TD>descriptive text to show the user. Supports substitutions</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;octopus_id_key&gt;</TD><TD>blah [optional] </TD><TD>use this datastore key for octopus id (default: octopus_ID)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;destination_key&gt;</TD><TD>blah [optional] </TD><TD>use this datastore key for the route destination to give to Octopus (default: upload_destination)</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="octopus_reserve_id.sh"></A><H1>octopus_reserve_id.sh</H1>
+
+<P> This script uses the &quot;allocateoctopusid&quot; command supplied by David Blishen on 17/1/13<BR>
+ to create a valid Octopus ID and output it to the datastore.<BR>
+ Said Octopus ID is deleted again in the Octopus system, so no data is associated with it,<BR>
+ but it is &quot;reserved&quot; in that it will not be used for anything else<BR>
+ and therefore can safely be used to key the R2 API<BR>
+</P>
+<P> <BR>
+ It checks for a valid config file before running.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;output_key&gt;</TD><TD>blah [optional] </TD><TD>output the provided ID to this key in the meta section</TD>
+<TR>
+<TR CLASS="odd"><TD></TD><TD></TD><TD>of the datastore.  Default: &quot;octopus ID&quot;.</TD></TR>
+
+<TR CLASS="even"><TD>&lt;no_overwrite/&gt;</TD><TD> </TD><TD>do not set a new Octopus ID if one already exists.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="octopus_set_brightcoveid.pl"></A><H1>octopus_set_brightcoveid.pl</H1>
+
+<P> This module updates the Brightcove ID header field in Octopus based on info in the datastore<BR>
+ arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;brightcove_id_key&gt;</TD><TD>blah </TD><TD>use this key for Brightcove id data (defaults to 'Brightcove ID')</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;octopus_id_key&gt;</TD><TD>blah    </TD><TD>use this key for Octopus id data (defaults to 'octopus ID')</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="octopus_set_r2_data.pl"></A><H1>octopus_set_r2_data.pl</H1>
+
+<P> This module sets the 'path' field in Octopus according to metadata from the datastore<BR>
+ Parameters:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;octopus_id_key&gt;</TD><TD>blah </TD><TD>use this key for octopus id - optional - defaults to 'octopus ID'</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;r2_key_prefix&gt;</TD><TD>blah </TD><TD>prefix this value onto all r2-related keys - optional</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;r2_id_key&gt;</TD><TD>blah </TD><TD>use this key for r2 id - defaults to {prefix}id</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;r2_url_key&gt;</TD><TD>blah </TD><TD>use this key for r2 production url - defaults to {prefix}url</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;r2_lastop_key&gt;</TD><TD>blah </TD><TD>use this key for r2 last operation - defaults to {prefix}lastop</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;r2_videostatus_key&gt;</TD><TD> </TD><TD>use this key for r2 video status - defaults to {prefix}video-status</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;r2_pagestatus_key&gt;</TD><TD> </TD><TD>use this key for r2 page status - defaults to {prefix}page-status</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="output_test.pl"></A><H1>output_test.pl</H1>
+
+<P>  output test process, only used for development purposes<BR>
+</P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="pa_rename.sh"></A><H1>pa_rename.sh</H1>
+
+<P> THIS HAS BEEN DEPRECATED, USE PREPEND_TO_FILE OR CONFORMFILENAME<BR>
+</P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="pluto_create_master.rb"></A><H1>pluto_create_master.rb</H1>
+
+<P> This CDS method will import the given media file to Vidispine and then set it<BR>
+ up as a PLUTO master.  The named commission and project are created if they do<BR>
+ not already exist.<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>media </TD><TD>you need to take the media file</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;commission_name&gt;</TD><TD>blah </TD><TD>create the master within this commission. Commission is created if it does not exist. Ruby date parameters are supported (see http://ruby-doc.org/stdlib-2.0.0/libdoc/date/rdoc/Date.html#method-i-strftime)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;project_name&gt;</TD><TD>blah </TD><TD>create the master within this project name. Project is created if it does not exist.  Ruby date parameters are supported (see http://ruby-doc.org/stdlib-2.0.0/libdoc/date/rdoc/Date.html#method-i-strftime)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;project_type&gt;</TD><TD>blah </TD><TD>create a project of this type (Premiere, Cubase, etc.)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;commissioner_name&gt;</TD><TD>blah </TD><TD>set the commissioner's name to this. Only used when creating new commissions/projects</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;working_group&gt;</TD><TD>blah </TD><TD>set the working group to this.  Only used when creating new commissions/projects</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;subscribing_group_ids&gt;</TD><TD>n|n|n|.... </TD><TD>set the subscribing groups to these numbers.  Only accepts numeric IDs right now.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;owner_id&gt;</TD><TD>n </TD><TD>set the owner to this numeric user ID</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;fail_if_not_exists/&gt;</TD><TD> </TD><TD>fail if the commission and project do not exist.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;storage_path&gt;</TD><TD>/path/to/destination </TD><TD>filepath to the storage to move the file to</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;storage_id&gt;</TD><TD>vsid </TD><TD>Vidispine ID of the storage</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;keep_original/&gt;</TD><TD> </TD><TD>copy, don't move the media file</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;transcode_tags&gt;</TD><TD>lowres|WebM|.... [OPTIONAL] </TD><TD>transcode to these formats, identifed as vidispine &quot;tags&quot; (Transcode Format in Portal)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;gnm_category&gt;</TD><TD>name </TD><TD>Set the &quot;category&quot; field in PLUTO to this value. Essential for proper media management</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;extra_metadata&gt;</TD><TD>field_name=value|another_field_name=another_value|... [OPTIONAL] </TD><TD>set the given fields on a piece of media as it is ingested. For valid field names, refer to the Metadata Editor in Cantemo Portal</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;vidispine_host&gt;</TD><TD>hostname [OPTIONAL] </TD><TD>host to communicate with (defaults to localhost)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;vidispine_port&gt;</TD><TD>portnum [OPTIONAL] </TD><TD>port to communicatewith Vidispine on (defaults to 8080)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;vidispine_user&gt;</TD><TD>username</TD><TD>username for Vidispine</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;vidispine_password&gt;</TD><TD>pass </TD><TD>password for Vidispine</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;metadata_projection&gt;</TD><TD>projection_name [OPTIONAL] </TD><TD>use this (incoming) metadata projection to import sidecar XMLs</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;field_mappings_file&gt;</TD><TD>/path/to/field_mappings [OPTIONAL] </TD><TD>use this YAML format list to perform field-&gt;field data interchange once all metadata has been set</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;nosidecar/&gt;</TD><TD> [OPTIONAL] </TD><TD>do not attempt to import sidecar XMLs</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="pluto_get_commission_info.rb"></A><H1>pluto_get_commission_info.rb</H1>
+
+<P>  This CDS method allows us to look up the metadata associated with a given commission, or the commission associated with a given master<BR>
+</P>
+<P> <BR>
+  Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;commission_id&gt;</TD><TD>blah [OPTIONAL] </TD><TD>look up this commission ID</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;master_id&gt;</TD><TD>blah [OPTIONAL] </TD><TD>look up the commission associated with this master ID</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;vidispine_host&gt;</TD><TD>hostname </TD><TD>talk to Vidispine on this computer</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;vidispine_port&gt;</TD><TD>8080 [OPTIONAL] </TD><TD>talk to Vidispine on this TCP port</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;vidispine_user&gt;</TD><TD>username </TD><TD>log in to Vidispine with this username</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;vidispine_password&gt;</TD><TD>passwd </TD><TD>log in to Vidispine with this password</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_namespace&gt;</TD><TD>gnm_commission [OPTIONAL] </TD><TD>apply this as a prefix to all output keys. Default is gnm_commission; any keys that are already having gnm_commission have it replaced by this value.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="pluto_get_image.rb"></A><H1>pluto_get_image.rb</H1>
+
+<P> This method decodes the JSON object passed by PLUTO to identify an image,<BR>
+ looks it up in Vidispine and returns the filename into an array in the datastore<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;image_specifier&gt;</TD><TD>{meta:image_field_name} </TD><TD>use this to get the image out. Should usually be a JSON object with the field id: &quot;AA-nnnnn&quot; to give the Vidispine ID of the image. Normally passed in using a substitution, e.g. {meta:pluto_id}</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_key&gt;</TD><TD>keyname </TD><TD>output the filename to this datastore key. If there is a value in this key already, the current image will be appended to the list, delimited by a | character</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_key_43&gt;</TD><TD>keyname </TD><TD>output the filename for 4x3 image (if provided) to this datastore key.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;use_http/&gt;</TD><TD> </TD><TD>download from Vidispine via HTTP rather than use the filename</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;cache_path&gt;</TD><TD>/path/to/download </TD><TD>When downloading, save to this path. Defaults to /tmp</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;no_array/&gt;</TD><TD> [OPTIONAL] </TD><TD>blank any existing values in {meta:output_key}</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;vidispine_host&gt;</TD><TD>hostname [OPTIONAL] </TD><TD>Connect to Vidispine running on this server. Defaults to 'localhost'</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;vidispine_port&gt;</TD><TD>nnnn [OPTIONAL] </TD><TD>Connect to Vidispine API on this port. Defaults to 8080.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;vidispine_user&gt;</TD><TD>username [OPTIONAL] </TD><TD>Connect to Vidispine using this username. Defaults to admin</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;vidispine_passwd&gt;</TD><TD>password [OPTIONAL] </TD><TD>Connect to Vidispine using this password</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="pluto_map_keywords.rb"></A><H1>pluto_map_keywords.rb</H1>
+
+<P> This CDS method takes any number of R2 Tag IDs and uses the PLUTO endpoint to map their actual names.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;tag_ids&gt;</TD><TD>{meta:tag_id_string} </TD><TD>list of tag IDs to map, separated by |.  This would normally be a datastore substitution, like {meta:tag_ids}</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_field&gt;</TD><TD>fieldname </TD><TD>name of a datastore field (in the meta: section) to output the list of names to</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;pluto_host&gt;</TD><TD>hostname [OPTIONAL] </TD><TD>name of the machine to connect to PLUTO on. Defaults to localhost</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;pluto_port&gt;</TD><TD>port [OPTIONAL] </TD><TD>port to connect to PLUTO on. Defaults to 80.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;pluto_user&gt;</TD><TD>username </TD><TD>User name to connect to PLUTO with</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;pluto_pass&gt;</TD><TD>password </TD><TD>Password to connect to PLUTO with</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="pluto_notify.rb"></A><H1>pluto_notify.rb</H1>
+
+<P> This CDS method outputs a notification into the PLUTO notification area for the given user(s) and group(s)<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;cantemo_host&gt;</TD><TD>cantemo.hostname.com </TD><TD>contact Cantemo on this server</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;cantemo_user&gt;</TD><TD>username </TD><TD>use this username (must be an admin for this to work)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;cantemo_passwd&gt;</TD><TD>password </TD><TD>use this password</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;message&gt;</TD><TD>blah </TD><TD>text of the message to output</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;type&gt;</TD><TD>commission|project|master|publish </TD><TD>what the message refers to</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;severity&gt;</TD><TD>info|attention|urgent </TD><TD>which icon to show in the notification area</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;url&gt;</TD><TD>http://path/to/something [OPTIONAL] </TD><TD>URL that the user gets sent to when they click on the message. If a Vidispine object is given but the URL is not, then the message will link through to the vidispine object's page</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;object_id&gt;</TD><TD>KP</TD><TD>nnnn [OPTIONAL] - Vidispine ID of the object that this notification refers to</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;object_type&gt;</TD><TD>commission|master|project|vs/item [OPTIONAL] </TD><TD>What type of object is referred to by object_id.  Needed to build a URL to the object</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;users&gt;</TD><TD>user1|user2|{meta:user3} etc.... [OPTIONAL] </TD><TD>Send the message to these user(s)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;groups&gt;</TD><TD>group1|group2| etc. [OPTIONAL] </TD><TD>Send the message to these user groups</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;expires_in&gt;</TD><TD>nn [OPTIONAL] </TD><TD>tell PLUTO that the message expires after this many MINUTES.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="prepend_to_filename.sh"></A><H1>prepend_to_filename.sh</H1>
+
+<P> This script renames the given files by pre-pending a string to the filename.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;dateformat&gt;</TD><TD> [OPTIONAL] </TD><TD>Format to use for the built-in {date} substitution.  This should be a format string for the unix date command.  Run &quot;man date&quot; from a Terminal window to get more information on this.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;prepend&gt;</TD><TD>blah </TD><TD>text to pre-pend to the filename.  This can contain the entity {date}, or any datastore substitution.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="process_test.pl"></A><H1>process_test.pl</H1>
+
+<P>  test input process, only used for development purposes<BR>
+ $|=1;<BR>
+</P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="r2_map_capi_tags.rb"></A><H1>r2_map_capi_tags.rb</H1>
+
+<P> r2_map_tag_ids $Rev: 1140 $ $LastChangedDate: 2015-01-14 13:25:19 +0000 (Wed, 14 Jan 2015) $<BR>
+ This CDS method maps from a set of R2 numeric tag IDs to their CAPI ids or vice-versa,<BR>
+ using Composer's tags api.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;input&gt;</TD><TD>tag1|tag2|{meta:tagfield}|.... </TD><TD>map these tags</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;input&gt;</TD><TD> takes precedence</TD><TD></TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_key&gt;</TD><TD>keyname </TD><TD>output mapping result to this datastore key</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_names_key&gt;</TD><TD>keyname [OPTIONAL] </TD><TD>output &quot;external&quot; tag names to this key</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_internal_names_key&gt;</TD><TD>keyname [OPTIONAL] </TD><TD>output &quot;internal&quot; tag names to this key</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_delimiter&gt;</TD><TD>c [OPTIONAL] </TD><TD>used the given character c as the output delimiter. Defaults to |</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;case_sensitive/&gt;</TD><TD> </TD><TD>when checking if the internal/external name actually matches, do the check case-sensitive</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;invert/&gt;</TD><TD>  </TD><TD>map from CAPI ids to numeric ids as opposed to vice-versa</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;db_host&gt;</TD><TD>hostname</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;db_user&gt;</TD><TD>username</TD><TD></TD>
+<TR>
+<TR CLASS="even"><TD>&lt;db_pass&gt;</TD><TD>password</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;db_port&gt;</TD><TD>portnum [OPTIONAL]</TD><TD></TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="r2_relaunch_if_live.pl"></A><H1>r2_relaunch_if_live.pl</H1>
+
+<P> This method checks if a given page is live in R2.  If it is, then it will request it to be<BR>
+ re-launched; this should re-index it in the content API and ensure that all encodings are up to date.<BR>
+ It is intended to be used in supplementary upload routes, in a similar vein to doing a CDN cache flush<BR>
+ once content has been updated.<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;r2_id&gt;</TD><TD>nnnn [OPTIONAL] </TD><TD>use this value as the R2 ID.  Substitutions encouraged. Defaults to the value of the key r2-id in the datastore.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;octopus_id&gt;</TD><TD>nnn [OPTIONAL] </TD><TD>use this value as the Octopus ID (used to remote-launch). Substitutions encouraged. Defaults to the value of the key &quot;octopus ID&quot;</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;r2_host&gt;</TD><TD>r2.host.name [OPTIONAL] </TD><TD>send requests to this hostname. Defaults to cms.gucode.gnl</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;test/&gt;</TD><TD> [OPTIONAL] </TD><TD>don't actually relaunch the content, but output to the log if it would be relaunched.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;timeout&gt;</TD><TD>n [OPTIONAL] </TD><TD>timeout HTTP connection after this many seconds</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="r2_update_multiple.pl"></A><H1>r2_update_multiple.pl</H1>
+
+<P> This is a CDS method to create pages in the Guardian's R2 CMS.<BR>
+ It performs four actions:<BR>
+  - builds a list of media URLs based on url-prefix and url-suffix portions, or use pre-compiled ones from datastore substitutions<BR>
+  - optionally, verifies that the given media URLs exist and are not too old<BR>
+  - runs the metadata through a given template, in order to generate XML for the R2 endpoints<BR>
+  - sends the XML to the given endpoint, interprets the reply and sets a collection of metadata keys indicating the success/failure of the operation, page IDs, etc.<BR>
+</P>
+<P> <BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>media|{meta|inmeta} </TD><TD>let us know whether to use meta file or inmeta file</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;/check&gt;</TD><TD>    </TD><TD>ensure that the given urls exist as opposed to assuming that they do</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;check-exist-retry&gt;</TD><TD>n </TD><TD>wait n seconds between retries (default is 5s)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;check-exist-timeout&gt;</TD><TD>n </TD><TD>give up waiting after n seconds (default is 3600s), -1 to wait forever</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;url-prefix&gt;</TD><TD>blah                } make up a list of urls like this: {url</TD><TD>prefix}{cf_media_file [with no extension]}{suffix}</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;/recurse&gt;</TD><TD>    </TD><TD>[v1.1 only] - if a url identifies a playlist file (.m3u,.m3u8,.m3u{x}) then add to the list any urls found within. A line is considered a url if it does NOT start with # and consists of a number of alphanumeric chars followed by :// followed by alphanumeric chars and optionally dots followed by /.  If it ends with a / it is ignored, the url must identify a media file.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;cms-id-key&gt;</TD><TD>blah </TD><TD>the cms id is identified by the given key within the .inmeta or .meta file (default is r2cms-id)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;template-file&gt;</TD><TD>blah </TD><TD>use this .tt file to merge metadata (relative to /etc/cds_backend/templates)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output-url&gt;</TD><TD>blah </TD><TD>POST the form to this URL.  An error will be thrown if this does not return OK.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;record-url-key&gt;</TD><TD>blah </TD><TD>record the url or urls into this key in the cf_meta/inmeta_file</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;r2_data_prefix&gt;</TD><TD>blah [optional] </TD><TD>prefix this value to metadata keys relating to returned r2 metadata</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;encoding_extra_args&gt;</TD><TD>blah [optional] </TD><TD>put these values into the 'encodings.extra_args' parameter in the template.   Substitutions allowed.  Used for specifying filesize=&quot;nnnn&quot; as some formats (m3u8) are collections and don't have a specific file size.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;max_attempts&gt;</TD><TD>n [optional] </TD><TD>retry at most this many times.  Default: 5</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="r2_upload_image.rb"></A><H1>r2_upload_image.rb</H1>
+
+<P> This module uploads image(s) to the Guardian's R2 CMS.<BR>
+ Images MUST be in .jpg, .gif, .png and .bmp format or the CMS will not accept them<BR>
+ CMS IDs and URLs are output into the Datastore.<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD> if you don't want to treat the media file as an image</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;server&gt;</TD><TD>hostname [OPTIONAL] </TD><TD>connect to this server. Defaults to cms.guprod.gnl.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;rootpath&gt;</TD><TD>/url/path/to/cmstools [OPTIONAL] </TD><TD>use this as the base path for the Newspaper Integration endpoints. Defaults to &quot;/tools/newspaperintegration&quot;.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;extra-files&gt;</TD><TD>file1|file2|/path/to/file3|{meta:filepaths} [OPTIONAL] </TD><TD>upload these files too, in a | separated list</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;site&gt;</TD><TD>guardian.co.uk [OPTIONAL] </TD><TD>tell R2 that the images are associated to this site. Can be a | separated list to correspond to individual files being uploaded</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;groupID&gt;</TD><TD>nnnn [OPTIONAL] </TD><TD>tell R2 that the images should be uploaded to this group. This must be a numeric ID. Can be a | separated list to correspond to individual files being uploaded</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;altText&gt;</TD><TD>text|{meta:altText} [OPTIONAL] </TD><TD>tell R2 to set the altText for the image to this value. Substitutions encouraged; defaults to the file name if not specified. Can be a | separated list to correspond to individual files being uploaded</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;caption&gt;</TD><TD>text|{meta:altText} [OPTIONAL] </TD><TD>tell R2 to set the caption for the image to this value. Substitutions encouraged; defaults to the alt text if not specified. Can be a | separated list to correspond to individual files being uploaded</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;source&gt;</TD><TD>sourceValue [OPTIONAL] </TD><TD>tell R2 what the image source is. Defaults to 'guardian.co.uk'.Can be a | separated list to correspond to individual files being uploaded</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;photographer&gt;</TD><TD>name [OPTIONAL] </TD><TD>tell R2 the photographer's name. Can be a | separated list to correspond to individual files being uploaded</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;comments&gt;</TD><TD>text [OPTIONAL] </TD><TD>set comments on the image. Can be a | separated list to correspond to individual files being uploaded</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;picdarID&gt;</TD><TD>nnnn [OPTIONAL] </TD><TD>tell R2 the Picdar ID of the image. Can be a | separated list to correspond to individual files being uploaded</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;copyright&gt;</TD><TD>text [OPTIONAL] </TD><TD>tell R2 about the copyright of the image. Can be a | separated list to correspond to individual files being uploaded</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;supplierRef&gt;</TD><TD>text [OPTIONAL] </TD><TD>give R2 a supplier reference for the image.  Can be a | separated list to correspond to individual files being uploaded</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_id_key&gt;</TD><TD>keyname [OPTIONAL] </TD><TD>output CMS IDs of the uploaded images to this datastore key. Defaults to 'r2_image_ids'</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_url_key&gt;</TD><TD>keyname [OPTIONAL] </TD><TD>output uploaded URLs of the images to this datastore key. Defaults to 'r2_image_urls'</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="read_fcs.pl"></A><H1>read_fcs.pl</H1>
+
+<P> This CDS method imports a Final Cut Server &quot;write metadata&quot; format XML file into the data store, for use in templates and substitutions<BR>
+ You need to specify &lt;take-files&gt;xml&lt;/take-files&gt; and supply the XML file to read as the route's XML file when this method is run.<BR>
+ You can also import extra files via string substitutions<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;extra_files&gt;</TD><TD>/path/to/{substitution}/file [optional] </TD><TD>also try to read in the given files, specified as a list delimited by the | character.  Substitutions are accepted.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;field-prepend&gt;</TD><TD>, you can access the data by looking at {meta:fcs_name}.</TD><TD></TD>
+<TR>
+<TR CLASS="even"><TD>&lt;extra_files&gt;</TD><TD>, tell the route to throw an error if any of them fail to load.  The default behaviour is NOT to throw an error unless EVERYTHING fails to import.</TD><TD></TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="read_generic_xml.pl"></A><H1>read_generic_xml.pl</H1>
+
+<P> This module reads an XML file using XML::Simple, folds the tree structure into<BR>
+ paths and puts them into the datastore.<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;root_key&gt;</TD><TD>blah </TD><TD>prefix this to any keys generated</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;delimiter&gt;</TD><TD>; [OPTIONAL] </TD><TD>use this character to seperate out lists of items.  Defaults to ,</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;extra_files&gt;</TD><TD> </TD><TD>process these files as well as cf_xml_file.  Substitutions allowed.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;/sound&gt;</TD><TD> etc.,</TD><TD></TD>
+<TR>
+<TR CLASS="even"><TD></TD><TD></TD><TD>you would get root_key:headline=sdjsd, root_key:crew:camera=fhdf, root_key:crew:sound, etc.</TD></TR>
+</TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="read_meta.pl"></A><H1>read_meta.pl</H1>
+
+<P> This module uses the built-in Datastore functionality to read an<BR>
+ Episode Engine .meta or .inmeta file into the route's data stream.<BR>
+</P>
+<P> <BR>
+ options:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>{meta|inmeta}	</TD><TD>which file to read</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;debug/&gt;</TD><TD>			</TD><TD>[OPTIONAL] show debugging information</TD>
+<TR>
+<TR CLASS="even"></TABLE>
+
+<P></P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="read_triggerfile.pl"></A><H1>read_triggerfile.pl</H1>
+
+<P> This module reads a &quot;trigger file&quot;.  A &quot;trigger file&quot; is defined as a file which<BR>
+ contains metadata in key=value&lt;newline&gt; pairs.<BR>
+ Special cases are METAFILE, INMETAFILE, MEDIAFILE and XMLFILE<BR>
+ If these exist then the relevant cf_*_file is set.<BR>
+ Any requested fields can then be output into a cf_meta_file or cf_inmeta_file<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>xml	</TD><TD>the &quot;trigger file&quot; should be specified as a cf_xml_file</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output-fields&gt;</TD><TD>field1|field2... </TD><TD>output these fields from the trigger file into the meta/inmeta file</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;prepend-path&gt;</TD><TD>		</TD><TD>prepend this path to any path given for META, INMETA etc. files</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="remove_filename_portions.pl"></A><H1>remove_filename_portions.pl</H1>
+
+<P> This module is a CDS method to remove certain portions of the filename of incoming files,<BR>
+ renaming them as we go, in order to not confuse media pump et. al.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;filename-skip-portions&gt;</TD><TD>n </TD><TD>remove this number of portions from the filename</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;filename-portion-delimiter&gt;</TD><TD>_ [OPTIONAL] </TD><TD>use this character to split the filename into portions.  This is a regex expression.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;lowercase/&gt;</TD><TD> [OPTIONAL] </TD><TD>convert entire filename to lower-case</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;uppercase/&gt;</TD><TD> [OPTIONAL] </TD><TD>convert entire filename to upper-case</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;from-end/&gt;</TD><TD> [OPTIONAL] </TD><TD>skip sections from the end of the filename rather than the start</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;invert/&gt;</TD><TD> [OPTIONAL] </TD><TD>keep the sections that would be skipped, and remove the sections that would be kept</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;symlink/&gt;</TD><TD> [OPTIONAL] </TD><TD>symlink the old file to the new file, rather than rename/move</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_path&gt;</TD><TD>/path/to/output [OPTIONAL] </TD><TD>move or symlink the target file here, rather than its current directory</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="remove_octopus_id_from_filename.pl"></A><H1>remove_octopus_id_from_filename.pl</H1>
+
+<P> This is a very simple script to remove the _{octid} portion of the video's<BR>
+ filename.  This is so that, if an Octopus-mastered video is syndicated, the <BR>
+ source URL should match the one cached when it was sent through for GoogleTV.<BR>
+ arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;use_path&gt;</TD><TD>blah [OPTIONAL] </TD><TD>set the out-going path to this</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;no_error_if_exists/&gt;</TD><TD>	</TD><TD>continue if the file already exists.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="rss_parse.pl"></A><H1>rss_parse.pl</H1>
+
+<P> This script parses an RSS feed XML that is passed in as the route's XML file (it will usually have been downloaded with the http_get method)<BR>
+ It is assumed that the XML feed contains links to media files that need downloading and processing, as well as their metadata.<BR>
+ It will download the media files it finds into a cache location and then it will put the route into batch mode to process everything in turn.<BR>
+ This was originally written to parse RSS data from CNBC.<BR>
+</P>
+<P> <BR>
+ The XML is interpreted by means of XPath expressions specified in the route file.  This means that in order to set this method up, you need to have a sample copy of the RSS XML feed to hand and a working knowledge of XPath. You may find this link handy: http://www.w3schools.com/xpath/xpath_intro.asp .  It is also possible to download tools to visually help you to work out the necessary xpath expressions.<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;find-media-at&gt;</TD><TD>[xpath] </TD><TD>find the media links at the given place in the XML</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;find-format-at&gt;</TD><TD>[xpath] </TD><TD>find the media format specifiers at the given place in the XML</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;find-media-delimiter&gt;</TD><TD>[character] </TD><TD>the XML file uses this character to delimit the media formats</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;format-preference&gt;</TD><TD>format</TD><TD>name1|format-name2... - by preference, use only media with the given format names in the document</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output-directory&gt;</TD><TD>/path/to/cache </TD><TD>download media files to this location (substitutions encoraged!)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;get-media/&gt;</TD><TD> </TD><TD>tells the method to download media links it comes across and get the route to process them</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;set-xml/&gt;</TD><TD> </TD><TD>tells the method to output the extracted metadata for each media link into an XML file and set it as the corresponding xml file for the batch processing</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;include-generic-xml/&gt;</TD><TD> </TD><TD>tells the method to include &quot;generic&quot; information about the feed in each of the output XML files</TD>
+<TR>
+<TR CLASS="even"></TABLE>
+
+<P> Example:<BR>
+
+<PRE CLASS="literal">&lt;input-method name=&quot;rss-parse&quot;&gt;
+&lt;take-files&gt;xml&lt;/take-files&gt;
+&lt;!-- this value is actually an XPATH WITHIN the item object --&gt;
+&lt;find-media-at&gt;metadata:formatLink&lt;/find-media-at&gt;
+&lt;!-- ditto.  If this is the same then assume that the XPATH gives us a delimited list --&gt;
+&lt;find-format-at&gt;metadata:formatLink&lt;/find-media-at&gt;
+&lt;find-media-delimiter&gt;|&lt;/find-media-delimiter&gt;
+&lt;!-- We will only download an encoding that has ONE of these as ONE of the delimited sections, automatically
+detecting which delimited section is a URL --&gt;
+&lt;format-preference&gt;mpeg4_1100000_Download|mpeg4_500000_Download&lt;/format-preference&gt;
+&lt;!-- this will be created if it doesn't exist already --&gt;
+&lt;output-directory&gt;/Volumes/MediaTransfer/Raw Agency Feeds/CNBC/media/{year}{month}{day}&lt;/output-directory&gt;
+&lt;!-- this tells us to download the media URL and set it to cf_media_file [we set batch mode]--&gt;
+&lt;get-media/&gt;
+&lt;!-- this tells us to create a corresponding XML file for the item containing the metadata, untranslated from the RSS feed --&gt;
+&lt;!-- the XML file is given the same name as the corresponding media file --&gt;
+&lt;set-xml/&gt;
+&lt;!-- this tells us to include the &quot;header&quot; portion of the RSS in each output XML file --&gt;
+&lt;include-generic-xml/&gt;
+&lt;/input-method&gt;
+&lt;!-- the rss-parse method should now have put us into batch mode.  We can now transcode etc. --&gt;
+</PRE>
+</P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="s3_get.rb"></A><H1>s3_get.rb</H1>
+
+<P> This method downloads the given file from S3, and sets the current media file to the location of the downloaded file.<BR>
+</P>
+<P> <BR>
+ Arguments (all take substitutions unless noted):<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;bucket&gt;</TD><TD>{name} </TD><TD>download from this bucket name</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;filepath&gt;</TD><TD>/path/to/file </TD><TD>path to the file to download, within the bucket</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;cachepath&gt;</TD><TD>/path/to/localfile </TD><TD>path on the local machine to download to</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;access_key&gt;</TD><TD>{key} </TD><TD>your AWS API access key.  If not specified, will try to use an AWS Role associated to the current instance to gain permissions. Does not support substitutions.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;secret_key&gt;</TD><TD>{secret} </TD><TD>your AWS API secret key ('password').  If not specified, will try to use an AWS Role associated to the current instance to gain permissions. Does not support substitutions.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="s3_put.rb"></A><H1>s3_put.rb</H1>
+
+<P> This method uploads the given file(s) to Amazon S3.<BR>
+ Uploads are carried out over HTTPS by default.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>{media|meta|inmeta|xml} </TD><TD>upload these files</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;bucket&gt;</TD><TD> bucketname				</TD><TD>upload to this S3 bucket</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;upload_path&gt;</TD><TD>/upload/path/in/bucket [optional] </TD><TD>upload to this path within the bucket</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;recurse_m3u8/&gt;</TD><TD> </TD><TD>if the media file is an m3u8, then parse it and also upload all of the referenced index and media</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;m3u8_base_path&gt;</TD><TD>/path/to/components [optional] </TD><TD>use this as the base path when working out where the m3u8 components are on disk. Defaults to the same directory as the media file.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;m3u8_no_rebase/&gt;</TD><TD> </TD><TD>by default, the m3u8 index files are re-written to point to the provided upload_path. This switch disables this behaviour.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;dry_run/&gt;</TD><TD>	[optional]			</TD><TD>does not perform the actual upload</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;recursive/&gt;</TD><TD>	[optional]			</TD><TD>recursively search the local path [NOT IMPLEMENTED YET]</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;acl_public/&gt;</TD><TD>	[optional]			</TD><TD>Ensure that the file is set to public-readable</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;acl_private/&gt;</TD><TD> [optional]			</TD><TD>Ensure that only the uploading user has access to the file</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;custom_headers&gt;</TD><TD>key=value|{meta:keyname}={meta:value}|... [OPTIONAL] </TD><TD>set these custom header values on S3.  Substitutions accepted for key and value.  Note that key names must be all lower case, and will have x-amz-meta- prepended to them if they don't have it already.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;mime_type&gt;</TD><TD>type [optional]		</TD><TD>Manually set the MIME type of the file (not usually necessary)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;cache_max_age&gt;</TD><TD>age (seconds) [optional] </TD><TD>Set the cache-control max-age header for clients reading this object from the bucket. Does not affect S3 itself, but affects clients and CDNs reading from s3</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;debug/&gt;</TD><TD>	[optional]				</TD><TD>output loads of debug information</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;extra_files&gt;</TD><TD>file1|file2|{media:url}|... </TD><TD>add the following files to the upload list.  Substitutions are accepted</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;basepath&gt;</TD><TD> to be set</TD><TD></TD>
+<TR>
+<TR CLASS="even"><TD>&lt;basepath&gt;</TD><TD>/path/to/m3u8/contents	</TD><TD>use this path to find the contents that the HLS manifests are pointing to.  In order to upload an HLS rendition, it's assumed that all of the bits must be held locally.... So we remove the http://server.name.com/ part of the URL and replace with the contents of this parameter (substitutions accepted) in order to find them to upload.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;access_key&gt;</TD><TD>{key} [optional]		</TD><TD>use this AWS access key to authenticate. If not specified, tries to authenticate using AWS Roles.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;access_key&gt;</TD><TD> to specify the secret part of the key</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;allow_overwrite/&gt;</TD><TD> [optional]		</TD><TD>allow the method to over-write files already in the bucket (by default, will refuse to upload)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;version_old/&gt;</TD><TD>	[optional]		</TD><TD>instead of over-writing, move an old file to the same filename with a .1, .2 etc. postfix</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;allow_partial/&gt;</TD><TD>	[optional]		</TD><TD>don't flag an error if some files fail to upload</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_url_key&gt;</TD><TD>keyname [optional] 	</TD><TD>output a presigned URL to this datastore key, so other methods can 'see' the uploaded file</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_public_url/&gt;</TD><TD>	[optional]	</TD><TD>output a public URL as opposed to a presigned one</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_url_expiry&gt;</TD><TD>3600 [optional]	</TD><TD>set the expiry time for generated URLs. defaults to none (unlimited)</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="s3_put_old.pl"></A><H1>s3_put_old.pl</H1>
+
+<P> VERSION=$Rev: 1006 $ $LastChangedDate: 2014-09-05 14:34:12 +0100 (Fri, 05 Sep 2014) $<BR>
+ This script is a CDS method to upload files using the s3cmd utility<BR>
+ You should set up the s3cmd utility config file before running this method<BR>
+ by running s3cmd --configure from the Terminal.  Otherwise it will fail because it does not<BR>
+ have the relevant login keys available.<BR>
+</P>
+<P> <BR>
+ You have the option to specify an alternate configuration file in the route, to support multiple<BR>
+ configurations<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>{media|meta|inmeta|xml} </TD><TD>upload these files</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;bucket&gt;</TD><TD> bucketname				</TD><TD>upload to this S3 bucket</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;upload_path&gt;</TD><TD>/upload/path/in/bucket [optional] </TD><TD>upload to this path within the bucket</TD>
+<TR>
+<TR CLASS="odd"></TABLE>
+
+<P></P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;config-file&gt;</TD><TD>/path/to/config	[optional]</TD><TD>use this config file for s3cmd</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;dry_run/&gt;</TD><TD>	[optional]			</TD><TD>runs s3cmd with the --dry-run option</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;encrypt/&gt;</TD><TD>	[optional]			</TD><TD>runs s3cmd with the --encrypt option</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;force/&gt;</TD><TD>		[optional]			</TD><TD>runs s3cmd with the --force option</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;recursive/&gt;</TD><TD>	[optional]			</TD><TD>runs s3cmd with the --recursive option</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;acl_public/&gt;</TD><TD>	[optional]			</TD><TD>runs s3cmd with the --acl-public option</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;acl_private/&gt;</TD><TD> [optional]			</TD><TD>runs s3cmd with the --acl-private option</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;mime_type&gt;</TD><TD>type [optional]		</TD><TD>tell s3cmd that the objects to upload have this MIME type</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;verbose/&gt;</TD><TD>	[optional]			</TD><TD>tell s3cmd to be verbose</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;follow_symlinks/&gt;</TD><TD> [optional]		</TD><TD>tell s3cmd to follow symlinks as files</TD>
+<TR>
+<TR CLASS="even"></TABLE>
+
+<P></P><TABLE CLASS="argument-list">
+
+<TR CLASS="odd"><TD>&lt;extra_files&gt;</TD><TD>file1|file2|{media:url}|... </TD><TD>add the following files to the upload list.  Substitutions are accepted</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;basepath&gt;</TD><TD> to be set</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;basepath&gt;</TD><TD>/path/to/m3u8/contents	</TD><TD>use this path to find the contents that the HLS manifests are pointing to.  In order to upload an HLS rendition, it's assumed that all of the bits must be held locally.... So we remove the http://server.name.com/ part of the URL and replace with the contents of this parameter (substitutions accepted) in order to find them to upload.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="s3_put_simple.sh"></A><H1>s3_put_simple.sh</H1>
+
+<P> VERSION=$Rev: 595 $ $LastChangedDate: 2013-11-28 18:47:10 +0000 (Thu, 28 Nov 2013) $<BR>
+ This script is a fairly simple CDS method to upload files using the s3cmd utility<BR>
+ You should set up the s3cmd utility config file before running this method<BR>
+ by running s3cmd --configure from the Terminal.  Otherwise it will fail because it does not<BR>
+ have the relevant login keys available.<BR>
+</P>
+<P> <BR>
+ You have the option to specify an alternate configuration file in the route, to support multiple<BR>
+ configurations<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>{media|meta|inmeta|xml} </TD><TD>upload these files</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;bucket&gt;</TD><TD> bucketname				</TD><TD>upload to this S3 bucket</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;upload_path&gt;</TD><TD>/upload/path/in/bucket [optional] </TD><TD>upload to this path within the bucket</TD>
+<TR>
+<TR CLASS="odd"></TABLE>
+
+<P></P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;config_file&gt;</TD><TD>/path/to/config	[optional]</TD><TD>use this config file for s3cmd</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;dry_run/&gt;</TD><TD>	[optional]			</TD><TD>runs s3cmd with the --dry-run option</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;encrypt/&gt;</TD><TD>	[optional]			</TD><TD>runs s3cmd with the --encrypt option</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;force/&gt;</TD><TD>		[optional]			</TD><TD>runs s3cmd with the --force option</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;recursive/&gt;</TD><TD>	[optional]			</TD><TD>runs s3cmd with the --recursive option</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;acl_public/&gt;</TD><TD>	[optional]			</TD><TD>runs s3cmd with the --acl-public option</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;acl_private/&gt;</TD><TD> [optional]			</TD><TD>runs s3cmd with the --acl-private option</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;mime_type&gt;</TD><TD>type [optional]		</TD><TD>tell s3cmd that the objects to upload have this MIME type</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;verbose/&gt;</TD><TD>	[optional]			</TD><TD>tell s3cmd to be verbose</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;follow_symlinks/&gt;</TD><TD> [optional]		</TD><TD>tell s3cmd to follow symlinks as files</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="s3_update_metadata.rb"></A><H1>s3_update_metadata.rb</H1>
+
+<P> This is a CDS method to update metadata on the given S3 object<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;s3_path&gt;</TD><TD>/path/to/object </TD><TD>affect this object</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;s3_bucket&gt;</TD><TD>blah </TD><TD>work in this bucket</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;cache_max_age&gt;</TD><TD>nnn [OPTIONAL] </TD><TD>set the Cache-Control: max-age= parameter to this value (in seconds)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;mime_type&gt;</TD><TD>mime/type [OPTIONAL] </TD><TD>set the Content-Type: parameter to this value (string)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;acl_public/&gt;</TD><TD> [OPTIONAL] </TD><TD>set object to be publically accessible</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;acl_private/&gt;</TD><TD> [OPTIONAL] </TD><TD>set object to not be publically accessible</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="set_key.pl"></A><H1>set_key.pl</H1>
+
+<P> Simple module to set a value to a key in the data store.<BR>
+ Expects:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>media </TD><TD>to get media file name/path if needed for substitution</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;key&gt;</TD><TD>blah 	   </TD><TD>the name of the key to set (no substitutions)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;value&gt;</TD><TD>blah [OPTIONAL]	   </TD><TD>value to set for the key - can be blank.  All standard substitutions accepted.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;filecontents&gt;</TD><TD>/path/to/file [OPTIONAL] </TD><TD>set the key to the contents of this text file, as opposed to setting a value directly</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;file_apply_substitutions/&gt;</TD><TD> [OPTIONAL] </TD><TD>if using filecontents, apply substitutions to the value that comes from the file</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;regex&gt;</TD><TD> [OPTIONAL] </TD><TD>perform a search and replace on the value using this regex. If value is not provided, then this will be performed on the current value of the field.  Substitutions are NOT accepted for the regex parameter, because the substitution code uses a regex as it is so might break things</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;regex&gt;</TD><TD> with</TD><TD></TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;no_overwrite/&gt;</TD><TD> [optional] </TD><TD>do not set the key if one already exists</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;nooverwrite/&gt;</TD><TD></TD></TR>
+
+<TR CLASS="odd"><TD>&lt;dontoverwrite/&gt;</TD><TD></TD></TR>
+
+<TR CLASS="even"><TD>&lt;no_error/&gt;</TD><TD>	[optional] </TD><TD>supress [value not present] if the value does not exist</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="sftp.sh"></A><H1>sftp.sh</H1>
+
+<P>  This module uploads files to a server via secure FTP.<BR>
+  In order to use this, you must generate a public/private key pair and send the public half<BR>
+  to the content partner you wish to upload to.  You then specify the path to the private half<BR>
+  in the &lt;key&gt; parameter to this method.<BR>
+</P>
+<P> <BR>
+  It assumes that you have SFTP, SSH and SSL installed and working.<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;host&gt;</TD><TD>sftp.hostname.com </TD><TD>upload to this server </TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;username&gt;</TD><TD>blah </TD><TD>log in with this username </TD>
+<TR>
+<TR CLASS="even"><TD>&lt;key&gt;</TD><TD>/path/to/privatekeyfile </TD><TD>use this private key to log into the server </TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;remote_path&gt;</TD><TD>/path/to/upload/ </TD><TD>change to this directory to upload the file. Should end with a /.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;use_dated_folder/&gt;</TD><TD> [OPTIONAL] </TD><TD>append todays date/time to the remote_path setting when creating a folder and uploading. This is required by many providers.  NOTE: to work properly you should generally ensure that remote_path ends with a /.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;date_format&gt;</TD><TD>%Y%m%d_%H%M%S [OPTIONAL] </TD><TD>use this format for the date/time provided by use_dated_folder.  The flags are in the format required by the standard UNIX &quot;date&quot; utility.  See http://unixhelp.ed.ac.uk/CGI/man-cgi?date for more information.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;port&gt;</TD><TD>22 [OPTIONAL] </TD><TD>connect to this port number for the sftp service (default 22)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;send_flag_file/&gt;</TD><TD> [OPTIONAL] </TD><TD>many providers using SFTP require the delivery of an empty &quot;flag&quot; file to signify that the delivery is complete.  Specify this option to upload a blank file once all files have been sent.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;flag_file_name&gt;</TD><TD>blah [OPTIONAL] [supports media</TD><TD>file and date substitutions]</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;extra_files&gt;</TD><TD>/path/to/file1|/path/to/file2|/path/to/{meta:randomfilename}|... [OPTIONAL] </TD><TD>upload these files in the delivery as well.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="sleep.sh"></A><H1>sleep.sh</H1>
+
+<P> Simple method to pause execution for the given period.  Useful for testing and for locking.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;randomise/&gt;</TD><TD>	</TD><TD>sleep for a randomly selected amount of time.  Useful for making simultaneously triggered routes seperate themselves out e.g. for locking.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;random_maximum&gt;</TD><TD>n </TD><TD>if randomising, sleep for a maximum of n seconds.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;sleep_time&gt;</TD><TD>n </TD><TD>if not randomising, sleep for n seconds exactly.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="smb_pull.pl"></A><H1>smb_pull.pl</H1>
+
+<P>  This method is not implemented.  The intention is to download files from a Windows file-sharing (aka SMB) server.<BR>
+</P>
+<P> <BR>
+  created by Manjit Bedi on 2009-05-19<BR>
+</P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="sqs_send.pl"></A><H1>sqs_send.pl</H1>
+
+<P> This CDS method pushes the route's metadata onto an Amazon SQS queue for further processing in the cloud.<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;aws_key&gt;</TD><TD>blah </TD><TD>Amazon api key to access the queue</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;key&gt;</TD><TD> to access the queue</TD><TD></TD>
+<TR>
+<TR CLASS="even"><TD>&lt;queue_url&gt;</TD><TD>https://queue/url </TD><TD>URL where we can find the queue to push onto.  HTTPS access is HIGHLY recommended</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;meta_format/&gt;</TD><TD> </TD><TD>use .meta format</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;inmeta_format/&gt;</TD><TD> </TD><TD>use .inmeta format</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;json_format/&gt;</TD><TD> </TD><TD>use JSON format</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="test.rb"></A><H1>test.rb</H1>
+
+<P></P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="teststore.db"></A><H1>teststore.db</H1>
+
+<P></P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="thumbor_crop.rb"></A><H1>thumbor_crop.rb</H1>
+
+<P> This CDS method uses the Thumbor image cropping and manipulation service to crop<BR>
+ an image that has either been previously uploaded via thumbor_upload or to crop a url<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;image_id&gt;</TD><TD>blah|{meta:image_locations} </TD><TD>either list of URLs or image locations returned to the datastore from thumbor_upload</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;width&gt;</TD><TD>nnn </TD><TD>width of output image. Can specify a list to get multiple outputs.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;heigh&gt;</TD><TD>nnn </TD><TD>height of output image. Can specify a list to get multiple outputs. Use the value 0 to mean &quot;proportional&quot;</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;no_smart/&gt;</TD><TD> </TD><TD>do NOT use &quot;smart cropping&quot;</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_basename&gt;</TD><TD>blah </TD><TD>[OPTIONAL] use this as the &quot;base name&quot; of the output files. E.g., if this is myImage.jpg, then resulting files will be called myImage_640x360.jpg, etc. If not specified, then use the file part from the image ID</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_path&gt;</TD><TD>/path/to/output/files </TD><TD>path to save the cropped images under</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_key&gt;</TD><TD> </TD><TD>datastore key (under meta: section) to output the list of saved images to</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;no_array/&gt;</TD><TD> </TD><TD>do NOT append to an existing value of output_key, but over-write it</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;hostname&gt;</TD><TD> </TD><TD>hostname to access the Thumbor service</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;key&gt;</TD><TD> </TD><TD>secret key to access the Thumbor host. Used for URL signing</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;port&gt;</TD><TD>nnn [OPTIONAL] </TD><TD>port to access the Thumbor service on. Defaults to 8888.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="thumbor_delete.rb"></A><H1>thumbor_delete.rb</H1>
+
+<P> This CDS method deletes an image that has either been previously uploaded to Thumbor<BR>
+ via thumbor_upload<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;image_id&gt;</TD><TD>blah|{meta:image_locations} </TD><TD>either list of URLs or image locations returned to the datastore from thumbor_upload</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;hostname&gt;</TD><TD> </TD><TD>hostname to access the Thumbor service</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;key&gt;</TD><TD> </TD><TD>secret key to access the Thumbor host. Used for URL signing</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;port&gt;</TD><TD>nnn [OPTIONAL] </TD><TD>port to access the Thumbor service on. Defaults to 8888.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="thumbor_upload.rb"></A><H1>thumbor_upload.rb</H1>
+
+<P> This CDS method performs an upload to an instance of the Thumbor image cropping and resizing<BR>
+ service.  For actual crops, see the thumbor_crop method. To complete processing, use thumbor_delete<BR>
+ to delete the server-side cached image.<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>media [OPTIONAL] </TD><TD>use the media file as an image to crop. Leave this out if main media is e.g. a video</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;extra_files&gt;</TD><TD>file1|file2|{meta:file3}... </TD><TD>upload these files</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;output_key&gt;</TD><TD>keyname  </TD><TD>output the uploaded location IDs of the images to this key, under the {meta:} section.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;hostname&gt;</TD><TD>host </TD><TD>hostname or IP address of Thumbor server (could be 'localhost')</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;port&gt;</TD><TD>nnn [OPTIONAL] </TD><TD>port to access Thumbor on. Defaults to 8888</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;key&gt;</TD><TD>blah </TD><TD>access key for Thumbor server</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="tsunami_pull.sh"></A><H1>tsunami_pull.sh</H1>
+
+<P> Tsunami is an open-source data transfer accellerator (kinda like Aspera), using UDP techniques to overcome latency issues on long-distance transfers<BR>
+  http://tsunami-udp.sourceforge.net/<BR>
+</P>
+<P> <BR>
+ This method allows us to use the client program to pull a specified file from the server<BR>
+ The control protocol does not allow us to investigate what files are actually there, the file name must be specified explicity.  A 'file not found' error is returned if the file does not exist.<BR>
+</P>
+<P> <BR>
+ Arguments (all support substitutions):<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;host&gt;</TD><TD>hostname.domain.com </TD><TD>connect to this host or IP address</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;port&gt;</TD><TD>nnn [OPTIONAL] </TD><TD>use this port number (default 46224) - NOT IMPLEMENTED YET</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;filename&gt;</TD><TD>blah </TD><TD>pull this specific file.  Bulk pulling is not possible because of the way the protocol works.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;cache_path&gt;</TD><TD>/path/to/save/file [OPTIONAL] </TD><TD>Output the downloaded file to this location in the filesystem</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;set_media/&gt;</TD><TD> [OPTIONAL] </TD><TD>Set the downloaded file to be the current media file</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;md5sum/&gt;</TD><TD> [OPTIONAL] </TD><TD>Calculate an MD5 checksum of the downloaded file and output it to the data store</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="validate_numeric_id.pl"></A><H1>validate_numeric_id.pl</H1>
+
+<P> This CDS method ensures that the given datastore fields are, in fact, numeric IDs without any leading/trailing<BR>
+ characters<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;keys&gt;</TD><TD>key1{|key2|key3|...} </TD><TD>validate these keys</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;fix/&gt;</TD><TD> </TD><TD>replace them with numeric only values as opposed to erroring if they do not conform</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;error_immediate/&gt;</TD><TD> </TD><TD>immediately throw an error if a value is not a numeric id</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="vidispine_get_media.rb"></A><H1>vidispine_get_media.rb</H1>
+
+<P> This CDS method attempts to get a media file from Vidispine by requesting a<BR>
+ specific shape.  If the shape does not exist, then we request a transcode of<BR>
+ it from Vidispine.  If the shape tag specified is not valid, then an error is returned.<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;item_id&gt;</TD><TD>{vidispine item id} </TD><TD>ask for a version of this item</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;shape_tag&gt;</TD><TD>{shapetag} </TD><TD>ask for a rendition of the item using the specified shape tag</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;no_set_media/&gt;</TD><TD> [OPTIONAL] </TD><TD>do NOT set the route's cf_media_file to the retrieved file</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;set_key&gt;</TD><TD>{meta|media|track}:keyname [OPTIONAL] </TD><TD>set the given key to the path of the returned file</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;vidispine_host&gt;</TD><TD>hostname </TD><TD>connect to Vidispine on this host</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;vidispine_port&gt;</TD><TD>port [OPTIONAL] </TD><TD>connect to Vidispine using this port. Default is 8080.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;vidispine_user&gt;</TD><TD>user </TD><TD>connect to Vidispine with this username</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;vidispine_password&gt;</TD><TD>pass </TD><TD>connect to Vidispine with this password</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;no_transcode/&gt;</TD><TD> [OPTIONAL] </TD><TD>don't attempt to transcode a new rendition if it doesn't currently exist</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;wait_time&gt;</TD><TD>nnn [OPTIONAL] </TD><TD>wait this long for file to appear</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;retry_delay&gt;</TD><TD>nnn [OPTIONAL] </TD><TD>wait this long between attempts</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;download/&gt;</TD><TD> [OPTIONAL] </TD><TD>instead of returning filename, attempt to download it</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;download_path&gt;</TD><TD> [optional] </TD><TD>when downloading, save to this path.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="vidispine_notify.rb"></A><H1>vidispine_notify.rb</H1>
+
+<P> This method will update metadata on a Vidispine item by either over-writing or appending/prepending values on a set of field(s)<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;fields&gt;</TD><TD>field1|field2|{meta:key_for_field3} etc. </TD><TD>Names of fields to set. Note that these must be the _INTERNAL VIDISPINE FIELD NAME_, not the &quot;display name&quot; that you see in the Cantemo UI.  To find the field name, go to Manage Metadata, open the group, and find the field</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;values&gt;</TD><TD>value1|value2|{meta:key_for_value3} etc. </TD><TD>Values to set.  To set multiple fields, specify a list</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;host&gt;</TD><TD>vidispine.hostname </TD><TD>Contact this server</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;port&gt;</TD><TD>nnnn [OPTIONAL] </TD><TD>contact Vidispine on this port (defaults to 8080)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;user&gt;</TD><TD>username [OPTIONAL] </TD><TD>contact Vidispine with this user name (defaults to admin)</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;passwd&gt;</TD><TD>password [OPTIONAL] </TD><TD>contact Vidispine with this password (defaults to admin)</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;item_id&gt;</TD><TD>{meta:itemId} [OPTIONAL] </TD><TD>set metadata for this Vidispine item (substitutions encouraged). Defaults to the value of the key {meta:itemId}.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;prepend/&gt;</TD><TD> [OPTIONAL] </TD><TD>pre-pend the value as opposed to appending or over-writing</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;overwrite/&gt;</TD><TD> [OPTIONAL] </TD><TD>over-write the values of the fields as opposed to appending to them</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;groupname&gt;</TD><TD>name [OPTIONAL] </TD><TD>over-ride the metadata group name detected on the item to another value. Use with caution.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;delimiter&gt;</TD><TD>c [OPTIONAL] </TD><TD>when appending to fields as a text string, use this character as a delimiter. Defaults to Newline.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;multiple_values&gt;</TD><TD>c [OPTIONAL] </TD><TD>split the provided values data into multiple values on the given character. Allows multi-value keyword fields to be set.</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="vs_map_cantemo_fields.rb"></A><H1>vs_map_cantemo_fields.rb</H1>
+
+<P> This method connects to Vidispine and translates the names of keys in the datastore from<BR>
+ Cantemo Portal's default portal_mf{number} format to the display name as they are<BR>
+ shown in Cantemo<BR>
+</P>
+<P> <BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;vidispine_host&gt;</TD><TD>hostname </TD><TD>[OPTIONAL] - talk to Vidispine on this server. Defaults to 'localhost'</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;vidispine_port&gt;</TD><TD>nnn </TD><TD>[OPTIONAL] - talk to Vidispine on this TCP port. Defaults to 8080</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;vidispine_user&gt;</TD><TD>username </TD><TD>[OPTIONAL] - talk to Vidispine on this server. Defaults to 'admin'</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;vidispine_password&gt;</TD><TD>password </TD><TD>[OPTIONAL] - talk to Vidispine on this server. Defaults to 'admin'</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;debug/&gt;</TD><TD> </TD><TD>[OPTIONAL] - ouput loads of debugging info</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="wait_for_file.pl"></A><H1>wait_for_file.pl</H1>
+
+<P> this script waits for a given file to exist in a given path.   Usual substitutions are allowed in the path specification<BR>
+ arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>media|{meta|inmeta}		</TD><TD>you need to 'take' media in order to be able to match {filebase},{filename} etc.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;check-file-path&gt;</TD><TD>/path/to/lockfile	</TD><TD>wait for this file to exist.  Usual substitutions are allowed.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;poll-time&gt;</TD><TD>n									</TD><TD>look for the file every n seconds</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;timeout&gt;</TD><TD>n 		[OPTIONAL]				</TD><TD>give up and abort the route after n seconds</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;invert/&gt;</TD><TD>			[OPTIONAL]				</TD><TD>wait until the file does NOT exist</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;match-exact/&gt;</TD><TD>		[OPTIONAL]			</TD><TD>match the exact filename.  Otherwise, the file is judged to exist if a file exists which starts with the given name or has a regex match</TD>
+<TR>
+<TR CLASS="even"><TD></TD><TD></TD><TD>sub url_subst {</TD></TR>
+
+<TR CLASS="odd"><TD></TD><TD></TD><TD>my ($substring,$key,$val)=@_;</TD></TR>
+
+<TR CLASS="even"></TABLE>
+
+<P> $substring=~s/$key/$val/g;<BR>
+</P>
+<P> <BR>
+ return $substring;<BR>
+ }<BR>
+ 	print &quot;\t$_\n&quot; if($debug);<BR>
+</P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="wait_for_s3.rb"></A><H1>wait_for_s3.rb</H1>
+
+<P> This CDS method waits for a file to exist in S3.  Extra delays shouldn't be necessary, since S3 hides the file until it has finished writing<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>media|{meta|inmeta}		</TD><TD>you need to 'take' media in order to be able to match {filebase},{filename} etc.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;check-file-path&gt;</TD><TD>/path/to/lockfile	</TD><TD>wait for this file to exist.  Usual substitutions are allowed.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;bucket&gt;</TD><TD>bucketname                   </TD><TD>look in this bucket</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;poll_time&gt;</TD><TD>n						</TD><TD>look for the file every n seconds</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;timeout&gt;</TD><TD>n 		[OPTIONAL]			</TD><TD>give up and abort the route after n seconds</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;invert/&gt;</TD><TD>			[OPTIONAL]		</TD><TD>wait until the file does NOT exist</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;aws_key&gt;</TD><TD>key [OPTIONAL]              </TD><TD>use this AWS key to connect. Otherwise, the default environment variables are checked, or a Role is used if running in EC2 and one is available.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;aws_secret&gt;</TD><TD>secret [OPTIONAL]        </TD><TD>use this as the secret part of the AWS key above</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="watched_folder.sh"></A><H1>watched_folder.sh</H1>
+
+<P> this expects the following environment variables:<BR>
+  $CDS_STARTUP set to TRUE to cause the process to be set up [internal]<BR>
+  $CDS_ROUTENAME set to the route name [internal]<BR>
+  $WATCHED_PATH path to set watch on [config]<BR>
+  $STABLE_TIME time file must be stable to trigger action [config]<BR>
+  $POLL_TIME time interval between polling path [config]<BR>
+  $PID_PATH path to store pid notify [config] - probably /var/run/cds_backend/<BR>
+ optional:<BR>
+</P>
+<P> <BR>
+ check arguments<BR>
+ Startup =&gt; set up watcher.  We need to use an intermediate script to convert he arguments into the form that cds_run needs<BR>
+</P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="webrick_sns_test.rb"></A><H1>webrick_sns_test.rb</H1>
+
+<P></P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="windows_push.sh"></A><H1>windows_push.sh</H1>
+
+<P> This script uploads the given file(s) to a Windows SMB/CIFS server suing smbclient.<BR>
+ See man smbclient for more details.<BR>
+</P>
+<P> <BR>
+ It expects:<BR>
+ host - the Windows/SMB server name<BR>
+ share - the Windows share name<BR>
+ username - username to log in as<BR>
+ password - password for the user<BR>
+ remote_path - path to upload files to<BR>
+ domain [optional] - domain name to log in to<BR>
+ port [optional] - port to connect to<BR>
+ resolve-order [optional] - order to use for name resolution.  Passed unchecked to -R option.<BR>
+ ip-address [optional] - IP address of server in case we can't resolve the server name.<BR>
+ set up auth file, so we don't need to pass passwords on the commandline<BR>
+</P>
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="write_meta.pl"></A><H1>write_meta.pl</H1>
+
+<P> This module will write the contents of the datastore in .meta format to a given location<BR>
+ arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;ouput_path&gt;</TD><TD>/path/to/output/{filebase}.meta </TD><TD>output to this location.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;set_meta_file/&gt;</TD><TD> </TD><TD>tell the route that this is the new 'meta' file.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;inmeta_format/&gt;</TD><TD> </TD><TD>use the 'inmeta' format as opposed to 'meta'</TD>
+<TR>
+<TR CLASS="odd"><TD></TD><TD></TD><TD>You need to use a substitution ({filebase} here) to get unique filenames.</TD></TR>
+</TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="write_triggerfile.pl"></A><H1>write_triggerfile.pl</H1>
+
+<P> This module writes out a &quot;trigger file&quot;.  A &quot;trigger file&quot; is defined as a file which<BR>
+ contains metadata in key=value&lt;newline&gt; pairs.<BR>
+ Arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;take-files&gt;</TD><TD>media </TD><TD>to get filenames to use {filebase} etc. substitutions or access paths for output</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;output_fields&gt;</TD><TD>meta:field1|meta:field2|media:field1|track:vide:field3 </TD><TD>output these fields from the datastore into the trigger file.  If the {meta|media|track} part is excluded, meta is assumed.</TD>
+<TR>
+<TR CLASS="even"><TD></TD><TD></TD><TD>Special cases  are {MEDIA|META|INMETA|XML}FILE</TD></TR>
+
+<TR CLASS="odd"><TD>&lt;output_path&gt;</TD><TD>/path/to/file.trg </TD><TD>output the trigger file to this location.  Substititions accepted, e.g. /path/to/{filebase}_{meta:octopus ID}.trg</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;set_file&gt;</TD><TD>xml	[optional] </TD><TD>set the XML file in the currently processing bundle to the trigger file.  Not very useful.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;fieldname_only/&gt;</TD><TD> [optional] </TD><TD>don't output meta:,media: etc. specifiers into trigger file</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;caps/&gt;</TD><TD>	   [optional] </TD><TD>capitalise all field names</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;collapse/&gt;</TD><TD>	   [optional] </TD><TD>remove all spaces/_ from field names</TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+<A NAME="youtube_upload.rb"></A><H1>youtube_upload.rb</H1>
+
+<P> This method performs an update of the given video (specified as the current media file) to YouTube.<BR>
+ It expects the following arguments:<BR>
+</P><TABLE CLASS="argument-list">
+
+<TR CLASS="even"><TD>&lt;client_secrets&gt;</TD><TD>secrets_file.json </TD><TD>An authorised client_secrets.json file from Google.  This should contain an authorisation to use the YouTube Data API and also identifies which channel the video is uploaded to, in confunction with the local authorisation. Expected to be under /etc/cds_backend/keys, but an absolute path can also be specified.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;auth_cache&gt;</TD><TD>cachefile.json </TD><TD>A json file that the method can output the tokens that it receives to.  Does not have to exist when the method is run, and is updated whenever the tokens are updated.  Expected to be under /etc/cds_backend/keys, but an absolute path can also be specified.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;cache_max_age&gt;</TD><TD>nnn </TD><TD>update the cache if it's older than this number of hours</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;private_key&gt;</TD><TD>/path/to/keyfile </TD><TD>[OPTIONAL] If using a service account, the path to the private key to grant it access</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;passphrase&gt;</TD><TD>blah </TD><TD>[OPTIONAL] If using a service account, the passphrase to decrypt the private key above</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;service_account&gt;</TD><TD>id </TD><TD>[OPTIONAL] Specify this option to use a Google API service account to connect to the YouTube service.  You need to specify the account id here (the one that looks like an email address (@developer.gserviceaccount.com), from Google Cloud console), as well as the private key file and a passphrase to decrypt said key</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;title&gt;</TD><TD>blah </TD><TD>[OPTIONAL] - use this value for the video title. Substitutions are encouraged, e.g. {meta:title}.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;description&gt;</TD><TD>blah </TD><TD>[OPTIONAL] - use this value for the video description. Substitutions are encouraged, e.g. {meta:description}.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;category&gt;</TD><TD>blah </TD><TD>[OPTIONAL] use this value for the video category. Substitutions are encouraged, e.g. {meta:category}. If the category is not a valid YouTube category, then a default will be used.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;category_id&gt;</TD><TD>nnn </TD><TD>[OPTIONAL] - bypass the internal category mapping and specify an ID directly. Substitutions are encouraged, e.g. {meta:category_id}</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;category_default&gt;</TD><TD>blah </TD><TD>[OPTIONAL] use this as a default category name, if a category key cannot be found or is not valid. If not specifed, defaults to &quot;People &amp; Blogs&quot;.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;access&gt;</TD><TD>{public|private|unlisted} </TD><TD>the ensure that the access policy for the video is set as such. You can set this from the data$store by using a substitution , e.g. {meta:yt_access_policy} sets according to the 'yt_access_policy'</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;owner_account&gt;</TD><TD>blah </TD><TD>[OPTIONAL] specifies that the content should be uploaded on behalf of the given account.  This may fail on certain types of account. It sets the 'onBehalfOfContentOwner' field, which Google#'s documentation states &quot;is intended exclusively for YouTube content partners&quot;. You can set this from the data$store by using a substitution. If not provided, it defaults to the owner of the credentials used to log in.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;owner_channel&gt;</TD><TD>blah </TD><TD>[OPTIONAL] specified that the content should be uploaded to the given channel.  This may fail on certain types of account. It sets the 'onBehalfOfContentOwnerChannel' field, which Google#'s documentation states &quot;is intended exclusively for YouTube content partners&quot;. You can set this from the data$store by using a substitution.</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;auto_levels/&gt;</TD><TD> </TD><TD>[OPTIONAL] Asks YouTube to try to enhance the brightness and colour.</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;notify_subscribers/&gt;</TD><TD> </TD><TD>[OPTIONAL] Asks YouTube to notify subscribers to the channel about the upload</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;stabilize/&gt;</TD><TD> </TD><TD>[OPTIONAL] Asks YouTube to try to apply image stabilisation</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;embeddable/&gt;</TD><TD> </TD><TD>[OPTIONAL] Specifies that the video should be embeddable</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;no_public_stats/&gt;</TD><TD> </TD><TD>[OPTIONAL] Specifies that stats should be hidden to the public</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;publish_at&gt;</TD><TD>{timestamp} </TD><TD>[OPTIONAL] Asks YouTube to only publish at a given time . You can set this from the data$store by using a substitution</TD>
+<TR>
+<TR CLASS="even"><TD>&lt;license_type&gt;</TD><TD>{creativeCommon|youtube} </TD><TD>[Optional] Tells YouTube to apply the relevant license type to the content. You can set this from the data$store by using a substitution</TD>
+<TR>
+<TR CLASS="odd"><TD>&lt;recording_date&gt;</TD><TD>{timestamp} </TD><TD>[OPTIONAL] Set the given value as the recording date.You can set this from the data$store by using a substitution </TD>
+<TR>
+<TR CLASS="even"><TD>&lt;gps_coords&gt;</TD><TD>{lat}:{long} </TD><TD>[OPTIONAL] Set the given latitude/longitude as the location where the media was recorded. You can set this from the data$store by using a substitution </TD>
+<TR></TABLE>
+
+<P CLASS="link"><A HREF="#index">Jump to index</A></P><HR>
+</BODY>
+</HTML>
