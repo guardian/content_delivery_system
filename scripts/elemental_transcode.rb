@@ -24,6 +24,9 @@ require 'awesome_print'
 #<asynchronous_chain/> [OPTIONAL] - when using <chain_route>, don't wait for the chained routes to terminate but exit as soon as they're up and going
 # <no_batch/> [OPTIONAL] - by default, if there is more than one Preset in the Profile we will go to Batch mode if chain_route is not set.  This can cause problems with HLS, which is treated as a single output despite having multiple Presets.  You can set <no_batch/> to force the method to act as if there is only a single output.
 # <overlay_image>/path/to/image [OPTIONAL] - tell Elemental to overlay an image on the video. You need to supply a path to an image file. BMP and PNG formats are supported.
+# <overlay_x>n [OPTIONAL] - tell Elemental to display the overlay image n pixels from the left edge of the video. Defaults to zero.
+# <overlay_y>n [OPTIONAL] - tell Elemental to display the overlay image n pixels from the top edge of the video. Defaults to zero.
+# <overlay_opacity>n [OPTIONAL] - tell Elemental to display the overlay image with an opacity percentage of n. Zero is completely transparent. One hundred is completely visible. Defaults to one hundred.
 #END DOC
 
 #Globals
