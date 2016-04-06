@@ -306,9 +306,18 @@ b = Nokogiri::XML::Builder.new do |xml|
         if(profileid)
             xml.profile(profileid)
         end
+
+        xml.image_inserter {
+        	xml.image_inserter_input {
+        		xml.uri('/srv/Multimedia2/Media Production/Assets/Branding/Bugs/Bug_Nov15_White.png')
+        	}
+        	xml.image_x('0')
+        	xml.image_y('0')
+        	xml.opacity('100')
+        }
     }
 end
-puts b.to_xml if(@debug)
+puts b.to_xml #if(@debug)
 
 Net::HTTP.start(@host,@port) do |http|
     request = self._genRequest("POST","/jobs")
