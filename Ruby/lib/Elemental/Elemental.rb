@@ -141,8 +141,9 @@ attr_accessor :debug
 attr_accessor :version
 attr_accessor :login
 attr_accessor :key
+attr_accessor :overlay_image
 
-def initialize(hostname,port: port, user:user, passwd: passwd, version: version, login: nil, key: nil, image: nil)
+def initialize(hostname,port: port, user:user, passwd: passwd, version: version, login: nil, key: nil, overlay_image: nil)
     @host=hostname
     port=80
     if(port)
@@ -162,7 +163,7 @@ def initialize(hostname,port: port, user:user, passwd: passwd, version: version,
     end
     @login = login
     @key = key
-    @image = image
+    @overlay_image = overlay_image
     
 end #def initialize
 
@@ -308,11 +309,11 @@ b = Nokogiri::XML::Builder.new do |xml|
             xml.profile(profileid)
         end
 
-		if(@image!=nil)
+		if(@overlay_image!=nil)
 
         	xml.image_inserter {
         		xml.image_inserter_input {
-        			xml.uri(@image)
+        			xml.uri(@overlay_image)
         		}
         		xml.image_x('0')
         		xml.image_y('0')
