@@ -230,8 +230,20 @@ end
 
 #OK, now the argument processing is sorted let's do something more interesting
 if(ENV['overlay_image'])
+	overlay_x = '0'
+	if(ENV['overlay_x'])
+		overlay_x = $store.substitute_string(ENV['overlay_x'])
+	end 
+	overlay_y = '0'
+	if(ENV['overlay_y'])
+		overlay_y = $store.substitute_string(ENV['overlay_y'])
+	end 
+	overlay_opacity = '100'
+	if(ENV['overlay_opacity'])
+		overlay_opacity = $store.substitute_string(ENV['overlay_opacity'])
+	end 
 	overlay_image = $store.substitute_string(ENV['overlay_image'])
-	api = ElementalAPI.new(hostname,port: port,user: username,passwd: passwd,overlay_image: overlay_image)
+	api = ElementalAPI.new(hostname,port: port,user: username,passwd: passwd,overlay_image: overlay_image,overlay_x: overlay_x,overlay_y: overlay_y,overlay_opacity: overlay_opacity)
 else
 	api = ElementalAPI.new(hostname,port: port,user: username,passwd: passwd)
 end
