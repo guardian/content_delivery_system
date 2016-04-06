@@ -142,7 +142,7 @@ attr_accessor :version
 attr_accessor :login
 attr_accessor :key
 
-def initialize(hostname,port: port, user:user, passwd: passwd, version: version, login: nil, key: nil)
+def initialize(hostname,port: port, user:user, passwd: passwd, version: version, login: nil, key: nil, image: nil)
     @host=hostname
     port=80
     if(port)
@@ -162,6 +162,7 @@ def initialize(hostname,port: port, user:user, passwd: passwd, version: version,
     end
     @login = login
     @key = key
+    @image = image
     
 end #def initialize
 
@@ -307,14 +308,17 @@ b = Nokogiri::XML::Builder.new do |xml|
             xml.profile(profileid)
         end
 
-        xml.image_inserter {
-        	xml.image_inserter_input {
-        		xml.uri('/srv/Multimedia2/Media Production/Assets/Branding/Bugs/Bug_Nov15_White.png')
+		if(@image!=nil)
+
+        	xml.image_inserter {
+        		xml.image_inserter_input {
+        			xml.uri(@image)
+        		}
+        		xml.image_x('0')
+        		xml.image_y('0')
+        		xml.opacity('100')
         	}
-        	xml.image_x('0')
-        	xml.image_y('0')
-        	xml.opacity('100')
-        }
+        end
     }
 end
 puts b.to_xml #if(@debug)
