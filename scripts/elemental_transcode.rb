@@ -23,6 +23,7 @@ require 'awesome_print'
 #<chain_route>routename [OPTIONAL] - use the given route name to continue processing transcoded media files, executing in parallel (see notes above). This route is invoked with --input-media set to the transcoded media file and --input-inmeta set to a freshly created .inmeta file with the current state of the datastore.  If you don't use this option, then call elemental_transcode as an input-method to take advantage of batch mode processing.
 #<asynchronous_chain/> [OPTIONAL] - when using <chain_route>, don't wait for the chained routes to terminate but exit as soon as they're up and going
 # <no_batch/> [OPTIONAL] - by default, if there is more than one Preset in the Profile we will go to Batch mode if chain_route is not set.  This can cause problems with HLS, which is treated as a single output despite having multiple Presets.  You can set <no_batch/> to force the method to act as if there is only a single output.
+# <overlay_image>/path/to/image [OPTIONAL] - tell Elemental to overlay an image on the video. You need to supply a path to an image file. BMP and PNG formats are supported.
 #END DOC
 
 #Globals
@@ -228,7 +229,13 @@ if(ENV['debug'])
 end
 
 #OK, now the argument processing is sorted let's do something more interesting
-api = ElementalAPI.new(hostname,port: port,user: username,passwd: passwd)
+if(ENV['overlay_image'])
+	overlay_image = $store.substitute_string(ENV['overlay_image'])
+	api = ElementalAPI.new(hostname,port: port,user: username,passwd: passwd,overlay_image: overlay_image)
+else
+	api = ElementalAPI.new(hostname,port: port,user: username,passwd: passwd)
+end
+
 if($debug)
     ap api
 end
