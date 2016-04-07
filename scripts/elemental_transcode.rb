@@ -23,6 +23,10 @@ require 'awesome_print'
 #<chain_route>routename [OPTIONAL] - use the given route name to continue processing transcoded media files, executing in parallel (see notes above). This route is invoked with --input-media set to the transcoded media file and --input-inmeta set to a freshly created .inmeta file with the current state of the datastore.  If you don't use this option, then call elemental_transcode as an input-method to take advantage of batch mode processing.
 #<asynchronous_chain/> [OPTIONAL] - when using <chain_route>, don't wait for the chained routes to terminate but exit as soon as they're up and going
 # <no_batch/> [OPTIONAL] - by default, if there is more than one Preset in the Profile we will go to Batch mode if chain_route is not set.  This can cause problems with HLS, which is treated as a single output despite having multiple Presets.  You can set <no_batch/> to force the method to act as if there is only a single output.
+# <overlay_image>/path/to/image [OPTIONAL] - tell Elemental to overlay an image on the video. You need to supply a path to an image file. BMP and PNG formats are supported.
+# <overlay_x>n [OPTIONAL] - tell Elemental to display the overlay image n pixels from the left edge of the video. Defaults to zero.
+# <overlay_y>n [OPTIONAL] - tell Elemental to display the overlay image n pixels from the top edge of the video. Defaults to zero.
+# <overlay_opacity>n [OPTIONAL] - tell Elemental to display the overlay image with an opacity percentage of n. Zero is completely transparent. One hundred is completely visible. Defaults to one hundred.
 #END DOC
 
 #Globals
@@ -228,7 +232,25 @@ if(ENV['debug'])
 end
 
 #OK, now the argument processing is sorted let's do something more interesting
-api = ElementalAPI.new(hostname,port: port,user: username,passwd: passwd)
+if(ENV['overlay_image'])
+	overlay_x = '0'
+	if(ENV['overlay_x'])
+		overlay_x = $store.substitute_string(ENV['overlay_x'])
+	end 
+	overlay_y = '0'
+	if(ENV['overlay_y'])
+		overlay_y = $store.substitute_string(ENV['overlay_y'])
+	end 
+	overlay_opacity = '100'
+	if(ENV['overlay_opacity'])
+		overlay_opacity = $store.substitute_string(ENV['overlay_opacity'])
+	end 
+	overlay_image = $store.substitute_string(ENV['overlay_image'])
+	api = ElementalAPI.new(hostname,port: port,user: username,passwd: passwd,overlay_image: overlay_image,overlay_x: overlay_x,overlay_y: overlay_y,overlay_opacity: overlay_opacity)
+else
+	api = ElementalAPI.new(hostname,port: port,user: username,passwd: passwd)
+end
+
 if($debug)
     ap api
 end

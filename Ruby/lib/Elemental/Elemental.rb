@@ -141,8 +141,12 @@ attr_accessor :debug
 attr_accessor :version
 attr_accessor :login
 attr_accessor :key
+attr_accessor :overlay_image
+attr_accessor :overlay_x
+attr_accessor :overlay_y
+attr_accessor :overlay_opacity
 
-def initialize(hostname,port: port, user:user, passwd: passwd, version: version, login: nil, key: nil)
+def initialize(hostname,port: port, user:user, passwd: passwd, version: version, login: nil, key: nil, overlay_image: nil, overlay_x: '0', overlay_y: '0', overlay_opacity: '100')
     @host=hostname
     port=80
     if(port)
@@ -162,6 +166,10 @@ def initialize(hostname,port: port, user:user, passwd: passwd, version: version,
     end
     @login = login
     @key = key
+    @overlay_image = overlay_image
+    @overlay_x = overlay_x
+    @overlay_y = overlay_y
+    @overlay_opacity = overlay_opacity
     
 end #def initialize
 
@@ -306,9 +314,21 @@ b = Nokogiri::XML::Builder.new do |xml|
         if(profileid)
             xml.profile(profileid)
         end
+
+		if(@overlay_image!=nil)
+
+        	xml.image_inserter {
+        		xml.image_inserter_input {
+        			xml.uri(@overlay_image)
+        		}
+        		xml.image_x(@overlay_x)
+        		xml.image_y(@overlay_y)
+        		xml.opacity(@overlay_opacity)
+        	}
+        end
     }
 end
-puts b.to_xml if(@debug)
+puts b.to_xml #if(@debug)
 
 Net::HTTP.start(@host,@port) do |http|
     request = self._genRequest("POST","/jobs")
