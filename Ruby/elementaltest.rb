@@ -2,9 +2,8 @@
 $:.unshift(File.dirname(__FILE__)+'/lib')
 require 'Elemental/Job'
 require 'awesome_print'
-#user and passwd actually aren't used
-#api = ElementalAPI.new("10.235.51.110", user: ***REMOVED***, passwd: ***REMOVED***)
-api = ElementalAPI.new("10.235.51.110", login: "***REMOVED***", key: "***REMOVED***")
+
+api = ElementalAPI.new("10.235.51.110")
 ap api
 
 testfile = '/srv/Multimedia2/DAM/Media Libraries/Guardian UK Rushes/060_0815_01.mxf'
