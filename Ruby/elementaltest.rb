@@ -2,11 +2,29 @@
 $:.unshift(File.dirname(__FILE__)+'/lib')
 require 'Elemental/Job'
 require 'awesome_print'
+require 'trollop'
 
-api = ElementalAPI.new("10.235.51.110")
+options = Trollop::options do
+	opt :host, "Host to contact Elemental on", :type=>:string
+	opt :username, "Username to use on Elemental", :type=>:string, :default=>"elemental"
+	opt :password, "Password to use on Elemental", :type=>:string
+end
+
+if not options.host
+	print "You need to specify an Elemental transcoder by using the --host option"
+	exit(1)
+end
+
+if not options.password
+	print "You need to specify a password for the user #{options.username} on the Elemental transcoder at #{host} by using the --password option"
+	exit(1)
+end
+
+api = ElementalAPI.new(options.host, user: options.username, passwd: options.password, overlay_image: "/srv/Multimedia2/Media Production/Assets/Branding/Bugs/Bug_Nov15_White.png")
+
 ap api
 
-testfile = '/srv/Multimedia2/DAM/Media Libraries/Guardian UK Rushes/060_0815_01.mxf'
+testfile = '/srv/Multimedia2/DaveTest3.mxf'
 profilename = 'Output_GNM_h264 mp4_fullset'
 
 begin
@@ -34,7 +52,7 @@ puts "Successfully completed"
 exit(0)
 
 
-
+#'/srv/Multimedia2/Media Production/Assets/Branding/Bugs/Bug_Nov15_White.png'
 
 
 
