@@ -96,7 +96,7 @@ set_cds_file('xml',$outputpath);
 #ok so the downloaded content should now be saved to $outputfile.
 my @locations=split /\|/,$ENV{'set-output'};
 push @locations,$ENV{'set-output'} if(scalar @locations==0);
-foreach(@location){
+foreach(@locations){
 	print "$_\n";
 	if(/{([^}]+)/){
 		my $temp=$1;
