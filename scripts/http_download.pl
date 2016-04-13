@@ -42,7 +42,7 @@ unless($ENV{'cf_temp_file'}){
 print STDERR "debug: outputting location to ".$ENV{'cf_temp_file'}."\n";
 open FH,'>>:utf8',$ENV{'cf_temp_file'};
 print FH "cf_".$spec."_file=$path\n";
-print "cf_$spec_file=$path\n";
+print "cf_".$spec."_file=$path\n";
 close FH;
 }
 
