@@ -91,7 +91,7 @@ do{
 	}
 } while(is_error($rc));
 
-set_cds_file('xml',$outputpath);
+#set_cds_file('xml',$outputpath);
 
 #ok so the downloaded content should now be saved to $outputfile.
 my @locations=split /\|/,$ENV{'set-output'};
@@ -103,10 +103,10 @@ foreach(@locations){
 		my @datastore_path=split /:/,$temp;
 		#we will just assume that the bit in squirlies is a valid datastore path (like meta:key or track:vide:key)
 		#and let the store tell us otherwise
-		my $result=$store->set(@datastore_path,$outputfile);
+		my $result=$store->set(@datastore_path,$outputpath);
 	} else {
 		set_cds_file($_,$outputfile);
 	}
 }
-print "+SUCCESS: Data downloaded from $url and output to $outputfile.\n";
+print "+SUCCESS: Data downloaded from $url and output to $outputpath.\n";
 exit 0;
