@@ -11,6 +11,7 @@
 #  <overlay_image>/path/to/file - image to overlay onto the base image (substitutions accepted)
 #  <output_image>/path/to/file - path to write final image to.  Substitutions definitely encouraged.
 #  <output_scale>wxh [OPTIONAL] - ensure that the output image is scaled to this size, BEFORE compositing. Normally, set this to the widthxheight of the overlay_image.
+#  <overlay_scale/> [OPTIONAL] - scale the overlay to the size of the base image before compositing
 #  <output_meta_key>keyname [OPTIONAL] - output the file path of the processed image to this metadata key in the datastore. Defaults to 'composite_image'.
 #  <no_set_media/> [OPTIONAL] - by default this method will set the current Media file to the output image. If you don't want this, set no_set_media.
 #  <temp_path>/tmp [OPTIONAL] - temporary working directory. Defaults to '/tmp'.
@@ -19,6 +20,56 @@
 use CDS::Datastore;
 use File::Temp;
 use File::Basename;
+use Data::Dumper;
+
+sub get_image_data {
+	#simple function to extract image data from imagemagick. not the most elegant solution in the world, but it does not introduce any other dependencies...
+	my $filename=shift;
+	
+	$filename=~s/'/\'/g; #remove shell escape chars
+	my $teststring = `identify '$filename'`;
+	chomp $teststring;
+	die "Imagemagick identify failed on $filename: $teststring" if($?!=0);
+	
+	if ($teststring=~/^(?<mix1>.*) (?<width>\d+)x(?<height>\d+) (?<geometry>[x\d\+]+) (?<depth>\d+)-bit (?<class>\w+) (?<size>\w+) (?<unknown1>[^\s]+) (?<unknown2>[^\s]+)$/) {
+		print "Width is ".$+{'width'}.", height is ".$+{'height'}."\n";
+		my %data;
+		%data=%+;
+		#print Dumper(\%data);
+		my $mix=$+{'mix1'};
+		$mix=~/^(?<filename>.*) (?<format>\w+)$/;
+		print "Filename is ".$+{'filename'}.", format is ".$+{'format'}."\n";
+		#print Dumper(\%+);
+		foreach(keys %+){
+		    $data{$_}=$+{$_};
+		}
+		undef $data{'mix1'};
+		#print Dumper(\%data);
+		return \%data;
+	} else {
+		die "$teststring did not match!\n";
+	}
+	
+}
+
+sub do_scale
+{
+	my($input_image,$scale)=@_;
+	
+	if($scale !~ /^\d+x\d+$/){
+		die "-ERROR: $scale does not look like a correct scaling parameter. Should be digits, followed by 'x', followed by digits.\n";
+	}
+	
+	my $tf = File::Temp->new(TEMPLATE=>'image_composite_XXXXXXX', DIR=>$temp_path, UNLINK=>0, SUFFIX=>'.png');
+	$processed_image=$tf->filename;
+	
+	my $result = `convert -resize "$scale" -background none -gravity center -crop "$scale" "$input_image" PNG32:"$processed_image"`;
+	if($? != 0){
+		print $result;
+		die "-ERROR: Convert command failed on error $?. See log trace for more details.\n";
+	}
+	return $processed_image;
+}
 
 #START MAIN
 my $store = CDS::Datastore->new('image_composite');
@@ -36,7 +87,7 @@ my $overlay_image=$store->substitute_string($ENV{'overlay_image'});
 
 my $output_image=$store->substitute_string($ENV{'output_image'});
 
-my $temp_path = "/tmp";
+our $temp_path = "/tmp";
 $temp_path = $store->substitute_string($ENV{'temp_path'}) if($ENV{'temp_path'});
 
 my $output_key = "composite_image";
@@ -61,34 +112,46 @@ my $od=dirname($output_image);
 die "-ERROR: Output directory $od does not exist" if(! -d $od);
 print "-WARNING: Output image $output_image already exists and will be overwritten\n" if(-f $output_image);
 
-my $processed_image;
-my $delete_processed=0;
+my $processed_input_image,$processed_overlay_image;
+my $delete_processed_input=0,$delete_processed_overlay=0;
 if($ENV{'output_scale'}){
 	print "INFO: Scaling base image to $scale...\n";
-	
-	if($scale !~ /^\d+x\d+$/){
-		die "-ERROR: $scale does not look like a correct scaling parameter. Should be digits, followed by 'x', followed by digits.\n";
+
+	$processed_input_image = do_scale($input_image,$scale);
+	$processed_overlay_image=$overlay_image;
+	$delete_processed_input=1;
+} elsif($ENV{'overlay_scale'}){
+	my $image_data;
+	eval {
+		$image_data=get_image_data($input_image);
+		if ($ENV{'debug'}) {
+			print Dumper($image_data);
+		}
+	};
+	if ($@) {
+		print "-ERROR: Unable to determine image properties from imagemagick: $@\n";
+		exit(1);
 	}
-	my $tf = File::Temp->new(TEMPLATE=>'image_composite_XXXXXXX', DIR=>$temp_path, UNLINK=>0, SUFFIX=>'.jpg');
-	$processed_image=$tf->filename;
-	$delete_processed=1;
-	
-	my $result = `convert -resize "$scale" -gravity center -crop "$scale" "$input_image" "$processed_image"`;
-	if($? != 0){
-		print $result;
-		die "-ERROR: Convert command failed on error $?. See log trace for more details.\n";
-	}
+	my $scale=$image_data->{'width'}."x".$image_data->{'height'};
+	print "INFO: Scaling overlay image to $scale...\n";
+	$processed_overlay_image = do_scale($overlay_image,$scale);
+	$processed_input_image=$input_image;
+	$delete_processed_overlay=1;
 } else {
 	print "INFO: NOT scaling base image.\n";
-	$processed_image=$input_image;
-	$delete_processed=0;
+	$processed_input_image=$input_image;
+	$processed_overlay_image=$overlay_image;
+	$delete_processed_input=0;
+	$delete_processed_overlay=0;
 }
 
 print "INFO: Compositing images...\n";
-my $result = `composite "$overlay_image" "$processed_image" "$output_image"`;
+print "\"$processed_overlay_image\" \"$processed_input_image\" \"$output_image\"";
+my $result = `composite "$processed_overlay_image" "$processed_input_image" "$output_image"`;
 if($? != 0){
 	print $result;
-	unlink($processed_image) if($delete_processed);
+	unlink($processed_input_image) if($delete_processed_input);
+	unlink($processed_overlay_image) if($delete_processed_overlay);
 	die "-ERROR: Composite command failed on error $?. See log trace for more details.\n";
 }
 print "INFO: Done.\n";
@@ -101,7 +164,8 @@ unless($ENV{'no_set_media'}){
 	close FH;
 }
 print "INFO: Deleting temp files\n";
-unlink($processed_image) if($delete_processed);
+unlink($processed_input_image) if($delete_processed_input);
+unlink($processed_overlay_image) if($delete_processed_overlay);
 print "+SUCCESS: $output_image output to meta:$output_key\n";
 
 
