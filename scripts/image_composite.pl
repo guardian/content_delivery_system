@@ -73,7 +73,7 @@ if($ENV{'output_scale'}){
 	$processed_image=$tf->filename;
 	$delete_processed=1;
 	
-	my $result = `convert -scale $scale "$input_image" "$processed_image"`;
+	my $result = `convert -resize "$scale" -gravity center -crop "$scale" "$input_image" "$processed_image"`;
 	if($? != 0){
 		print $result;
 		die "-ERROR: Convert command failed on error $?. See log trace for more details.\n";
