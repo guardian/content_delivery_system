@@ -31,11 +31,22 @@ passwd = $store.substitute_string(ENV['vidispine_passwd'])
 
 thumbnail_path = $store.substitute_string(ENV['thumbnail'])
 
+thumbnails = thumbnail_path.split('|')
+
+
 #thumbnail_url = URI("http://#{vidispine_server}:#{vidispine_port}#{thumbnail_path}")
 #puts "DEBUG: thumbnail url is #{thumbnail_url.to_s}"
 #content = Net::HTTP.get(thumbnail_url)
 puts "DEBUG: thumbnail path is #{thumbnail_path}"
-content = File.read(thumbnail_path)
+
+
+if thumbnails[0] != ""
+	content = File.read(thumbnails[0])
+else
+	content = File.read(thumbnails[1])
+end
+
+#content = File.read(thumbnail_path)
 
 recipients = $store.substitute_string(ENV['recipients'])
 
