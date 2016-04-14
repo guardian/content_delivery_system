@@ -153,7 +153,7 @@ begin
         groupname = nil
     end
 
-    item.setMetadata(mdhash,groupname)
+    item.setMetadata(mdhash, groupname: groupname)
 rescue VSException=>e
     puts "-ERROR: Unable to set metadata fields on Vidispine item"
     puts e.to_s
