@@ -42,7 +42,7 @@ unless($ENV{'cf_temp_file'}){
 print STDERR "debug: outputting location to ".$ENV{'cf_temp_file'}."\n";
 open FH,'>>:utf8',$ENV{'cf_temp_file'};
 print FH "cf_".$spec."_file=$path\n";
-print "cf_$spec_file=$path\n";
+print "cf_".$spec."_file=$path\n";
 close FH;
 }
 
@@ -91,22 +91,22 @@ do{
 	}
 } while(is_error($rc));
 
-set_cds_file('xml',$outputpath);
+#set_cds_file('xml',$outputpath);
 
 #ok so the downloaded content should now be saved to $outputfile.
 my @locations=split /\|/,$ENV{'set-output'};
 push @locations,$ENV{'set-output'} if(scalar @locations==0);
-foreach(@location){
+foreach(@locations){
 	print "$_\n";
 	if(/{([^}]+)/){
 		my $temp=$1;
 		my @datastore_path=split /:/,$temp;
 		#we will just assume that the bit in squirlies is a valid datastore path (like meta:key or track:vide:key)
 		#and let the store tell us otherwise
-		my $result=$store->set(@datastore_path,$outputfile);
+		my $result=$store->set(@datastore_path,$outputpath);
 	} else {
 		set_cds_file($_,$outputfile);
 	}
 }
-print "+SUCCESS: Data downloaded from $url and output to $outputfile.\n";
+print "+SUCCESS: Data downloaded from $url and output to $outputpath.\n";
 exit 0;

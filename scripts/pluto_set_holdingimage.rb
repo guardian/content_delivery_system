@@ -103,7 +103,7 @@ image_item = nil
 
 output_fieldnames = ['gnm_master_generic_holdingimage_16x9']
 if ENV['master_fieldname']
-  output_fieldnames = $store.substitute_string(ENV['output_fieldname']).split(/\|/)
+  output_fieldnames = $store.substitute_string(ENV['master_fieldname']).split(/\|/)
 end
 
 if ENV['image_uri']
