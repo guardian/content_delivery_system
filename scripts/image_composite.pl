@@ -31,7 +31,8 @@ sub get_image_data {
 	chomp $teststring;
 	die "Imagemagick identify failed on $filename: $teststring" if($?!=0);
 	
-	if ($teststring=~/^(?<mix1>.*) (?<width>\d+)x(?<height>\d+) (?<geometry>[x\d\+]+) (?<depth>\d+)-bit (?<class>\w+) (?<size>\w+) (?<unknown1>[^\s]+) (?<unknown2>[^\s]+)$/) {
+    if ($teststring=~/^(?<mix1>.*) (?<width>\d+)x(?<height>\d+) (?<geometry>[x\d\+]+) (?<depth>\d+)-bit (?<class>\w+) (?<size>\w+) (?<unknown1>[^\s]+) (?<unknown2>[^\s]+)$/ or
+        $teststring=~/^(?<mix1>.*) (?<width>\d+)x(?<height>\d+) (?<geometry>[x\d\+]+) (?<depth>\d+)-bit (?<class>\w+) (?<size>\w+)$/) {
 		print "Width is ".$+{'width'}.", height is ".$+{'height'}."\n";
 		my %data;
 		%data=%+;
