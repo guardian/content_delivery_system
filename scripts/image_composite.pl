@@ -3,7 +3,7 @@
 #This method creates a composite of two images by superimposing one (with an alpha channel)
 #over another.
 #It depends on the ImageMagick suite of tools being available on the CDS server, specifically
-#the 'convert' and 'composite' commands.
+#the 'identify', 'convert' and 'composite' commands.
 #
 #Arguments:
 #  <take-files> - optionally, take the media file for processing
@@ -31,8 +31,8 @@ sub get_image_data {
 	chomp $teststring;
 	die "Imagemagick identify failed on $filename: $teststring" if($?!=0);
 	
-    if ($teststring=~/^(?<mix1>.*) (?<width>\d+)x(?<height>\d+) (?<geometry>[x\d\+]+) (?<depth>\d+)-bit (?<class>\w+) (?<size>\w+) (?<unknown1>[^\s]+) (?<unknown2>[^\s]+)$/ or
-        $teststring=~/^(?<mix1>.*) (?<width>\d+)x(?<height>\d+) (?<geometry>[x\d\+]+) (?<depth>\d+)-bit (?<class>\w+) (?<size>\w+)$/) {
+    if ($teststring=~/^\s*(?<mix1>.*) (?<width>\d+)x(?<height>\d+) (?<geometry>[x\d\+]+) (?<depth>\d+)-bit (?<class>\w+) (?<size>[\w\.]+) (?<unknown1>[^\s]+) (?<unknown2>[^\s]+)\s*$/ or
+        $teststring=~/^\s*(?<mix1>.*) (?<width>\d+)x(?<height>\d+) (?<geometry>[x\d\+]+) (?<depth>\d+)-bit (?<class>\w+) (?<size>[\w\.]+)\s*$/) {
 		print "Width is ".$+{'width'}.", height is ".$+{'height'}."\n";
 		my %data;
 		%data=%+;
