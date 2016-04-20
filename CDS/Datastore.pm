@@ -438,11 +438,12 @@ my $metasection=$self->get_meta_hashref;
 my $tracksection=$self->get_tracks_hashref;
 
 foreach(@$array_keys){
-	if($debug){
-		print STDERR "Warning - key $_ does not exist.\n" unless(defined $metasection->{'meta'}->{$_});
-	}
-	my $newkey=$_."_list";
-	@{$metasection->{'meta'}->{$newkey}}=split(/[,\|]/,$metasection->{'meta'}->{$_});
+    if(defined $metasection->{'meta'}->{$_}){
+        my $newkey=$_."_list";
+        @{$metasection->{'meta'}->{$newkey}}=split(/[,\|]/,$metasection->{'meta'}->{$_});
+    } else {
+        print STDERR "Warning - key $_ does not exist so I can't convert it into an array.\n" ;
+    }
 }
 
 #template toolkit don't like spaces or hyphens.
