@@ -281,7 +281,18 @@ files_to_upload.each { |filename|
 			next
 		end
 		retry	
-		
+	rescue Net::OpenTimeout=>e
+		retries+=1
+		puts "\tWARNING: A Net::OpenTimeout error '#{e.message}' occurred (attempt #{retries} of #{max_retries})"
+		sleep(5)
+		if(retries>=max_retries)
+			puts "-ERROR: Giving up attempting to upload s3://#{bucketname}/#{objectname}"
+			if(ENV['debug'])
+				puts e.backtrace
+			end
+			next
+		end
+		retry			
 	rescue SystemCallError=>e
 		retries+=1
 		puts "\tWARNING: A local system error '#{e.message}' occurred (attempt #{retries} of #{max_retries})"
