@@ -120,6 +120,18 @@ dt = DateTime.now()
 commissionNameTpl = $store.substitute_string(ENV['commission_name'])
 commissionName = dt.strftime(commissionNameTpl)
 
+
+
+$retry_times = "1"
+if ENV['retry_times']
+  $retry_times = $store.substitute_string(ENV['retry_times'])
+end
+
+$retry_delay = "10"
+if ENV['retry_delay']
+  $retry_delay = $store.substitute_string(ENV['retry_delay'])
+end
+
 $logger=Logger.new(STDERR)
 $logger.formatter = CDSFormatter.new
 
@@ -194,14 +206,27 @@ puts "\tExtra Meta: #{$extraMeta}"
 
 #puts "#{commissionName} #{projectName}"
 
-commissionRef = commissionFindOrCreate(commissionName,
-                                       commissionerUID: commissionerID,
-                                       workingGroupUID: workingGroupID,
-                                       client: $commissionClientName,
-                                       projectTypeUID: projectTypeID,
-                                       subscribingGroupIDs: '24',
-                                       ownerID: '10',
-                                       extraMeta: $extraMeta
-                                       )
+
+$retry_times = Integer($retry_times) 
+$retry_delay = Integer($retry_delay)
+
+$retry_delay = $retry_delay * 60
+
+$changeme = 0
+
+while $retry_times > $changeme do
+
+	commissionRef = commissionFindOrCreate(commissionName,
+                                       	commissionerUID: commissionerID,
+                                       	workingGroupUID: workingGroupID,
+                                       	client: $commissionClientName,
+                                       	projectTypeUID: projectTypeID,
+                                       	subscribingGroupIDs: '24',
+                                       	ownerID: '10',
+                                       	extraMeta: $extraMeta
+                                       	)
+    sleep($retry_delay)        	
+    $changeme = $changeme + 1                                
+end
 
 
