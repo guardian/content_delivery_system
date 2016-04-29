@@ -37,6 +37,7 @@ def commissionFindOrCreate(name,commissionerUID: nil,
         puts "INFO: Found '#{comm.id}'"
     rescue PLUTONotFound
         puts "INFO: No commission found. Trying to create instead."
+        n=0
         begin
             comm.create!(name,commissionerUID: commissionerUID,
                      workingGroupUID: workingGroupUID,client: client,
@@ -52,8 +53,15 @@ def commissionFindOrCreate(name,commissionerUID: nil,
                                         permission: ACL_PERM_READ,
                                         recursive: 'true'))
          rescue VSException => e
-             puts e
-             exit(1)
+         	 n+=1
+             if n>$retry_times
+             	print "-ERROR: Unable to communicate with vidispine after #{$retry_times} attempts, giving up."
+             	exit(1)
+             end
+             print e.backtrace
+             print "-ERROR: #{e.message}.  Sleeping for #{$retry_delay} before retrying."
+             sleep($retry_delay)
+             retry
         end
         puts "INFO: Created #{comm.id}"
     end
@@ -214,19 +222,15 @@ $retry_delay = $retry_delay * 60
 
 $changeme = 0
 
-while $retry_times > $changeme do
-
-	commissionRef = commissionFindOrCreate(commissionName,
-                                       	commissionerUID: commissionerID,
-                                       	workingGroupUID: workingGroupID,
-                                       	client: $commissionClientName,
-                                       	projectTypeUID: projectTypeID,
-                                       	subscribingGroupIDs: '24',
-                                       	ownerID: '10',
-                                       	extraMeta: $extraMeta
-                                       	)
-    sleep($retry_delay)        	
-    $changeme = $changeme + 1                                
-end
+commissionRef = commissionFindOrCreate(commissionName,
+									commissionerUID: commissionerID,
+									workingGroupUID: workingGroupID,
+									client: $commissionClientName,
+									projectTypeUID: projectTypeID,
+									subscribingGroupIDs: '24',
+									ownerID: '10',
+									extraMeta: $extraMeta
+									)
+     	
 
 
