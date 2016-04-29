@@ -122,7 +122,7 @@ commissionName = dt.strftime(commissionNameTpl)
 
 
 
-$retry_times = "1"
+$retry_times = "6"
 if ENV['retry_times']
   $retry_times = $store.substitute_string(ENV['retry_times'])
 end
