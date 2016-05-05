@@ -227,7 +227,7 @@ commissionRef = commissionFindOrCreate(commissionName,
 									workingGroupUID: workingGroupID,
 									client: $commissionClientName,
 									projectTypeUID: projectTypeID,
-									subscribingGroupIDs: '24',
+									subscribingGroupIDs: $subscribingGroupIDs,
 									ownerID: '10',
 									extraMeta: $extraMeta
 									)
