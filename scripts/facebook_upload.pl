@@ -136,6 +136,14 @@ if ($store->substitute_string($ENV{'video_draft'}) eq "master_facebook_unlisted"
 
 my $videoscheduled = 0;
 
+if ($store->substitute_string($ENV{'upload_as'}) eq "Scheduled") {
+    $videoscheduled = 1;
+}
+
+if ($store->substitute_string($ENV{'upload_as'}) eq "Draft") {
+    $videodraft = 1;
+}
+
 my $videotime = str2time($store->substitute_string($ENV{'video_time'}));
 
 my $videobd = 0;
