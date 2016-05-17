@@ -15,6 +15,7 @@
 # <groupname>name [OPTIONAL] - over-ride the metadata group name detected on the item to another value. Use with caution.
 # <delimiter>c [OPTIONAL] - when appending to fields as a text string, use this character as a delimiter. Defaults to Newline.
 # <multiple_values>c [OPTIONAL] - split the provided values data into multiple values on the given character. Allows multi-value keyword fields to be set.
+# <retry_attempts>n [OPTIONAL] - number of times to retry setting metadata fields on Vidispine a item. Defaults to ten if not set. 
 #END DOC
 
 require 'CDS/Datastore'
@@ -143,6 +144,13 @@ end
 
 puts "INFO: Values to set:"
 ap mdhash
+changeme=1
+retrydelay=1
+rattempts = 10
+
+if(ENV['retry_attempts'])
+    rattempts=$store.substitute_string(ENV['retry_attempts'])
+end
 
 begin
     if ENV['groupname']
@@ -158,10 +166,14 @@ rescue VSException=>e
     puts "-ERROR: Unable to set metadata fields on Vidispine item"
     puts e.to_s
     exit(1)
-rescue Exception=>e
+rescue StandardError=>e
     puts "-ERROR: Unable to set metadata fields on Vidispine item: #{e.message}"
     puts e.backtrace
-    exit(1)
+    puts "-DEBUG: Retrying to set metadata fields on Vidispine item. Attempt: #{changeme}"
+    changeme+=1
+    sleep(retrydelay)
+    retrydelay = retrydelay * 2
+    retry if (rattempts <= changeme)
 end
 
 puts "+SUCCESS: Values set onto item #{vsid}"
