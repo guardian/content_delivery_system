@@ -448,6 +448,9 @@ min=sprintf("%02d",nowtime.min);
 sec=sprintf("%02d",nowtime.sec);
 
 begin
+rtn.gsub!('{route-name}',ENV['cf_routename'])
+rtn.gsub!('{hostname}',ENV['HOSTNAME'])
+rtn.gsub!('{ostype}',ENV['OSTYPE'])
 rtn.gsub!('{year}',nowtime.year.to_s);
 rtn.gsub!('{month}',mon.to_s);
 rtn.gsub!('{day}',mday.to_s);
