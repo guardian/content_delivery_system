@@ -448,22 +448,27 @@ min=sprintf("%02d",nowtime.min);
 sec=sprintf("%02d",nowtime.sec);
 
 begin
-rtn.gsub!('{route-name}',ENV['cf_routename'])
-rtn.gsub!('{hostname}',ENV['HOSTNAME'])
-rtn.gsub!('{ostype}',ENV['OSTYPE'])
-rtn.gsub!('{year}',nowtime.year.to_s);
-rtn.gsub!('{month}',mon.to_s);
-rtn.gsub!('{day}',mday.to_s);
-rtn.gsub!('{hour}',hour.to_s);
-rtn.gsub!('{min}',min.to_s);
-rtn.gsub!('{sec}',sec.to_s);
-#rtn=rtn.gsub!('{is-dst}',isdst/g;
-rtn.gsub!('{weekday}',days[nowtime.cwday]);
-rtn.gsub!('{monthword}',months[nowtime.month]);
-rtn.gsub!('{nextweek}',(nowtime + 7).strftime('%F'));
+    rtn.gsub!('{route-name}',ENV['cf_routename']) if(ENV['cf_routename'])
+    rtn.gsub!('{hostname}',ENV['HOSTNAME']) if(ENV['HOSTNAME'])
+    rtn.gsub!('{ostype}',ENV['OSTYPE']) if(ENV['OSTYPE'])
 rescue Exception=>e
-puts "-WARNING: #{e.message}"
-puts e.backtrace
+    puts "-WARNING: #{e.message}"
+    puts e.backtrace
+end
+begin
+    rtn.gsub!('{year}',nowtime.year.to_s);
+    rtn.gsub!('{month}',mon.to_s);
+    rtn.gsub!('{day}',mday.to_s);
+    rtn.gsub!('{hour}',hour.to_s);
+    rtn.gsub!('{min}',min.to_s);
+    rtn.gsub!('{sec}',sec.to_s);
+    #rtn=rtn.gsub!('{is-dst}',isdst/g;
+    rtn.gsub!('{weekday}',days[nowtime.cwday]);
+    rtn.gsub!('{monthword}',months[nowtime.month]);
+    rtn.gsub!('{nextweek}',(nowtime + 7).strftime('%F'));
+rescue Exception=>e
+    puts "-WARNING: #{e.message}"
+    puts e.backtrace
 end
 
 
