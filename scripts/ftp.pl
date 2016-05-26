@@ -338,14 +338,21 @@ for ( my $i = 0; $i < $numFiles; $i++)
 {
 	my $tries=1;
 	if(-f $filesToFTP[$i]){
-		while(! $ftp->put($filesToFTP[$i])){
+        my $result=0;
+		while(! $result){
 			die "FATAL: $script_name: Couldn't upload $filesToFTP[$i] after $tries attempts, giving up\n" if($tries>$maxit);
-			$_=$ftp->message;	
-			chomp;
-			print STDERR "WARNING: $script_name: $_ retrying (attempt $tries)...\n";
-			sleep($delay);
-			#re-initialise FTP connection
-			$ftp->quit;
+            eval {
+                $result=$ftp->put($filesToFTP[$i])
+            };
+            last if($result);
+            $_=$ftp->message;
+            chomp;
+            print STDERR "WARNING: $script_name: $_ retrying (attempt $tries)...\n";
+            sleep($delay);
+            #re-initialise FTP connection
+            eval {
+                $ftp->quit;
+            };
 			$ftp=setup_ftp($hostname,$username,$password,$maxit,$delay,$finalstring,$passive_ftp,$maxbandwidth);
 			++$tries;
 		}
