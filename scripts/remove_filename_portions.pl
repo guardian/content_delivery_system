@@ -20,6 +20,7 @@ my $version='$Rev: 1258 $ $LastChangedDate';
 # <invert/> [OPTIONAL] - keep the sections that would be skipped, and remove the sections that would be kept
 # <symlink/> [OPTIONAL] - symlink the old file to the new file, rather than rename/move
 # <output_path>/path/to/output [OPTIONAL] - move or symlink the target file here, rather than its current directory
+# <fail_immediate/> [OPTIONAL] - if a rename/symlink fails, exit rightaway rather than trying to complete all renames
 #END DOC
 
 sub conformFile
@@ -92,6 +93,33 @@ my($baseName)=@_;
 	return $baseName;
 }
 
+sub do_file_move
+{
+my ($src_file,$new_file_name,$dirname,$debug) = @_;
+
+	if($ENV{'symlink'}){
+		print "DEBUG: symlinking $src_file to $dirname/$new_file_name\n" if($debug);
+		$new_file_name="$dirname/$new_file_name";
+		make_path($dirname);
+		my $rv=symlink($src_file,$new_file_name);
+		unless($rv){
+			print "-ERROR: Unable to symlink ".$ENV{$_}.": $!\n";
+			return 0;
+			exit 1 if($ENV{'fail_immediate'});
+		}
+	} else {
+		print "DEBUG: moving $src_file to $dirname/$new_file_name\n" if($debug);
+		$new_file_name="$dirname/$new_file_name";
+		my $rv=move($src_file,$new_file_name);
+		unless($rv){
+			print "-ERROR: Unable to rename ".$ENV{$_}.": $!\n";
+			return 0;
+			exit 1 if($ENV{'fail_immediate'});
+		}
+	}
+	return 1;
+	
+}
 
 #START MAIN
 my $store=CDS::Datastore->new('remove_filename_portions');
@@ -119,29 +147,24 @@ open $fhtemp,">",$ENV{'cf_temp_file'};
 
 #	foreach(@internal_filenames){
 #		my $new_filename=
+my $failures=0;
+
 foreach(qw/cf_media_file cf_meta_file cf_inmeta_file cf_xml_file/){
+	my $dirname;
+	
 	print "$_=".$ENV{$_}."\n" if($debug);
 	next unless($ENV{$_});
 	print "Taking valid $_ '".$ENV{$_}."'...\n" if($debug);
 	my $new_file_name=conformFile($ENV{$_});
 	print "Got new file name $new_file_name\n" if($debug);
 	
-	unless($new_file_name eq $ENV{$_}){
-		my $dirname=dirname($ENV{$_});
-		if($debug){
-			print "DEBUG: moving '".$ENV{$_}."' to $dirname/$new_file_name\n";
-		}
-		$new_file_name="$dirname/$new_file_name";
-		my $rv=move($ENV{$_},$new_file_name);
-		
-		if($rv){
-			print $fhtemp "$_=$new_file_name\n";
-		} else {
-			print "ERROR: Unable to rename ".$ENV{$_}.": $!\n";
-		}
-	} else {
-		print "INFO: Not renaming ".$ENV{$_}." as the filename already appears to conform\n";
+	if($ENV{'output_path'}){
+		$dirname=$store->substitute_string($ENV{'output_path'});
 	}
+		
+	my $rv=do_file_move($ENV{$_},$new_file_name,$dirname,$debug);
+	++$failures unless($rv);
+
 }
 
 foreach(@extra_files){
@@ -153,25 +176,15 @@ foreach(@extra_files){
 			$dirname=$store->substitute_string($ENV{'output_path'});
 		}
 		
-		if($ENV{'symlink'}){
-			print "DEBUG: symlinking $_ to $dirname/$new_file_name\n" if($debug);
-			$new_file_name="$dirname/$new_file_name";
-			make_path($dirname);
-			my $rv=symlink($_,$new_file_name);
-			unless($rv){
-				print "-ERROR: Unable to symlink ".$ENV{$_}.": $!\n";
-			}
-		} else {
-			print "DEBUG: moving $_ to $dirname/$new_file_name\n" if($debug);
-			$new_file_name="$dirname/$new_file_name";
-			my $rv=move($_,$new_file_name);
-			unless($rv){
-				print "-ERROR: Unable to rename ".$ENV{$_}.": $!\n";
-			}
-		}
+		my $rv=do_file_move($_,$new_file_name,$dirname,$debug);
+		++$failures unless($rv);
 	}
 }
 
 close $fhtemp;
+
+if($failures>0){
+	exit(1); #flag that the method failed, to the Skeleton.
+}
 
 exit 0;

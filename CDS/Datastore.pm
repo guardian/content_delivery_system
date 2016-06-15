@@ -527,7 +527,6 @@ my($self,$string)=@_;
 my $rtn;
 #{media-file} {*-file} {filename} {filepath} {filebase} {fileextn} {year} {month} {day} {hour} {min} {sec} 
 #{meta:*} {track:type:*} {media:*} {failed-method} {last-error}	# NOTE - {last-line} is deprecated - if $ENV{'cf_last_error'} is not set then {last-error} is set to $ENV{'cf_last_line'}
-$_=$string;
 
 my($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 $year+=1900;
@@ -541,6 +540,7 @@ $hour=sprintf("%02d",$hour);
 $min=sprintf("%02d",$min);
 $sec=sprintf("%02d",$sec);
 
+my $_=$string;
 s/{year}/$year/g;
 s/{month}/$mon/g;
 s/{day}/$mday/g;
