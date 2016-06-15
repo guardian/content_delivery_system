@@ -428,6 +428,16 @@ end
 return rtn
 end
 
+def _substitute_env!(tag,envname,string)
+	begin
+		string.gsub!(tag,ENV[envname])
+	rescue Exception=>e
+		puts "-WARNING: #{e.message}"
+		puts e.backtrace
+	end
+	
+end
+
 def substitute_string(str)
 nowtime=DateTime.now
 
@@ -447,14 +457,18 @@ hour=sprintf("%02d",nowtime.hour);
 min=sprintf("%02d",nowtime.min);
 sec=sprintf("%02d",nowtime.sec);
 
-begin
-    rtn.gsub!('{route-name}',ENV['cf_routename']) if(ENV['cf_routename'])
-    rtn.gsub!('{hostname}',ENV['HOSTNAME']) if(ENV['HOSTNAME'])
-    rtn.gsub!('{ostype}',ENV['OSTYPE']) if(ENV['OSTYPE'])
-rescue Exception=>e
-    puts "-WARNING: #{e.message}"
-    puts e.backtrace
-end
+self._substitute_env!('{route-name}','cf_routename',rtn)
+self._substitute_env!('{hostname}','HOSTNAME',rtn)
+self._substitute_env!('{ostype}','OSTYPE',rtn)
+
+# begin
+#     rtn.gsub!('{route-name}',ENV['cf_routename']) if(ENV['cf_routename'])
+#     rtn.gsub!('{hostname}',ENV['HOSTNAME']) if(ENV['HOSTNAME'])
+#     rtn.gsub!('{ostype}',ENV['OSTYPE']) if(ENV['OSTYPE'])
+# rescue Exception=>e
+#     puts "-WARNING: #{e.message}"
+#     puts e.backtrace
+# end
 begin
     rtn.gsub!('{year}',nowtime.year.to_s);
     rtn.gsub!('{month}',mon.to_s);
