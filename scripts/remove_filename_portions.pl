@@ -21,6 +21,7 @@ my $version='$Rev: 1258 $ $LastChangedDate';
 # <symlink/> [OPTIONAL] - symlink the old file to the new file, rather than rename/move
 # <output_path>/path/to/output [OPTIONAL] - move or symlink the target file here, rather than its current directory
 # <fail_immediate/> [OPTIONAL] - if a rename/symlink fails, exit rightaway rather than trying to complete all renames
+# <allow_existing/> [OPTIONAL] - don't error if the destination file already exists
 #END DOC
 
 sub conformFile
@@ -96,7 +97,14 @@ my($baseName)=@_;
 sub do_file_move
 {
 my ($src_file,$new_file_name,$dirname,$debug) = @_;
-
+	
+	if($ENV{'allow_existing'}){
+		if(-f "$dirname/$new_file_name"){
+			print "INFO: $dirname/$new_file_name already exists. allow_existing specified so continuing.\n";
+			return 1;
+		}
+	}
+	
 	if($ENV{'symlink'}){
 		print "DEBUG: symlinking $src_file to $dirname/$new_file_name\n" if($debug);
 		$new_file_name="$dirname/$new_file_name";
