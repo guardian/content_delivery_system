@@ -430,7 +430,7 @@ end
 
 def _substitute_env!(tag,envname,string)
 	begin
-		string.gsub!(tag,ENV[envname])
+		string.gsub!(tag,ENV[envname]) if(ENV[envname])
 	rescue Exception=>e
 		puts "-WARNING: #{e.message}"
 		puts e.backtrace
