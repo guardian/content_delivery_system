@@ -433,12 +433,19 @@ if ENV['access']
 end
 owner_acct=""
 if ENV['owner_account']
-	params[:onBehalfOfContentOwner]=$store.substitute_string(ENV['owner_account'])
+    owner_acct = $store.substitute_string(ENV['owner_channel'])
+    parts = owner_acct.split('|')
+    owner_acct = parts[0] if(parts.length > 1)
+	params[:onBehalfOfContentOwner]=owner_acct
 	# <owner_account>blah - [OPTIONAL] specifies that the content should be uploaded on behalf of the given account.  This may fail on certain types of account. It sets the 'onBehalfOfContentOwner' field, which Google#'s documentation states "is intended exclusively for YouTube content partners". You can set this from the data$store by using a substitution. 
 end
 owner_chl=""
 if ENV['owner_channel']
-	params[:onBehalfOfContentOwnerChannel]=$store.substitute_string(ENV['owner_channel'])
+    owner_chl = $store.substitute_string(ENV['owner_channel'])
+    parts = owner_chl.split('|')
+    owner_chl = parts[0] if(parts.length > 1)
+    
+	params[:onBehalfOfContentOwnerChannel]=owner_chl
 	# <owner_channel>blah - [OPTIONAL] specified that the content should be uploaded to the given channel.  This may fail on certain types of account. It sets the 'onBehalfOfContentOwnerChannel' field, which Google#'s documentation states "is intended exclusively for YouTube content partners". You can set this from the data$store by using a substitution.
 end
 
