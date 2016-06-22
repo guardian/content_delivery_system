@@ -20,8 +20,8 @@ class VSItem < VSApi
         @vs_object_class="item" 
     end #def initialize
     
-    def populate(itemid)
-        if(@shapes==nil)
+    def populate(itemid, refreshShapes: false)
+        if(@shapes==nil or refreshShapes)
             @shapes=VSShapeCollection.new(@host,@port,@user,@passwd)
             @shapes.populate(itemid)
         end
@@ -132,20 +132,20 @@ class VSItem < VSApi
 	self._waitjob(jobDocument)
     end
     
-    def refresh()
-        return self.populate(@id)
+    def refresh(refreshShapes: true)
+        return self.populate(@id, refreshShapes: refreshShapes)
     end #def refresh
     
-    def refresh!
-	self.refresh
+    def refresh!(refreshShapes: true)
+        self.refresh(refreshShapes: refreshShapes)
     end
     
     def metadata
-        return @metadata
+        @metadata
     end
     
     def shapes
-        return @shapes
+        @shapes
     end #def shapes
     
     def get(key)
@@ -200,7 +200,7 @@ class VSItem < VSApi
                                     'tag'=>URI.escape(shapetag) })
         #it's up to the caller to catch exceptions...
         
-	self._waitjob(jobDocument)
+        self._waitjob(jobDocument)
 
         #reload our shapes
         @shapes=VSShapeCollection.new(@host,@port,@user,@passwd)
@@ -210,7 +210,7 @@ class VSItem < VSApi
     #sets metadata fields on this item. Should be called as item.setMetadata({'field': 'value', 'field2': 'value2' etc.})
     #will throw exceptions (VS* or HTTPError) and not update the internal representation if the Vidispine update fails
     def setMetadata(mdhash,groupname: @groupname,vsClass: "item")
-    raise ArgumentError if(vsClass.match(/[^a-z]/))
+    raise ArgumentError if(vsClass.match(/[^a-z]/
         
     begin
         #we can't use self.set_metadata as this gives a SimpleMetadataDocument, wherase we need the full monty for items
