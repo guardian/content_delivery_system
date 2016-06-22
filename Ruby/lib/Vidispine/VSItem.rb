@@ -210,7 +210,7 @@ class VSItem < VSApi
     #sets metadata fields on this item. Should be called as item.setMetadata({'field': 'value', 'field2': 'value2' etc.})
     #will throw exceptions (VS* or HTTPError) and not update the internal representation if the Vidispine update fails
     def setMetadata(mdhash,groupname: @groupname,vsClass: "item")
-    raise ArgumentError if(vsClass.match(/[^a-z]/
+    raise ArgumentError if(vsClass.match(/[^a-z]/))
         
     begin
         #we can't use self.set_metadata as this gives a SimpleMetadataDocument, wherase we need the full monty for items
