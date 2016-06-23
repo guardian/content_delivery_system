@@ -21,6 +21,7 @@ $version='facebook_upload.pl $Rev: 1395 $';
 # <video_backdate> - Weather the video is to be backdated or not
 # <video_backdate_time>n - Time to backdate the video to
 # <video_backdate_accuracy>blah - Accuracy level of backdating
+# <allow_bm_crossposting> - Weather the video can be crossposted or not
 #END DOC
 
 use LWP::UserAgent;
