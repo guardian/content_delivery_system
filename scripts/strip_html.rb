@@ -9,6 +9,8 @@
 
 require 'CDS/Datastore'
 require 'awesome_print'
+require 'rubygems'
+require 'nokogiri'
 
 
 #START MAIN
@@ -28,8 +30,7 @@ $store = Datastore.new('strip_html')
 
 stripme = $store.substitute_string(ENV['stripme'])
 
-
-stripped_text = stripme
+stripped_text = Nokogiri::HTML(stripme).text
 
 
 $store.set('meta',ENV['output_key'],stripped_text)
