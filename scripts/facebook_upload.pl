@@ -129,10 +129,10 @@ if ($store->substitute_string($ENV{'video_no_story'}) eq "master_facebook_hide_s
 	$videons = 1;
 }
  
-my $videodraft = 0;
+my $videodraft = 1;
 
-if ($store->substitute_string($ENV{'video_draft'}) eq "master_facebook_unlisted") {
-	$videodraft = 1;
+if ($store->substitute_string($ENV{'video_draft'}) ne "master_facebook_unlisted") {
+	$videodraft = 0;
 }
 
 my $videoscheduled = 0;
