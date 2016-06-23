@@ -131,9 +131,9 @@ if ($store->substitute_string($ENV{'video_no_story'}) eq "master_facebook_hide_s
  
 my $videodraft = 1;
 
-if ($store->substitute_string($ENV{'video_draft'}) ne "master_facebook_unlisted") {
-	$videodraft = 0;
-}
+#if ($store->substitute_string($ENV{'video_draft'}) ne "master_facebook_unlisted") {
+#	$videodraft = 0;
+#}
 
 my $videoscheduled = 0;
 
@@ -141,8 +141,8 @@ if ($store->substitute_string($ENV{'upload_as'}) eq "Scheduled") {
     $videoscheduled = 1;
 }
 
-if ($store->substitute_string($ENV{'upload_as'}) eq "Draft") {
-    $videodraft = 1;
+if ($store->substitute_string($ENV{'upload_as'}) eq "Publish") {
+    $videodraft = 0;
 }
 
 my $videotime = str2time($store->substitute_string($ENV{'video_time'}));
