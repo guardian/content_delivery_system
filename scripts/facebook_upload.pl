@@ -152,6 +152,12 @@ if ($store->substitute_string($ENV{'video_backdate'}) eq "master_facebook_backda
 	$videobd = 1;
 }
 
+$allowbmcrossposting = 1;
+
+if ($store->substitute_string($ENV{'allow_bm_crossposting'}) eq "false") {
+	$allowbmcrossposting = 0;
+}
+
 
 my $videobdt = str2time($store->substitute_string($ENV{'video_backdate_time'}));
 
@@ -491,6 +497,18 @@ print "\nRESPONSE -- \n" . $req->as_string;
 # Check the outcome of the response
 if ($req->is_success) {
     print $req->content;
+    
+	my $update = LWP::UserAgent->new;
+	$updatereq = $update->request(POST 'https://graph-video.facebook.com/v2.6/'.$server->{'video_id'}.'',
+		  Content_Type => 'form-data',
+		  Content => [
+			  access_token=>$at,
+			  allow_bm_crossposting=>$allowbmcrossposting
+		  ]
+
+	);
+	
+	print $updatereq->content;
 }
 else {
   print "ERROR: Facebook rejected our request to set up a video\n";
