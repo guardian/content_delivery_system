@@ -31,7 +31,13 @@ PD_URI = URI('https://events.pagerduty.com/generic/2010-04-15/create_event.json'
 
 #START MAIN
 begin
-  check_arguments(['service_key','event_type','message'])
+  # don't talk to pagerduty if not in PROD
+  if(ENV['debug'])
+    exit(0)
+  else
+    check_arguments(['service_key','event_type','message'])
+  end
+
 rescue ArgumentMissing=>e
   puts("-ERROR: You need to specify <#{e.message}> in the route file.")
   exit(1)
