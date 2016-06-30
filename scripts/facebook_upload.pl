@@ -21,6 +21,7 @@ $version='facebook_upload.pl $Rev: 1395 $';
 # <video_backdate> - Weather the video is to be backdated or not
 # <video_backdate_time>n - Time to backdate the video to
 # <video_backdate_accuracy>blah - Accuracy level of backdating
+# <allow_bm_crossposting> - Weather the video can be crossposted or not
 #END DOC
 
 use LWP::UserAgent;
@@ -128,11 +129,11 @@ if ($store->substitute_string($ENV{'video_no_story'}) eq "master_facebook_hide_s
 	$videons = 1;
 }
  
-my $videodraft = 0;
+my $videodraft = 1;
 
-if ($store->substitute_string($ENV{'video_draft'}) eq "master_facebook_unlisted") {
-	$videodraft = 1;
-}
+#if ($store->substitute_string($ENV{'video_draft'}) ne "master_facebook_unlisted") {
+#	$videodraft = 0;
+#}
 
 my $videoscheduled = 0;
 
@@ -140,8 +141,8 @@ if ($store->substitute_string($ENV{'upload_as'}) eq "Scheduled") {
     $videoscheduled = 1;
 }
 
-if ($store->substitute_string($ENV{'upload_as'}) eq "Draft") {
-    $videodraft = 1;
+if ($store->substitute_string($ENV{'upload_as'}) eq "Publish") {
+    $videodraft = 0;
 }
 
 my $videotime = str2time($store->substitute_string($ENV{'video_time'}));
@@ -150,6 +151,12 @@ my $videobd = 0;
 
 if ($store->substitute_string($ENV{'video_backdate'}) eq "master_facebook_backdate_post") {
 	$videobd = 1;
+}
+
+$allowbmcrossposting = 1;
+
+if ($store->substitute_string($ENV{'allow_bm_crossposting'}) eq "false") {
+	$allowbmcrossposting = 0;
 }
 
 
@@ -491,6 +498,18 @@ print "\nRESPONSE -- \n" . $req->as_string;
 # Check the outcome of the response
 if ($req->is_success) {
     print $req->content;
+    
+	my $update = LWP::UserAgent->new;
+	$updatereq = $update->request(POST 'https://graph-video.facebook.com/v2.6/'.$server->{'video_id'}.'',
+		  Content_Type => 'form-data',
+		  Content => [
+			  access_token=>$at,
+			  allow_bm_crossposting=>$allowbmcrossposting
+		  ]
+
+	);
+	
+	print $updatereq->content;
 }
 else {
   print "ERROR: Facebook rejected our request to set up a video\n";
