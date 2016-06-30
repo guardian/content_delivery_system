@@ -11,6 +11,9 @@ $: << 'Ruby/lib'
 # <include_all_metadata/> [OPTIONAL] - include every piece of metadata in the extra_data report. This might be quite large!
 # <extra_data>key=value|key2={meta:moredata} [OPTIONAL] - arbitary key-value data to include in the incident report
 # <client_url>http://blah [OPTIONAL] - set the Client URL field in PagerDuty
+# <disable_communication>{yes|no} [OPTIONAL] - if set to 'yes', or present without 'no', then will prevent actual communication with the PD service. For use in testing environments.
+
+#END DOC
 
 require 'net/http'
 require 'json'
@@ -31,13 +34,8 @@ PD_URI = URI('https://events.pagerduty.com/generic/2010-04-15/create_event.json'
 
 #START MAIN
 begin
-  # don't talk to pagerduty if not in PROD
-  if(ENV['debug'])
-    exit(0)
-  else
-    check_arguments(['service_key','event_type','message'])
-  end
-
+  check_arguments(['service_key','event_type','message'])
+  
 rescue ArgumentMissing=>e
   puts("-ERROR: You need to specify <#{e.message}> in the route file.")
   exit(1)
@@ -87,6 +85,16 @@ output_data['details'] = extra_data
 
 ap output_data if(ENV['debug'])
 #JSON.dump(output_data)
+
+disable_flag=false
+
+if ENV['disable_communications']
+  disable_flag=$store.substitute_string(ENV['disable_communications'])
+  if disable_flag.downcase=='yes' or disable_flag.downcase=='true' or disable_flag.downcase=='disable'
+    puts "-WARNING: Output to pagerduty is disabled in route config.  Change the <disable_communications> flag to allow communication."
+    exit(0)
+  end
+end
 
 h=Net::HTTP.new(PD_URI.host, PD_URI.port)
 h.use_ssl=true
