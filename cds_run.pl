@@ -300,6 +300,7 @@ else
 		die "ERROR: Unable to initialise a datastore in $dataStoreLocation\n";
 	}
 
+	$store->set('meta','loggingid',$loggingID);
 	my $method;
 	my $i;
 	

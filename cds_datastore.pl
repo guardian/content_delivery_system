@@ -28,7 +28,7 @@ if(lc $verb eq "get"){
 	$delim="\n" if(lc $delim eq '[newline]');
 	$delim="\t" if(lc $delim eq '[tab]');
 	if($ARGV[0] ne 'meta' and $ARGV[0] ne 'media' and $ARGV[0] ne 'track'){
-		print STDERR "cds_datastore: error - you need to specify metadata type, one of {meta|media|track}.\n";
+		print STDERR "cds_datastore: error - you need to specify metadata type, one of {meta|media|track}; not ".$ARGV[0].".\n";
 		exit -1;
 	}
 	my @result=$store->get(@ARGV);
