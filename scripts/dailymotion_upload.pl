@@ -143,7 +143,7 @@ my $ua=LWP::UserAgent->new();
 my $request   =  HTTP::Request::Common::POST
   $server2->{'upload_url'},
   Content_Type => 'form-data',
-  Content => [ 'upload' => [ $ENV{'cf_media_file'} ] ];
+  Content => [ 'file' => [ $ENV{'cf_media_file'} ] ];
 
 
 
