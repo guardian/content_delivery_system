@@ -433,7 +433,7 @@ if ENV['access']
 end
 owner_acct=""
 if ENV['owner_account']
-    owner_acct = $store.substitute_string(ENV['owner_channel'])
+    owner_acct = $store.substitute_string(ENV['owner_account'])
     parts = owner_acct.split('|')
     owner_acct = parts[0] if(parts.length > 1)
 	params[:onBehalfOfContentOwner]=owner_acct
