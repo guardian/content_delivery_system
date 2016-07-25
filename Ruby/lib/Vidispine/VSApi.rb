@@ -255,7 +255,7 @@ end
 matrixpart=""
 if(matrix!=nil)
 	matrix.each do |key,value|
-		matrixpart+=";#{key}=#{URI.escape(value,/[^:\/]/)}"
+		matrixpart+=";#{key}=#{URI.escape(value,/[^:\/\w\d]/)}"
 	end #matrix.each
 	if(@debug)
 		puts "VSApi::raw_request: matrix part is #{matrixpart}"
@@ -266,7 +266,7 @@ querypart=""
 if(query!=nil)
 	querypart="?"
 	query.each do |key,value|
-		querypart+="#{key}=#{URI.escape(value,/[^:\/]/)}&"
+		querypart+="#{key}=#{URI.escape(value,/[^:\/\w\d]/)}&"
 	end #query.each
 	querypart.chomp('&')
 	if(@debug)
