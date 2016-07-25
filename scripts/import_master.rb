@@ -191,7 +191,7 @@ rescue VSNotFound=>e
     attempts += 1
     puts "WARNING: File #{mediaFile} not found on storage #{storage.id} after #{attempts} attempts."
     if(attempts>80)
-        puts "Not present after 50 attempts, giving up."
+        puts "Not present after 80 attempts, giving up."
         exit(5)
     end
     sleep(10)
