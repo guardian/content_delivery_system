@@ -15,6 +15,8 @@
 #  <vidispine_password>pass - password for Vidispine
 #  <xml_input>/path/to/xml/file - filepath to the Final Cut Pro XML file to be imported
 #  <project>vsid - Vidispine ID of the project to import the new master into
+#  <attempts>n [OPTIONAL] - retry this many times before failing (default: 80)
+
 #END DOC
 
 require 'date'
@@ -63,7 +65,7 @@ if ENV['vidispine_port']
   begin
     $port = Integer($store.substitute_string(ENV['vidispine_port']))
   rescue Exception=>e
-    puts "WARNING: #{e}"
+    puts "WARNING: #{e.message}"
   end
 end
 
@@ -79,6 +81,15 @@ $username = $store.substitute_string(ENV['user'])
 
 if ($store.substitute_string(ENV['transcode_tags']) != nil)
 	$transcodeTags = $store.substitute_string(ENV['transcode_tags']).split(/\|/)
+end
+
+$max_attempts = 80
+if ENV['attempts']
+    begin
+	$max_attempts = Integer(ENV['attempts'])
+    rescue StandardError=>e
+	print "WARNING: #{e.message}"
+    end
 end
 
 $logger=Logger.new(STDERR)
@@ -190,8 +201,8 @@ begin
 rescue VSNotFound=>e
     attempts += 1
     puts "WARNING: File #{mediaFile} not found on storage #{storage.id} after #{attempts} attempts."
-    if(attempts>50)
-        puts "Not present after 50 attempts, giving up."
+    if(attempts>$max_attempts)
+        puts "Not present after #{$max_attempts} attempts, giving up."
         exit(5)
     end
     sleep(10)
