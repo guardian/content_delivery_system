@@ -40,7 +40,8 @@ sub new {
 	my $self={
 		'counter'=>0,
 		'chunkSize'=>1024000,
-		'offset'=>0
+		'offset'=>0,
+		'inputOffset'=>undef
 	};
 	bless($self,$class);
 }
@@ -74,6 +75,8 @@ sub getNextChunk {
 	return undef if(eof($self->{'fh'}));
 	
 	print "reading in ".$self->{'chunkSize'}." bytes "; #from offset ".$self->{'counter'}*$self->{'chunkSize'}."\n";
+	seek($self->{'fh'}, $self->{'inputOffset'}, SEEK_SET) if(defined $self->{'inputOffset'});
+	$self->{'inputOffset'} = undef;
 	read($self->{'fh'}, $data, $self->{'chunkSize'});
 	
 	++$self->{'counter'};
@@ -266,6 +269,12 @@ while(1){
 	  print Dumper($responsedata);
 	  if($responsedata->{'error'}->{'code'} == 6000) {
 	  	die "A non-recoverable error occurred at Facebook's end :'(";
+	  }
+	  if($responsedata->{'error'}->{'error_subcode'} == 1363037) {
+	  	print "\n -ERROR 6001:1363027 - Sending the chunk again... \n";
+	  	$s->setNextChunkSize($responsedata->{'error'}->{'error_data'}->{'start_offset'},$responsedata->{'error'}->{'error_data'}->{'end_offset'});
+	  	last if $s->{'chunkSize'}==0;
+		$chunkdata=$s->getNextChunk;
 	  }
 	  	#if($responsedata->{'error'}->{'code'} == 2) {
 			print "\n The last request was broken. Retrying in 5 seconds...\n";
