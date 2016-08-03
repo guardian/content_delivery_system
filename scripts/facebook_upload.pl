@@ -271,7 +271,7 @@ while(1){
 	  	die "A non-recoverable error occurred at Facebook's end :'(";
 	  }
 	  if($responsedata->{'error'}->{'error_subcode'} == 1363037) {
-	  	print "\n -ERROR 6001:1363027 - Sending the chunk again... \n";
+	  	print "\n -ERROR 6001:1363037 - Sending the chunk again... \n";
 	  	$s->setNextChunkSize($responsedata->{'error'}->{'error_data'}->{'start_offset'},$responsedata->{'error'}->{'error_data'}->{'end_offset'});
 	  	last if $s->{'chunkSize'}==0;
 		$chunkdata=$s->getNextChunk;
