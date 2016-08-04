@@ -285,10 +285,10 @@ while(1){
 		$chunkdata=$s->getNextChunk;
 	  }
 	  	#if($responsedata->{'error'}->{'code'} == 2) {
-			print "\n The last request was broken. Retrying in 5 seconds...\n";
+			print "\n The last request was broken. Retrying in 1 second...\n";
 		#}
 		print "-error Error code was: ".$responsedata->{'error'}->{'code'}."\n";
-	  sleep(5);
+	  sleep(1);
 	}
 	#write out the file chunks
 	#open my $fhout, ">", "chunk".$s->{'counter'}.".mp4";
