@@ -83,21 +83,6 @@ sub getNextChunk {
 	return $data;
 }
 
-sub getRetryChunk {
-	my $self=shift;
-	my $data;
-	
-	return undef if(eof($self->{'fh'}));
-	
-	print "reading in ".$self->{'chunkSize'}." bytes "; #from offset ".$self->{'counter'}*$self->{'chunkSize'}."\n";
-	seek($self->{'fh'}, $self->{'inputOffset'}, SEEK_SET) if(defined $self->{'inputOffset'});
-	$self->{'inputOffset'} = undef;
-	read($self->{'fh'}, $data, $self->{'chunkSize'});
-	
-	$self->{'counter'} = 1;
-	return $data;
-}
-
 sub setNextChunkSize {
 	my($self,$start,$end)=@_;
 
@@ -289,7 +274,7 @@ while(1){
 	  	print "\n -ERROR 6001:1363037 - Sending the chunk again... \n";
 	  	$s->setNextChunkSize($responsedata->{'error'}->{'error_data'}->{'start_offset'},$responsedata->{'error'}->{'error_data'}->{'end_offset'});
 	  	last if $s->{'chunkSize'}==0;
-		$chunkdata=$s->getRetryChunk;
+		$chunkdata=$s->getNextChunk;
 	  }
 	  	#if($responsedata->{'error'}->{'code'} == 2) {
 			print "\n The last request was broken. Retrying in 5 seconds...\n";
