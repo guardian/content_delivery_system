@@ -91,6 +91,14 @@ sub setNextChunkSize {
 	print "setNextChunkSize: from $start to $end is ".$self->{'chunkSize'}."\n";	
 }
 
+sub setNextChunkSizeRetry {
+	my($self,$start,$end)=@_;
+
+	$self->{'chunkSize'} = $end - $start;
+	$self->{'inputOffset'} = $start;
+	print "setNextChunkSize: from $start to $end is ".$self->{'chunkSize'}."\n";	
+}
+
 
 sub offset {
 	my $self=shift;
@@ -272,7 +280,7 @@ while(1){
 	  }
 	  if($responsedata->{'error'}->{'error_subcode'} == 1363037) {
 	  	print "\n -ERROR 6001:1363037 - Sending the chunk again... \n";
-	  	$s->setNextChunkSize($responsedata->{'error'}->{'error_data'}->{'start_offset'},$responsedata->{'error'}->{'error_data'}->{'end_offset'});
+	  	$s->setNextChunkSizeRetry($responsedata->{'error'}->{'error_data'}->{'start_offset'},$responsedata->{'error'}->{'error_data'}->{'end_offset'});
 	  	last if $s->{'chunkSize'}==0;
 		$chunkdata=$s->getNextChunk;
 	  }
