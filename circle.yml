@@ -6,5 +6,5 @@ machine:
     
 checkout:
   post:
-    - ./install.sh -y
+    - sudo ./install.sh -y
     
