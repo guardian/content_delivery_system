@@ -14,6 +14,32 @@ Individually written code, however, is not really necessary to perform these fun
 
 The CDS came out of a desire to simplify this tangled system, and make it possible for a non-coder to administer and perform day to day debugging and maintenance on the system - something that was not possible before.
 
+How do I install it?
+-----
+
+1. Check out this repository
+2. run sudo ./install.sh (on Mac or Linux)
+3. this will install prerequisites (using apt, yum or port if available) and install to /usr/local/lib/cds_backend, /etc/, /usr/local/bin etc.  Consult the top of of install.sh to see exactly where stuff is installed.
+
+How do I run it?
+------
+
+See below! But, in a nutshell......
+$ cds_run.pl --route {routename_no_path} [--input-inmeta /path/to/metadata/if/applicable]
+
+Where are the logs?
+------
+
+In /var/log/cds_backend/{routename}.
+
+Can I ship logging elsewhere?
+------
+
+You could use something like logstash to do this, or you could read DBLOGGING.txt to log out to a database.  cloudworkflowserver and internalworkflow have dashboards built to read this information.
+
+Understanding CDS
+============
+
 The Route File
 -----
 
