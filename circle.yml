@@ -1,7 +1,8 @@
 #first version of a config for testing via CircleCI
 
 machine:
-  ruby: ruby-2.0.0p0
+  ruby:
+    version: ruby-2.0.0p0
   
 checkout:
   post:
