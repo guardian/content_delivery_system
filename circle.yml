@@ -2,8 +2,8 @@
 
 machine:
   ruby:
-    version: ruby-2.0.0p0
-  
+    version: ruby-2.0.0
+    
 checkout:
   post:
     - ./install.sh -y
