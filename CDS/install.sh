@@ -262,7 +262,6 @@ if [ -x "${GEM}" ]; then
 	echo Installing Google client API library for Ruby...
 	gem install google-api-client launchy thin
 
-	cd ${SOURCE_DIR}/Ruby
 	echo Building and installing CDS library for Ruby...
 	gem build ${SOURCE_DIR}/Ruby/cdslib.gemspec
 	gem install ${SOURCE_DIR}/Ruby/cdslib-1.0.gem
