@@ -338,5 +338,12 @@ fcpxml = File.read($xmlfileinput)
 
 puts "Attempting to import Final Cut Pro XML file"
 
-post_xml("http://#{$host}/nle/item/#{fileRef.memberOfItem.id}/sidecar/?platform=mac&nle=ppro",fcpxml)
+#post_xml("http://#{$host}/nle/item/#{fileRef.memberOfItem.id}/sidecar/?platform=mac&nle=ppro",fcpxml)
 
+require 'rest_client'
+
+$resturl = "http://#{$user}:#{$passwd}@#{$host}/master/#{fileRef.memberOfItem.id}/ingest/upload_edl/"
+
+response = RestClient.post $resturl, :edl_file => File.new($xmlfileinput)
+
+puts response.to_str
