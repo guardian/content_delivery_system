@@ -6,5 +6,8 @@ machine:
     
 checkout:
   post:
-    - sudo ./install.sh -y
+    - sudo ./CDS/install.sh -y
     
+test:
+  override:
+    - bash ./tests/runtests.sh
