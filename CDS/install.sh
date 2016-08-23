@@ -1,5 +1,23 @@
 #!/bin/bash
 
+#from http://stackoverflow.com/questions/3915040/bash-fish-command-to-print-absolute-path-to-a-file
+function abspath() {
+    # generate absolute path from relative path
+    # $1     : relative filename
+    # return : absolute path
+    if [ -d "$1" ]; then
+        # dir
+        (cd "$1"; pwd)
+    elif [ -f "$1" ]; then
+        # file
+        if [[ $1 == */* ]]; then
+            echo "$(cd "${1%/*}"; pwd)/${1##*/}"
+        else
+            echo "$(pwd)/$1"
+        fi
+    fi
+}
+
 #this script #installs the Content Delivery System onto the given system
 
 #Configuration
@@ -23,11 +41,12 @@ MAPPINGS_PERM=0660
 LOG_PERM=0770
 #End config
 
-SOURCE_DIR=`dirname "$0"`
+SOURCE_DIR=$(abspath "${BASH_SOURCE%/*}")
 if [ "${SOURCE_DIR}" == "." ]; then
 	SOURCE_DIR=$PWD
 fi
 
+echo Running in ${SOURCE_DIR}
 PRINSTALLED=0
 
 echo CDS Backend Installer script v1.2 $Rev$ $LastChangedDate$
@@ -227,6 +246,9 @@ if [ "${PRINSTALLED}" == "0" ]; then
 	echo
 	echo Type ENTER to continue or CTRL-C to exit
 	echo
+	if [  "${yestoall}" == "1" ]; then
+		exit 1
+	fi
 	read junk
 fi
 
@@ -265,48 +287,55 @@ if [ -x "${GEM}" ]; then
 	echo Installing Rest Client library for Ruby...
 	gem install rest-client
 
+	cd ${SOURCE_DIR}/Ruby
 	echo Building and installing CDS library for Ruby...
-	gem build ${SOURCE_DIR}/Ruby/cdslib.gemspec
-	gem install ${SOURCE_DIR}/Ruby/cdslib-1.0.gem
+	gem build cdslib.gemspec
+	gem install cdslib-1.0.gem
 	if [ "$?" != "0" ]; then
 		echo Gem reported an error building or installing the library.
 		echo Ensure that the Ruby development files are installed \(ruby-dev package on Debian-based systems\), or try updating your Ruby installation and trying again.
-		exit
+		exit 1
 	fi
 
 	echo Building and installing CDS-Vidispine interface for Ruby...
-	gem build ${SOURCE_DIR}/Ruby/vslib.gemspec
-	gem install ${SOURCE_DIR}/Ruby/vslib-1.0.gem
+	gem build vslib.gemspec
+	gem install vslib-1.0.gem
 
 	if [ "$?" != "0" ]; then
 		echo Gem reported an error building or installing the library.
 		echo Ensure that the Ruby development files are installed \(ruby-dev package on Debian-based systems\), or try updating your Ruby installation and trying again.
-		exit
+		exit 1
 	fi
 
 	echo Building and installing R2 Newspaper Integration interface for Ruby...
-	gem build ${SOURCE_DIR}/Ruby/R2NewspaperIntegration.gemspec
-	gem install ${SOURCE_DIR}/Ruby/R2NewspaperIntegration-1.0.gem
+	gem build R2NewspaperIntegration.gemspec
+	gem install R2NewspaperIntegration-1.0.gem
 
 	if [ "$?" != "0" ]; then
 		echo Gem reported an error building or installing the library.
 		echo Ensure that the Ruby development files are installed \(ruby-dev package on Debian-based systems\), or try updating your Ruby installation and trying again.
-		exit
+		exit 1
 	fi
 
 	echo Building and installing Elemental interface for Ruby...
-	gem build ${SOURCE_DIR}/Ruby/elementallib.gemspec
-	gem install ${SOURCE_DIR}/Ruby/elementallib-1.0.gem
+	gem build elementallib.gemspec
+	gem install elementallib-1.0.gem
+	
+	if [ "$?" != "0" ]; then
+			echo Gem reported an error building or installing the library.
+			echo Ensure that the Ruby development files are installed \(ruby-dev package on Debian-based systems\), or try updating your Ruby installation and trying again.
+			exit 1
+	fi
+	
+	echo Building and installing Thumbor interface for Ruby...
+	gem build thumborlib.gemspec
+	gem install thumborlib-1.0.gem
 
-        echo Building and installing Thumbor interface for Ruby...
-        gem build ${SOURCE_DIR}/Ruby/thumborlib.gemspec
-        gem install ${SOURCE_DIR}/Ruby/thumborlib-1.0.gem
-
-        if [ "$?" != "0" ]; then
-                echo Gem reported an error building or installing the library.
-                echo Ensure that the Ruby development files are installed \(ruby-dev package on Debian-based systems\), or try updating your Ruby installation and trying again.
-                exit
-        fi
+	if [ "$?" != "0" ]; then
+			echo Gem reported an error building or installing the library.
+			echo Ensure that the Ruby development files are installed \(ruby-dev package on Debian-based systems\), or try updating your Ruby installation and trying again.
+			exit 1
+	fi
 	
 	cd ${SOURCE_DIR}
 	echo ------------------------------------------------------
@@ -316,6 +345,9 @@ else
 	echo
 	echo Type ENTER to continue or CTRL-C to exit
 	echo
+	if [  "${yestoall}" == "1" ]; then
+		exit 1
+	fi
 	read junk
 fi
 
