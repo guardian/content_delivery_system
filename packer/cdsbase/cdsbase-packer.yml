@@ -1,0 +1,19 @@
+variables:
+  aws_access_key: ""
+  aws_secret_key: ""
+builders:
+  - type: "amazon-ebs"
+    access_key: "{{user `aws_access_key`}}"
+    secret_key: "{{user `aws_secret_key`}}"
+    region: "eu-west-1"
+    source_ami: ami-ed82e39e
+    instance_type: "t2.medium"
+    ssh_username: ubuntu
+    iam_instance_profile: "WorkflowMaster-Role"
+    ami_name: "CDS base box build {{timestamp}}"
+provisioners:
+  - type: shell
+    execute_command: "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
+    script: "cloud-init-build.sh"
+    pause_before: "30s"
+    
