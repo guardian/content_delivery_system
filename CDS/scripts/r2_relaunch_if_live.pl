@@ -92,7 +92,7 @@ print "Page $r2_id appears to be currently live at $page_url.\n";
 
 unless($testing){
 	print "Attempting to re-launch the page using Octopus ID $oct_id...\n";
-	attempts=0;
+	my $attempts=0;
 	do{
 		++$attempts;
 		$response=$ua->get(make_url('article','launch',$oct_id));

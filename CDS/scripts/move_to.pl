@@ -37,7 +37,7 @@ if( defined($ENV{'dest-dated-folder'}))
 {
 	if($ENV{'dest-dated-folder'} eq "true")
 	{
-		print STDOUT "MESSAGE: use dest-dated-folder ".$ENV{'dest-dated-folder'}". specified\n";
+		print STDOUT "MESSAGE: use dest-dated-folder ".$ENV{'dest-dated-folder'}." specified\n";
 		$useDatedFolder = 1;	
 	}
 }

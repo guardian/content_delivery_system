@@ -32,5 +32,4 @@ die "-FATAL: Unable to connect to cache database '$cachefile'" unless($cache);
 
 my $r=$cache->remove_all_by_name($sourceurl);
 print "INFO: Encodingdotcom::Cache returned $r.\n";
-}
 
