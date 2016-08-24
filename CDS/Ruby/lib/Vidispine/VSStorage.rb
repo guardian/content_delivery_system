@@ -58,6 +58,14 @@ class VSStorage < VSApi
         end#if(storageid!-nil)
     end #def populate
     
+    def createFileEntity(filepath)
+        vsdoc = self.request("/storage/#{@id}/file", method: "POST",
+                             query: { 'createOnly' => 'true',
+                             'path' => filepath },
+                             content_type: "text/plain")
+        return VSFile.new(vsdoc,self)
+    end
+    
     #yields methods of given type (file:, http:, etc.)
     def methodsOfType(type)
         typeRegex=/^#{type}/
