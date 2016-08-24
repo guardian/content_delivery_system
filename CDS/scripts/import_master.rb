@@ -28,6 +28,7 @@ require 'yaml'
 require 'awesome_print'
 require 'fileutils'
 require 'net/http'
+require 'rest_client'
 
 class InvalidMetadataError < StandardError
 end
@@ -193,6 +194,10 @@ else
 end
 $logger.info("Done")
 
+$logger.info("Attempting to add Vidispine file object")
+
+storage.createFileEntity(mediaFile)
+
 $logger.info("Looking up file reference")
 #FIXME: might not work with subdirectories in the storage
 attempts = 0
@@ -339,8 +344,6 @@ fcpxml = File.read($xmlfileinput)
 puts "Attempting to import Final Cut Pro XML file"
 
 #post_xml("http://#{$host}/nle/item/#{fileRef.memberOfItem.id}/sidecar/?platform=mac&nle=ppro",fcpxml)
-
-require 'rest_client'
 
 $resturl = "http://#{$user}:#{$passwd}@#{$host}/master/#{fileRef.memberOfItem.id}/ingest/upload_edl/"
 
