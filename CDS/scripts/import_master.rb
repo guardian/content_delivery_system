@@ -196,7 +196,7 @@ $logger.info("Done")
 
 $logger.info("Attempting to add Vidispine file object")
 
-storage.createFileEntity(mediaFile)
+storage.createFileEntity(File.basename(mediaFile))
 
 $logger.info("Looking up file reference")
 #FIXME: might not work with subdirectories in the storage
