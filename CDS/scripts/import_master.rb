@@ -29,6 +29,7 @@ require 'awesome_print'
 require 'fileutils'
 require 'net/http'
 require 'rest_client'
+require 'Vidispine/VSItem'
 
 class InvalidMetadataError < StandardError
 end
@@ -252,6 +253,7 @@ else
 			'gnm_commission_workinggroup' => proj.metadata['gnm_commission_workinggroup'],
 			'__collection' => $project,
 			'__ancestor_collection' => $project,
+			'gnm_master_generic_status' => 'Value',
 			}.merge!($extraMeta),
 			tags: $transcodeTags,
 		)
@@ -265,6 +267,7 @@ else
 			'gnm_commission_workinggroup' => proj.metadata['gnm_commission_workinggroup'],
 			'__collection' => $project,
 			'__ancestor_collection' => $project,
+			'gnm_master_generic_status' => 'Value',
 			}.merge!($extraMeta),
 			tags: [],
 		)
@@ -323,6 +326,25 @@ puts "Imported asset can be found at #{fileRef.memberOfItem.id}"
 
 $store.set('meta', {'master_id' => fileRef.memberOfItem.id})
 
+item=VSItem.new($host,$port,$user,$passwd)
+
+begin
+    item.populate(fileRef.memberOfItem.id)
+rescue VSException=>e
+    puts "-ERROR: Unable to look up Vidispine item '#{vsid}'"
+    puts e.to_s
+    #exit(1)
+rescue Exception=>e
+    puts "-ERROR: Unable to look up Vidispine item '#{vsid}'"
+    puts e.message
+    puts e.backtrace
+    #exit(1)
+end
+
+
+item.setMetadata({ 'gnm_master_generic_status' => 'Value' }, groupname: 'MasterGeneric')
+item.setMetadata({ 'gnm_master_generic_status' => '' }, groupname: 'MasterGeneric')
+
 #once asset is imported, should update the metadata with project & commission names, etc.
 #exit(7)
 
@@ -347,6 +369,10 @@ puts "Attempting to import Final Cut Pro XML file"
 
 $resturl = "http://#{$user}:#{$passwd}@#{$host}/master/#{fileRef.memberOfItem.id}/ingest/upload_edl/"
 
+ap $resturl
+
 response = RestClient.post $resturl, :edl_file => File.new($xmlfileinput)
+
+ap response
 
 puts response.to_str
