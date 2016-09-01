@@ -24,6 +24,10 @@ fi
 
 USERNAME=`${DATASTORE} subst "$username"`
 HOST=`${DATASTORE} subst "$hostname"`
+if [ "$HOST" == "" ]; then
+	echo "-ERROR: No hostname found. You need to specify one with the <hostname> tag in the routefile."
+	exit 1
+fi
 PASSWORD=`${DATASTORE} subst "$password"`
 if [ "$HOST" == "" ]; then HOST=$hostname; fi
 REMOTEPATH=`${DATASTORE} subst "${remote_path}"`
@@ -65,29 +69,64 @@ fi
 
 export ASPERA_SCP_PASS=$PASSWORD
 
+RESULT=0
+
 if [ "$cf_media_file" != "" ]; then
 	ascp --host=$HOST --user=$USERNAME --mode=send $EXTRAFLAGS $cf_media_file $REMOTEPATH/$UPLOAD_MEDIA
+	
+	CODE=$?
+
+	if [ "$CODE" != "0" ]; then
+       echo -ERROR: Aspera encountered an error $? uploading the media file.
+       $RESULT=1
+    else
+		echo +SUCCESS: Aspera media file upload completed successfully.
+	fi
 fi
 
 if [ "$cf_meta_file" != "" ]; then
 	ascp --host=$HOST --user=$USERNAME --mode=send $EXTRAFLAGS $cf_meta_file $REMOTEPATH/$UPLOAD_META
+	
+	CODE=$?
+
+	if [ "$CODE" != "0" ]; then
+       echo -ERROR: Aspera encountered an error $? uploading the meta file.
+       $RESULT=1
+    else
+		echo +SUCCESS: Aspera meta file upload completed successfully.
+	fi
 fi
 
 if [ "$cf_inmeta_file" != "" ]; then
 	ascp --host=$HOST --user=$USERNAME --mode=send $EXTRAFLAGS $cf_inmeta_file $REMOTEPATH/$UPLOAD_INMETA
+	
+	CODE=$?
+
+	if [ "$CODE" != "0" ]; then
+       echo -ERROR: Aspera encountered an error $? uploading the inmeta file.
+       $RESULT=1
+    else
+		echo +SUCCESS: Aspera inmeta file upload completed successfully.
+	fi
 fi
 
 if [ "$cf_xml_file" != "" ]; then
 	ascp --host=$HOST --user=$USERNAME --mode=send $EXTRAFLAGS $cf_xml_file $REMOTEPATH/$UPLOAD_XML
+	
+	CODE=$?
+
+	if [ "$CODE" != "0" ]; then
+       echo -ERROR: Aspera encountered an error $? uploading the XML file.
+       $RESULT=1
+    else
+		echo +SUCCESS: Aspera XML file upload completed successfully.
+	fi
 fi
 
-CODE=$?
-rm -f $FLAGFILE
-
-if [ "$CODE" != "0" ]; then
-       echo -FATAL: Aspera encountered an error $? uploading the media file.
+if [ "$RESULT" != "0" ]; then
+       echo "-FATAL: Aspera encountered an error or errors uploading the file(s)."
        exit 1
 fi
 
-echo +SUCCESS: Aspera upload completed successfully.
+echo "+SUCCESS: Aspera upload(s) completed successfully."
 exit 0
