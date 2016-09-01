@@ -67,6 +67,7 @@ if [ "$cf_xml_file" != "" ]; then
 	UPLOAD_XML=$FILE_ONLY
 fi
 
+# The line below sets an environment variable which is used by ascp for its password
 export ASPERA_SCP_PASS=$PASSWORD
 
 RESULT=0
