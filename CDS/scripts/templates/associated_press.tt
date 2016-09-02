@@ -11,7 +11,7 @@
     <catalogRef href="http://cv.ap.org/customer/cv/catalog4customers-1.xml" />
     <rightsInfo>
         <copyrightHolder literal="GuardianNewsandMediaLimited" />
-        <copyrightNotice>Copyright [% meta.gnm_master_generic_publish.substr(0, 4) %] Guardian News and Media Limited. All rights reserved.</copyrightNotice>
+        <copyrightNotice>Copyright [% meta.created.substr(0, 4) %] Guardian News and Media Limited. All rights reserved.</copyrightNotice>
         <usageTerms>Sample usage limitations (Replace)</usageTerms>
     </rightsInfo>
     <itemMeta>
