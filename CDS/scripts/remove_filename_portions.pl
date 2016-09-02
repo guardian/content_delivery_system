@@ -105,9 +105,10 @@ my ($src_file,$new_file_name,$dirname,$debug) = @_;
 		}
 	}
 	
+	$new_file_name="$dirname/$new_file_name";
+	
 	if($ENV{'symlink'}){
-		print "DEBUG: symlinking $src_file to $dirname/$new_file_name\n" if($debug);
-		$new_file_name="$dirname/$new_file_name";
+		print "DEBUG: symlinking $src_file to $new_file_name\n" if($debug);
 		make_path($dirname);
 		my $rv=symlink($src_file,$new_file_name);
 		unless($rv){
@@ -116,8 +117,7 @@ my ($src_file,$new_file_name,$dirname,$debug) = @_;
 			exit 1 if($ENV{'fail_immediate'});
 		}
 	} else {
-		print "DEBUG: moving $src_file to $dirname/$new_file_name\n" if($debug);
-		$new_file_name="$dirname/$new_file_name";
+		print "DEBUG: moving $src_file to $new_file_name\n" if($debug);
 		my $rv=move($src_file,$new_file_name);
 		unless($rv){
 			print "-ERROR: Unable to rename ".$ENV{$_}.": $!\n";
@@ -125,7 +125,7 @@ my ($src_file,$new_file_name,$dirname,$debug) = @_;
 			exit 1 if($ENV{'fail_immediate'});
 		}
 	}
-	return 1;
+	return $new_file_name;
 	
 }
 
@@ -173,7 +173,7 @@ foreach(qw/cf_media_file cf_meta_file cf_inmeta_file cf_xml_file/){
 	my $rv=do_file_move($ENV{$_},$new_file_name,$dirname,$debug);
 	
 	if($rv){
-		print $fhtemp "$_=$new_file_name\n";
+		print $fhtemp "$_=$rv\n";
 	} else {
 		++$failures;
 	}
