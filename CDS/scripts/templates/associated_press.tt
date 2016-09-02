@@ -1,0 +1,45 @@
+[% USE date -%]
+[% datenow = date.format(now,'%Y-%m-%dT%H:%M:%SZ') %]
+[% frameinfo = tracks.vide.framerate.split('/') %]
+[% IF tracks.vide.width > 1279 %]
+    [% definition = "HD" %]
+[% ELSE %]
+    [% definition = "SD" %]
+[% END %]
+<newsItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://iptc.org/std/nar/2006-10-01/" guid="tag:gnm,[% meta.created.substr(0, 4) %]:[% meta.itemId %]" standard="NewsML-G2" standardversion="2.12" conformance="power">
+    <catalogRef href="http://www.iptc.org/std/catalog/catalog.IPTC-G2-Standards_6.xml" />
+    <catalogRef href="http://cv.ap.org/customer/cv/catalog4customers-1.xml" />
+    <rightsInfo>
+        <copyrightHolder literal="GuardianNewsandMediaLimited" />
+        <copyrightNotice>Copyright [% meta.gnm_master_generic_publish.substr(0, 4) %] Guardian News and Media Limited. All rights reserved.</copyrightNotice>
+        <usageTerms>Sample usage limitations (Replace)</usageTerms>
+    </rightsInfo>
+    <itemMeta>
+        <itemClass qcode="ninat:video" />
+        <provider literal="theguardian.com">
+            <name>Guardian News and Media Limited</name>
+        </provider>
+        <versionCreated>[% datenow %]</versionCreated>
+        <firstCreated>[% datenow %]</firstCreated>
+        <pubStatus qcode="stat:usable" />
+    </itemMeta>
+    <contentMeta>
+        <contentCreated>[% meta.created.substr(0, 19) _ 'Z' %]</contentCreated>
+        <contentModified>[% meta.created.substr(0, 19) _ 'Z' %]</contentModified>
+        <infoSource role="cRole:source">
+            <name>[% meta.gnm_master_generic_source %]</name>
+        </infoSource>
+        <language tag="en" />
+        <altId type="approvider:metadata">[% meta.gnm_commission_title %]</altId>
+        <slugline>[% meta.gnm_master_website_headline %]</slugline>
+        <headline>[% meta.gnm_master_website_headline %]</headline>
+        <dateline>[% date.format('12:00:00 ' _ meta.gnm_master_generic_publish.substr(8, 2) _ ':' _ meta.gnm_master_generic_publish.substr(5, 2) _ ':' _ meta.gnm_master_generic_publish.substr(0, 4), '%e %B %Y') %]</dateline>
+        <description>
+            [% meta.gnm_master_website_standfirst %]
+        </description>
+    </contentMeta>
+    <contentSet>
+        <remoteContent residref="[% filename %]" size="[% movie.size %]" width="[% tracks.vide.width %]" height="[% tracks.vide.height %]" videoframerate="[% frameinfo.0 / frameinfo.1 %]" videoaspectratio="[% movie.aspect %]" duration="[% movie.duration %]" durationunit="timeunit:seconds" videodefinition="videodef:[% definition %]" version="1">
+        </remoteContent>
+    </contentSet>
+</newsItem>
