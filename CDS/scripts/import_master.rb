@@ -23,13 +23,13 @@ require 'date'
 require 'PLUTO/Entity'
 require 'Vidispine/VSStorage'
 require 'Vidispine/VSMetadataElements'
+require 'Vidispine/VSCollection'
+require 'Vidispine/VSItem'
 require 'CDS/Datastore'
 require 'yaml'
 require 'awesome_print'
 require 'fileutils'
 require 'net/http'
-require 'rest_client'
-require 'Vidispine/VSItem'
 
 class InvalidMetadataError < StandardError
 end
@@ -251,9 +251,8 @@ else
 			'gnm_commission_title' => proj.metadata['gnm_commission_title'],
 			'gnm_project_headline' => proj.metadata['gnm_project_headline'],
 			'gnm_commission_workinggroup' => proj.metadata['gnm_commission_workinggroup'],
-			'__collection' => $project,
-			'__ancestor_collection' => $project,
-			'gnm_master_generic_status' => 'Value',
+#			'__collection' => $project,
+#			'__ancestor_collection' => $project,	
 			}.merge!($extraMeta),
 			tags: $transcodeTags,
 		)
@@ -265,9 +264,8 @@ else
 			'gnm_commission_title' => proj.metadata['gnm_commission_title'],
 			'gnm_project_headline' => proj.metadata['gnm_project_headline'],
 			'gnm_commission_workinggroup' => proj.metadata['gnm_commission_workinggroup'],
-			'__collection' => $project,
-			'__ancestor_collection' => $project,
-			'gnm_master_generic_status' => 'Value',
+#			'__collection' => $project,
+#			'__ancestor_collection' => $project,
 			}.merge!($extraMeta),
 			tags: [],
 		)
@@ -326,28 +324,32 @@ puts "Imported asset can be found at #{fileRef.memberOfItem.id}"
 
 $store.set('meta', {'master_id' => fileRef.memberOfItem.id})
 
-item=VSItem.new($host,$port,$user,$passwd)
+#once asset is imported, should update the metadata with project & commission names, etc.
+#exit(7)
+
+itemimported=VSItem.new($host,$port,$user,$passwd) 
 
 begin
-    item.populate(fileRef.memberOfItem.id)
+    itemimported.populate(fileRef.memberOfItem.id)
 rescue VSException=>e
     puts "-ERROR: Unable to look up Vidispine item '#{vsid}'"
     puts e.to_s
     #exit(1)
 rescue Exception=>e
     puts "-ERROR: Unable to look up Vidispine item '#{vsid}'"
-    puts e.message
+   puts e.message
     puts e.backtrace
     #exit(1)
 end
 
 
-item.setMetadata({ 'gnm_master_generic_status' => 'Value' }, groupname: 'MasterGeneric')
-item.setMetadata({ 'gnm_master_generic_status' => '' }, groupname: 'MasterGeneric')
+collection = VSCollection.new($host,$port,$user,$passwd)
 
-#once asset is imported, should update the metadata with project & commission names, etc.
-#exit(7)
+collection.populate($project)
 
+collection.addChild(fileRef.memberOfItem)
+
+itemimported.setMetadata({ 'gnm_master_generic_status' => 'None' }, groupname: nil)
 
 def post_xml url_string, xml_string
   uri = URI.parse url_string
@@ -367,12 +369,11 @@ puts "Attempting to import Final Cut Pro XML file"
 
 #post_xml("http://#{$host}/nle/item/#{fileRef.memberOfItem.id}/sidecar/?platform=mac&nle=ppro",fcpxml)
 
-$resturl = "http://#{$user}:#{$passwd}@#{$host}/master/#{fileRef.memberOfItem.id}/ingest/upload_edl/"
+require 'rest_client'
 
-ap $resturl
+$resturl = "http://#{$user}:#{$passwd}@#{$host}/master/#{fileRef.memberOfItem.id}/ingest/upload_edl/"
 
 response = RestClient.post $resturl, :edl_file => File.new($xmlfileinput)
 
-ap response
-
 puts response.to_str
+
