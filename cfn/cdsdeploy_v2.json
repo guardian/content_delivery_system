@@ -1,194 +1,11 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Metadata": {
-    "AWS::CloudFormation::Designer": {
-      "4E047AC5-18E5-4E2F-AF8C-5999FFECFCDE": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 120,
-          "y": 270
-        },
-        "z": 1,
-        "embeds": []
-      },
-      "80182929-8ac7-40b8-b2ba-e3f02cf98bd0": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 450,
-          "y": -50
-        },
-        "z": 1,
-        "embeds": [],
-        "isrelatedto": [
-          "5e49ff3e-d439-458d-a88d-3d54e458fd26"
-        ]
-      },
-      "2148edd0-73d8-4f3f-8579-7a8c5808f685": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 310,
-          "y": 30
-        },
-        "z": 1,
-        "embeds": [],
-        "isrelatedto": [
-          "80182929-8ac7-40b8-b2ba-e3f02cf98bd0"
-        ]
-      },
-      "5e49ff3e-d439-458d-a88d-3d54e458fd26": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 550,
-          "y": 80
-        },
-        "z": 1,
-        "embeds": [],
-        "isrelatedto": [
-          "e5e530b8-ea6b-481f-8859-b140a44273a4",
-          "b7c9f195-625c-4a86-b3d1-5d0985f019cd",
-          "2289a7f9-1950-4ee4-9c44-d54a9225aca7",
-          "3f662942-9fac-418b-acbe-f6d860fe584d",
-          "396b3bb4-c0c8-46d4-a281-8ca04f030443",
-          "161e4c0a-f635-4f6d-968a-7c61dd6b0929"
-        ]
-      },
-      "2289a7f9-1950-4ee4-9c44-d54a9225aca7": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 120,
-          "y": 150
-        },
-        "z": 1,
-        "embeds": []
-      },
-      "3f662942-9fac-418b-acbe-f6d860fe584d": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 600,
-          "y": 180
-        },
-        "z": 1,
-        "embeds": []
-      },
-      "396b3bb4-c0c8-46d4-a281-8ca04f030443": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 60,
-          "y": 150
-        },
-        "z": 1,
-        "embeds": [],
-        "isrelatedto": [
-          "4E047AC5-18E5-4E2F-AF8C-5999FFECFCDE"
-        ]
-      },
-      "161e4c0a-f635-4f6d-968a-7c61dd6b0929": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 660,
-          "y": 180
-        },
-        "z": 1,
-        "embeds": []
-      },
-      "e5e530b8-ea6b-481f-8859-b140a44273a4": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 300,
-          "y": 180
-        },
-        "z": 1,
-        "embeds": []
-      },
-      "b7c9f195-625c-4a86-b3d1-5d0985f019cd": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 420,
-          "y": 180
-        },
-        "z": 1,
-        "embeds": []
-      },
-      "0d9269e0-0451-484d-b302-0cced8d127d8": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 30,
-          "y": 30
-        },
-        "z": 1,
-        "embeds": [],
-        "isrelatedto": [
-          "396b3bb4-c0c8-46d4-a281-8ca04f030443"
-        ]
-      },
-      "54695e51-fe0f-4cc2-aa58-1af4e2a2889a": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 300,
-          "y": -120
-        },
-        "z": 1,
-        "embeds": [],
-        "isassociatedwith": [
-          "2148edd0-73d8-4f3f-8579-7a8c5808f685"
-        ]
-      },
-      "fd56009d-d1ab-409c-8759-8b6c2a0be0c7": {
-        "size": {
-          "width": 60,
-          "height": 60
-        },
-        "position": {
-          "x": 180,
-          "y": -110
-        },
-        "z": 1,
-        "embeds": []
-      }
-    }
-  },
   "Parameters": {
     "CDSGroupName": {
       "Type": "String",
       "Description": "Name of the CDS group to create. Don't use capital letters, or the deploy will fail on creating S3 buckets."
     },
-    "CDSInstanceType": {
+    "InstanceType": {
       "Type": "String",
       "Description": "AWS instance type for the group. Only choose c3/c4 if you are doing onboard transcoding.  Note that you need m3 or c3 to get instance storage.",
       "Default": "t2.micro",
@@ -203,7 +20,23 @@
         "c4.2xlarge"
       ]
     },
-    "CDSKeyPairName": {
+    "App": {
+      "Type": "String",
+      "Description": "Name of the app"
+    },
+    "Stack": {
+      "Type": "String",
+      "Description": "Name of the stack"
+    },
+    "Stage": {
+      "Type": "String",
+      "Description": "Name of the stage",
+      "AllowedValues": [
+        "CODE",
+        "PROD"
+      ]
+    },
+    "KeyName": {
       "Type": "String",
       "Description": "Name of an existing key pair, which will be given root access to the instances"
     },
@@ -256,10 +89,10 @@
         },
         "ImageId": "ami-4fbcc83c",
         "InstanceType": {
-          "Ref": "CDSInstanceType"
+          "Ref": "InstanceType"
         },
         "KeyName": {
-          "Ref": "CDSKeyPairName"
+          "Ref": "KeyName"
         },
         "SecurityGroups": [
           "sg-7830ef1f"
@@ -295,7 +128,9 @@
               "Fn::Join": [
                 "",
                 [
-                  { "Ref": "CDSGroupName" },
+                  {
+                    "Ref": "CDSGroupName"
+                  },
                   " [Autoscaled]"
                 ]
               ]
@@ -313,11 +148,6 @@
           "subnet-577ca433",
           "subnet-a0d211d6"
         ]
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "2148edd0-73d8-4f3f-8579-7a8c5808f685"
-        }
       }
     },
     "IAMR41WUG": {
@@ -674,11 +504,6 @@
         "VisibilityTimeout": {
           "Ref": "MessageVisibilityTimeout"
         }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "396b3bb4-c0c8-46d4-a281-8ca04f030443"
-        }
       }
     },
     "DeadLetter": {
@@ -700,11 +525,6 @@
         "VisibilityTimeout": {
           "Ref": "MessageVisibilityTimeout"
         }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "4E047AC5-18E5-4E2F-AF8C-5999FFECFCDE"
-        }
       }
     },
     "TestOutputTopic": {
@@ -721,11 +541,6 @@
               "test"
             ]
           ]
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "161e4c0a-f635-4f6d-968a-7c61dd6b0929"
         }
       }
     },
@@ -766,11 +581,6 @@
         "ProvisionedThroughput": {
           "ReadCapacityUnits": 1,
           "WriteCapacityUnits": 1
-        }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "e5e530b8-ea6b-481f-8859-b140a44273a4"
         }
       }
     },
@@ -869,11 +679,6 @@
         },
         "PolicyType": "SimpleScaling",
         "ScalingAdjustment": 1
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "54695e51-fe0f-4cc2-aa58-1af4e2a2889a"
-        }
       }
     }
   }
