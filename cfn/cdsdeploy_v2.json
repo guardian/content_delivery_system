@@ -97,14 +97,9 @@
         "SecurityGroups": [
           "sg-7830ef1f"
         ]
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "80182929-8ac7-40b8-b2ba-e3f02cf98bd0"
-        }
       }
     },
-    "ASASG2FTUE": {
+    "AutoScalingGroup": {
       "Type": "AWS::AutoScaling::AutoScalingGroup",
       "Properties": {
         "AvailabilityZones": [
@@ -150,7 +145,7 @@
         ]
       }
     },
-    "IAMR41WUG": {
+    "InstanceProfile": {
       "Type": "AWS::IAM::Role",
       "Properties": {
         "AssumeRolePolicyDocument": {
@@ -377,11 +372,6 @@
           }
         ],
         "Path": "/"
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "5e49ff3e-d439-458d-a88d-3d54e458fd26"
-        }
       }
     },
     "CDSInstanceProfile": {
@@ -390,7 +380,7 @@
         "Path": "/",
         "Roles": [
           {
-            "Ref": "IAMR41WUG"
+            "Ref": "InstanceProfile"
           }
         ]
       }
@@ -614,14 +604,9 @@
           "ReadCapacityUnits": 1,
           "WriteCapacityUnits": 1
         }
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "b7c9f195-625c-4a86-b3d1-5d0985f019cd"
-        }
       }
     },
-    "CWA2VMP8": {
+    "CloudwatchAlarms": {
       "Type": "AWS::CloudWatch::Alarm",
       "Properties": {
         "ActionsEnabled": true,
@@ -647,11 +632,6 @@
             }
           }
         ]
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "0d9269e0-0451-484d-b302-0cced8d127d8"
-        }
       }
     },
     "ScalingDownPolicy": {
@@ -659,23 +639,18 @@
       "Properties": {
         "AdjustmentType": "ChangeInCapacity",
         "AutoScalingGroupName": {
-          "Ref": "ASASG2FTUE"
+          "Ref": "AutoScalingGroup"
         },
         "PolicyType": "SimpleScaling",
         "ScalingAdjustment": -1
-	  },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "fd56009d-d1ab-409c-8759-8b6c2a0be0c7"
-        }
-      }
+	  }
     },
     "ScalingUpPolicy": {
       "Type": "AWS::AutoScaling::ScalingPolicy",
       "Properties": {
         "AdjustmentType": "ChangeInCapacity",
         "AutoScalingGroupName": {
-          "Ref": "ASASG2FTUE"
+          "Ref": "AutoScalingGroup"
         },
         "PolicyType": "SimpleScaling",
         "ScalingAdjustment": 1
