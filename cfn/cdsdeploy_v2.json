@@ -78,7 +78,7 @@
     }
   },
   "Resources": {
-    "ASLC3C5GK": {
+    "LaunchConfig": {
       "Type": "AWS::AutoScaling::LaunchConfiguration",
       "Properties": {
         "IamInstanceProfile": {
@@ -114,7 +114,7 @@
         "HealthCheckGracePeriod": 300,
         "HealthCheckType": "EC2",
         "LaunchConfigurationName": {
-          "Ref": "ASLC3C5GK"
+          "Ref": "LaunchConfig"
         },
         "Tags": [
           {
@@ -418,11 +418,6 @@
             "Value": "Auto-deleting"
           }
         ]
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "2289a7f9-1950-4ee4-9c44-d54a9225aca7"
-        }
       }
     },
     "S3OutputBucket": {
@@ -458,11 +453,6 @@
             "Value": "Auto-deleting"
           }
         ]
-      },
-      "Metadata": {
-        "AWS::CloudFormation::Designer": {
-          "id": "3f662942-9fac-418b-acbe-f6d860fe584d"
-        }
       }
     },
     "TestInputQueue": {
