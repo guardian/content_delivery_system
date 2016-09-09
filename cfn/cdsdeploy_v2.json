@@ -37,7 +37,7 @@
       ]
     },
     "KeyName": {
-      "Type": "String",
+      "Type": "AWS::EC2::KeyPair::KeyName",
       "Description": "Name of an existing key pair, which will be given root access to the instances"
     },
     "MessageVisibilityTimeout": {
