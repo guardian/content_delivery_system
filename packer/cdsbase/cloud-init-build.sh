@@ -36,6 +36,8 @@ cp -v ffmpeg-bin/ffmpeg_g /usr/local/bin
 cp -v ffmpeg-bin/ffprobe /usr/local/bin
 cp -v ffmpeg-bin/ffprobe_g /usr/local/bin
 
+apt-get -y install ffmpeg2thera
+
 ###Step 7 - CDS
 echo ------------------------------------------
 echo Kickstarter: Setting up CDS workflow processing
