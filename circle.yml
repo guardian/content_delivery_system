@@ -7,7 +7,8 @@ machine:
 checkout:
   post:
     - sudo ./CDS/install.sh -y
-    
+    - bash ./CDS/riffraff.sh
+
 test:
   override:
     - bash ./tests/runtests.sh
