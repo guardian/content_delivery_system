@@ -7,10 +7,11 @@ machine:
     version: oraclejdk8
     
 checkout:
+  post:
+    - sudo ./CDS/install.sh -y
 
 test:
   override:
-    - sudo ./CDS/install.sh -y
     - bash ./tests/runtests.sh
 
 deployment:
