@@ -1,0 +1,25 @@
+{
+  "defaultStacks": ["multimedia"],
+  "packages": {
+    "content-delivery-system": {
+      "type": "autoscaling",
+      "data": {
+        "bucket": "gnm-multimedia-rr-deployables",
+        "publicReadAcl": false
+      }
+    }
+  },
+  "recipes": {
+    "default": {
+      "depends": [
+        "deploy"
+      ]
+    },
+    "deploy": {
+      "actionsBeforeApp": [
+        "content-delivery-system.uploadArtifacts",
+        "content-delivery-system.deploy"
+      ]
+    }
+  }
+}
