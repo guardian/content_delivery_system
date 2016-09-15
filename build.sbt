@@ -23,7 +23,3 @@ riffRaffUploadArtifactBucket := Option("riffraff-artifact")
 riffRaffUploadManifestBucket := Option("riffraff-builds")
 
 riffRaffManifestBranch := Option(System.getenv("CIRCLE_BRANCH")).getOrElse("dev")
-
-//riffRaffArtifactResources ++= Seq(
-//  riffRaffPackageType.value -> s"packages/${name.value}/${name.value}.zip"
-//)
