@@ -3,11 +3,19 @@
 machine:
   ruby:
     version: ruby-2.0.0
+  java:
+    version: oraclejdk8
     
 checkout:
   post:
     - sudo ./CDS/install.sh -y
-    
+
 test:
   override:
     - bash ./tests/runtests.sh
+
+deployment:
+  riffraff_upload:
+    branch: /.*/
+    commands:
+      - sbt riffRaffUpload
