@@ -30,7 +30,9 @@ if [ "$?" != "0" ]; then
 	echo Generated Packer config is not valid, not continuing.
 	exit 3
 fi
-
+# Use profile credentials
+export AWS_PROFILE=multimedia
 packer build "cdsbase-packer.json"
+unset AWS_PROFILE
 
 echo Completed.
