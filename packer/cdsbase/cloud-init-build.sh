@@ -22,7 +22,7 @@ rm -f /usr/bin/ruby
 rm -f /usr/bin/gem
 ln -s /usr/bin/ruby2.0 /usr/bin/ruby
 ln -s /usr/bin/gem2.0 /usr/bin/gem
-gem install awesome_print trollop sentry-raven aws-sdk-v1 aws-sdk-core aws-sdk-resources
+gem install awesome_print trollop sentry-raven aws-sdk-v1 aws-sdk-core aws-sdk-resources google-api-client launchy thin rest-client
 
 ###Step 6 - ffmpeg
 echo ------------------------------------------

@@ -264,29 +264,8 @@ fi
 #Attempt to install the AWS SDK for Ruby....
 GEM=`which gem`
 
-if [ -x "${GEM}" ]; then 
-	echo Installing Amazon Web Services libraries for Ruby...
-	gem install aws-sdk-v1
-	echo
+if [ -x "${GEM}" ]; then
 	echo -----------------------------------------------------
-	if [ "$?" != "0" ]; then
-		echo Gem reported an error installing the library.  This may be because it is already installed,
-		echo or it could be an error.  Ensure that the Ruby development files are installed \(ruby-dev package on Debian-based systems\), or try updating your Ruby installation and trying again.
-		echo Remember that the AWS library does NOT work with Ruby version 1.8 or 1.9.  If you have an error with Nokogiri, this is probably because the gem command is not for Ruby 2.x.  Make sure that you have ruby 2.0 installed and your default Gem installation is also from the 2.0 installation \(check with ruby --version and gem --version\).  The safest way to do this is to uninstall ruby1.8 and ruby-gems if you can.  The correct version of gem is included in the ruby2.0 package.
-		echo See the log immediately above for more information.
-		echo
-		echo Press \[ENTER\] to continue
-		read junk
-	else
-		echo AWS libraries installed sucessfully
-	fi
-
-	echo Installing Google client API library for Ruby...
-	gem install google-api-client launchy thin
-	
-	echo Installing Rest Client library for Ruby...
-	gem install rest-client
-
 	cd ${SOURCE_DIR}/Ruby
 	echo Building and installing CDS library for Ruby...
 	gem build cdslib.gemspec
