@@ -55,7 +55,6 @@ tar xvjf cloudworkflowscripts.tar.bz2
 mkdir -p /usr/local/cloudworkflowscripts
 mkdir -p /usr/local/lib/site_perl
 gem install aws-sdk-v1 certifi sentry-raven aws-sdk aws-sdk-resources elasticsearch
-aws s3 cp s3://gnm-multimedia-archivedtech/WorkflowMaster/cdsresponder.conf /etc
 
 ###Step 10 - crontabs
 echo ------------------------------------------
