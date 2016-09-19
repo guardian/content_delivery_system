@@ -41,10 +41,6 @@ echo ------------------------------------------
 echo Kickstarter: Setting up CDS workflow processing
 echo ------------------------------------------
 cd /tmp
-aws s3 cp s3://gnm-multimedia-archivedtech/WorkflowMaster/cds_install.tar.bz2 .
-tar xvjf cds_install.tar.bz2
-cd cds_install
-bash ./install.sh -y
 cpanm Data::UUID URL::Encode
 apt-get -y install libdbd-mysql-perl
 
@@ -58,12 +54,8 @@ aws s3 cp s3://gnm-multimedia-archivedtech/WorkflowMaster/cloudworkflowscripts.t
 tar xvjf cloudworkflowscripts.tar.bz2 
 mkdir -p /usr/local/cloudworkflowscripts
 mkdir -p /usr/local/lib/site_perl
-cp -v cdsresponder.rb /usr/local/cloudworkflowscripts
-
-cp -v upstart/cdsresponder.conf /etc/init
 gem install aws-sdk-v1 certifi sentry-raven aws-sdk aws-sdk-resources elasticsearch
 aws s3 cp s3://gnm-multimedia-archivedtech/WorkflowMaster/cdsresponder.conf /etc
-initctl start cdsresponder
 
 ###Step 10 - crontabs
 echo ------------------------------------------
