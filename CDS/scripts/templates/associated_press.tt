@@ -12,7 +12,7 @@
     <rightsInfo>
         <copyrightHolder literal="GuardianNewsandMediaLimited" />
         <copyrightNotice>Copyright [% meta.created.substr(0, 4) %] Guardian News and Media Limited. All rights reserved.</copyrightNotice>
-        <usageTerms>Sample usage limitations (Replace)</usageTerms>
+        <usageTerms>See restrictions</usageTerms>
     </rightsInfo>
     <itemMeta>
         <itemClass qcode="ninat:video" />
