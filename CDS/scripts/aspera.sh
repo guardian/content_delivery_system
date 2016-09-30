@@ -70,7 +70,7 @@ fi
 # The line below sets an environment variable which is used by ascp for its password
 export ASPERA_SCP_PASS=$PASSWORD
 
-RESULT=0
+RESULT="0"
 
 if [ "$cf_media_file" != "" ]; then
 	ascp --host=$HOST --user=$USERNAME --mode=send $EXTRAFLAGS $cf_media_file $REMOTEPATH/$UPLOAD_MEDIA
@@ -79,7 +79,7 @@ if [ "$cf_media_file" != "" ]; then
 
 	if [ "$CODE" != "0" ]; then
        echo -ERROR: Aspera encountered an error $? uploading the media file.
-       $RESULT=1
+       $RESULT="1"
     else
 		echo +SUCCESS: Aspera media file upload completed successfully.
 	fi
@@ -92,7 +92,7 @@ if [ "$cf_meta_file" != "" ]; then
 
 	if [ "$CODE" != "0" ]; then
        echo -ERROR: Aspera encountered an error $? uploading the meta file.
-       $RESULT=1
+       $RESULT="1"
     else
 		echo +SUCCESS: Aspera meta file upload completed successfully.
 	fi
@@ -105,7 +105,7 @@ if [ "$cf_inmeta_file" != "" ]; then
 
 	if [ "$CODE" != "0" ]; then
        echo -ERROR: Aspera encountered an error $? uploading the inmeta file.
-       $RESULT=1
+       $RESULT="1"
     else
 		echo +SUCCESS: Aspera inmeta file upload completed successfully.
 	fi
@@ -118,7 +118,7 @@ if [ "$cf_xml_file" != "" ]; then
 
 	if [ "$CODE" != "0" ]; then
        echo -ERROR: Aspera encountered an error $? uploading the XML file.
-       $RESULT=1
+       $RESULT="1"
     else
 		echo +SUCCESS: Aspera XML file upload completed successfully.
 	fi
