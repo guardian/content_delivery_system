@@ -4,50 +4,12 @@
 my $version='3.0.0-SVN (revision $Rev: 1411 $)';
 
 $ENV{'PATH'}="/usr/bin:/usr/local/bin:/bin:/usr/local/lib/cds_backend";
-# uploader.pl
-#
-# arguments list
-#
-# --route required
-# --input-media
-# --input-meta
-# --logging-id - added 15/01/14 - currently specifies a specific logfile name to use, for use in "captive deployment" situations.
-#
-# The following correspond to the initial specification for the system.
-# 
-# Scripts can be added at anytime without needing to modify this script.
-# The methods correspond to file names.  E.g. ftp_push relates to ftp_push.pl 
-#
-# If the script does not exist in the scripts folder, bail.
-#
-# input methods:
-#
-#	commandline - note, this method is internal to this script. 
-#	ftp_push
-#	ftp_pull
-# 	smb_pull
-#	watched_folder 
-#
-# process methods:
-#
-#	check_files
-#	engine_transcode
-#	checksum
-#	metaxform
-#	move_to
-#
-# output methods:
-#	
-#	ftp
-#	sftp
-#	archive_to_san
-#
+
 
 require 5.008008;
 use strict;
 use warnings;
 
-# use feature "switch";
 
 use XML::SAX;
 use Getopt::Long;
@@ -74,7 +36,6 @@ sub logOutput;
 print "\ncds_run version $version\n";
 
 #note that each of these is actually a regex expression, that will be evaluated as (start-of-string)expression(end-of-string).  Hence, .* means 'anything else' and all regex chars are valid.
-#my @invalidArguments=qw(PATH BASH.* DISPLAY UID EUID COLUMNS HISTCONTROL HISTFILE HISTFILESIZE HISTSIZE HOME HOSTNAME HOSTTYPE IFS LANG LINES LOGNAME LS_COLOURS MACHTYPE OLDPWD OSTYPE PATH PIPESTATUS PPID PS.* PWD SHELL SHELLOPTS SHLVL SSH.* TERM UID USER USERNAME XAUTHORITY XDG.*);
 my @invalidArguments=qw(PATH BASH.* DISPLAY UID EUID COLUMNS HISTCONTROL HISTFILE HISTFILESIZE HISTSIZE HOME HOSTTYPE IFS LANG LINES LOGNAME LS_COLOURS MACHTYPE OLDPWD OSTYPE PATH PIPESTATUS PPID PS.* PWD SHELL SHELLOPTS SHLVL SSH.* TERM UID XAUTHORITY XDG.*);
 
 my $dataStoreLocation="/var/spool/cds_backend";
@@ -115,8 +76,6 @@ our $loggingID;
 
 my $methodScriptsFolder = "/usr/local/lib/cds_backend/";
 my $routeFilesPath = "/etc/cds_backend/routes";
-#my $methodScriptsFolder="/Downloads/dev-stuff/cds_backend/scripts/";
-#my $routeFilesPath="/Downloads/dev-stuff/cds_backend/test_routes/";
 
 my $loggingStarted;
 my $logFileName;
