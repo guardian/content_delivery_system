@@ -10,7 +10,7 @@ mkdir -p /usr/local/bin
 echo ------------------------------------------
 echo Kickstarter: Installing prerequisites...
 echo ------------------------------------------
-apt-get -y install python-pip e2fsprogs zip ruby2.0 ruby2.0-dev perl ffmpeg2theora
+apt-get -y install python-pip e2fsprogs zip ruby2.0 ruby2.0-dev perl ffmpeg2theora libz-dev
 pip install awscli
 
 
