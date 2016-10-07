@@ -10,7 +10,7 @@ mkdir -p /usr/local/bin
 echo ------------------------------------------
 echo Kickstarter: Installing prerequisites...
 echo ------------------------------------------
-apt-get -y install python-pip e2fsprogs zip ruby2.0 perl
+apt-get -y install python-pip e2fsprogs zip ruby2.0 ruby2.0-dev perl ffmpeg2theora
 pip install awscli
 
 
@@ -22,7 +22,7 @@ rm -f /usr/bin/ruby
 rm -f /usr/bin/gem
 ln -s /usr/bin/ruby2.0 /usr/bin/ruby
 ln -s /usr/bin/gem2.0 /usr/bin/gem
-gem install awesome_print trollop sentry-raven aws-sdk-v1 aws-sdk-core aws-sdk-resources google-api-client launchy thin rest-client
+gem install awesome_print trollop sentry-raven aws-sdk-v1 aws-sdk-core aws-sdk-resources google-api-client launchy thin rest-client certifi sentry-raven elasticsearch
 
 ###Step 6 - ffmpeg
 echo ------------------------------------------
@@ -36,8 +36,6 @@ cp -v ffmpeg-bin/ffmpeg_g /usr/local/bin
 cp -v ffmpeg-bin/ffprobe /usr/local/bin
 cp -v ffmpeg-bin/ffprobe_g /usr/local/bin
 
-apt-get -y install ffmpeg2thera
-
 ###Step 7 - CDS
 echo ------------------------------------------
 echo Kickstarter: Setting up CDS workflow processing
@@ -46,24 +44,16 @@ cd /tmp
 cpanm Data::UUID URL::Encode
 apt-get -y install libdbd-mysql-perl
 
-###Step 9 - cloudworkflow
-echo ------------------------------------------
-echo Kickstarter: Installing Cloud Workflow Scripts
-echo ------------------------------------------
-mkdir -p /tmp/cloudworkflowscripts
-cd /tmp/cloudworkflowscripts
-aws s3 cp s3://gnm-multimedia-archivedtech/WorkflowMaster/cloudworkflowscripts.tar.bz2 .
-tar xvjf cloudworkflowscripts.tar.bz2 
 mkdir -p /usr/local/cloudworkflowscripts
 mkdir -p /usr/local/lib/site_perl
-gem install aws-sdk-v1 certifi sentry-raven aws-sdk aws-sdk-resources elasticsearch
 
-###Step 10 - crontabs
+###Step 10 - crontabs to stop instance filling up
 echo ------------------------------------------
 echo Kickstarter: Setting up crontabs
 echo ------------------------------------------
 crontab -u root - << EOF
-# m h dom mon dow command0 2 * * * /usr/bin/find /mnt -mtime +12 -delete
+# m h dom mon dow command
+0 2 * * * /usr/bin/find /mnt -mtime +12 -delete
 12 * * * * /usr/bin/find /var/log/cds_backend -mtime +1 -delete
 EOF
 
