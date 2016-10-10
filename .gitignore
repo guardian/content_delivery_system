@@ -12,3 +12,5 @@ keys/*
 *.gem
 *.db
 test_routes/*
+project/*
+target/*

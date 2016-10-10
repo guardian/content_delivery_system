@@ -115,10 +115,10 @@ class CDSResponder
   def GetUniqueFilename(path)
     filebase=@routename.gsub(/[^\w\d]/, "_")
     filename=path+'/'+filebase+".xml"
-    n=0;
-    while (Pathname(filename).exist?) do
+    n=0
+    while Pathname(filename).exist? do
       n=n+1
-      filename=path+'/'+filebase+"-"+n.to_s()+".xml"
+      filename=path+'/'+filebase+"-"+n.to_s+".xml"
     end
     filename
   end
@@ -255,8 +255,6 @@ end
 ### START MAIN
 
 #Process any commandline options
-$options={:configfile => '/etc/cdsresponder.conf', :region => 'UNKNOWN', :port => 8000}
-
 $options = Trollop::options do
   opt :configfile, "Path to the configuration file", :type=>:string, :default=>"/etc/cdsresponder.conf"
   opt :region, "AWS region to work in", :type=>:string, :default=>"eu-west-1"
@@ -317,13 +315,8 @@ Raven.capture do
     trap 'INT' do clean_shutdown(responders,server,60) end
     trap 'TERM' do clean_shutdown(responders,server,60) end
 
-    #run the webrick server.
+    #run the webrick server.  This will block until the server.shutdown is called, which is done in the clean_shutdown function
     server.start
-
-    # responders.each { |name, resp|
-    #   puts "checking threads..."
-    #   resp.join
-    # }
 
   end
 end #raven.capture
