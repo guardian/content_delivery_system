@@ -1,7 +1,7 @@
 #!/bin/bash
 # This module uploads files to a server via Aspera.
 #
-# It assumes that you have Aspera installed and working.
+# It assumes that you have Aspera client installed, licensed and working.
 #
 #Arguments:
 # <host>sftp.hostname.com - upload to this server 
