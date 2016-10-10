@@ -8,6 +8,8 @@ require 'raven'
 require 'webrick'
 require 'logger'
 require 'awesome_print'
+require 'json'
+require 'raven'
 
 #Simple webrick servlet to respond to an ELB healthcheck
 class HealthCheckServlet <  WEBrick::HTTPServlet::AbstractServlet
@@ -82,6 +84,7 @@ end
 #message has processed, or if no messages are processing, the idle timeout of the queue (default: 10 seconds).
 #To wait for the termination of the listener, call the #join method.  To forcibly kill the thread without waiting for
 #termination, call the #kill method.
+
 class CDSResponder
   attr_accessor :url
   attr_accessor :isexecuting
@@ -163,7 +166,6 @@ class CDSResponder
   end
 
   def ThreadFunc
-
     while @isexecuting do
       @q.poll(:idle_timeout=>@idle_timeout) { |msg|
         begin #start a block to catch exceptions
@@ -299,7 +301,7 @@ Raven.capture do
           puts "\t#{key} => #{item.attributes[key]}\n";
         end
         for i in 1..item.attributes['threads']
-          responder=CDSResponder.new(item.attributes['queue-arn'], item.attributes['route-name'], "--input-"+item.attributes['input-type'], item.attributes['notification'])
+          responder=CDSResponder.new(item.attributes['queue-arn'], item.attributes['route-name'], "--input-"+item.attributes['input-type'], item.attributes['notification'], idle_timeout: 10)
           responders[item.attributes['queue-arn']] = responder
         end
 
