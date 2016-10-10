@@ -6,8 +6,6 @@ if [ ! -x `which packer` ]; then
 	exit 1
 fi
 
-
-
 SOURCE_CONFIG="cdsbase/cdsbase-packer.yml"
 DEST_CONFIG="cdsbase/cdsbase-packer.json"
 
@@ -30,9 +28,13 @@ if [ "$?" != "0" ]; then
 	echo Generated Packer config is not valid, not continuing.
 	exit 3
 fi
+
+echo Checking that machine-images submodule is up to date...
+git submodule update
+
 # Use profile credentials
 export AWS_PROFILE=multimedia
 packer build "cdsbase-packer.json"
 unset AWS_PROFILE
 
-echo Completed.
+echo "Completed."
