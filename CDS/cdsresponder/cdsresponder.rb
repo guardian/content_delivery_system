@@ -199,6 +199,8 @@ class CDSResponder
           end
 
         ensure
+          File.delete(triggerfile)
+          File.delete(@routefile)
           #if should_finish is set while messages still on the queue, terminate immediately by breaking out of the poll
           #loop while not waiting for timeout
           if @should_finish
@@ -206,8 +208,6 @@ class CDSResponder
             @isexecuting = false
             break
           end
-          File.delete(triggerfile)
-          File.delete(@routefile)
         end #end block to catch exceptions
       }
       #if should_finish is set while messages are NOT on the queue, then the poll times out without executing the loop break above.
