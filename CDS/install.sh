@@ -69,6 +69,7 @@ if [ -x "${APTGET}" ]; then	#We have apt so are running on a debian-type system
 	echo If you are not using apt-provided versions of Perl, Ruby-gems, then you should press
 	echo CTRL-C to stop the install and ensure that they are installed and up to date.
 	echo Then re-run the install and type S \[enter\] here to skip
+	echo Ruby is now NOT installed by default below. You should run apt-get install ruby-{version} once this installer completes.
 	echo
 	echo Most users should type C \[enter\] to continue, and then Y \(yes\) when APT asks you if you want
 	echo to install the packages
@@ -90,7 +91,7 @@ if [ -x "${APTGET}" ]; then	#We have apt so are running on a debian-type system
 	"C" )
         #zlib1g-dev is required for nokogiri in aws-sdk-v1
 		apt-get ${pkgargs} update
-		apt-get ${pkgargs} install perl cpanminus ruby2.0 ruby2.0-dev zlib1g-dev build-essential s3cmd libsqlite3-dev
+		apt-get ${pkgargs} install perl cpanminus zlib1g-dev build-essential s3cmd libsqlite3-dev
 		if [ "$?" != "0" ]; then
 			echo
 			echo -------------------------------------------------------
@@ -252,14 +253,6 @@ if [ "${PRINSTALLED}" == "0" ]; then
 	read junk
 fi
 
-#ensure that system ruby is version 2.0
-#FIXME - need to implement a flag to make this optional
-if [ -x "/usr/bin/ruby2.0" ]; then
-    rm -f /usr/bin/ruby
-    ln -s /usr/bin/ruby2.0 /usr/bin/ruby
-    rm -f /usr/bin/gem
-    ln -s /usr/bin/gem2.0 /usr/bin/gem
-fi
 
 #Attempt to install the AWS SDK for Ruby....
 GEM=`which gem`
