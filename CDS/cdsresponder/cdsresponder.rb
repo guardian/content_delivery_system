@@ -185,7 +185,7 @@ class CDSResponder
 
           triggerfile=OutputTriggerFile(trigger_content, msg.id)
 
-          @pid = spawn("cds_run", "--route", @routefile, "--#{@cdsarg}", triggerfile)
+          @pid = spawn("cds_run --route \"#{@routefile}\" --#{@cdsarg}=#{triggerfile}")
 
           exitstatus = Process.wait @pid
 

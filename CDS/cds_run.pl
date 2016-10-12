@@ -41,7 +41,6 @@ my @invalidArguments=qw(PATH BASH.* DISPLAY UID EUID COLUMNS HISTCONTROL HISTFIL
 my $dataStoreLocation="/var/spool/cds_backend";
 our $configFileLocation="/etc/cds_backend.conf";
 
-my $myVar = $#ARGV + 1;
 my $routeFileName;
 
 # the next 4 variables are the current file group being processed
@@ -110,7 +109,7 @@ my $fileListDumped = 0;
 my $configData=readConfigFile();
 
 	# if there are no arugments specifed show the help text
-	if($myVar == 0)
+	if($#ARGV + 1 == 0)
 	{
 		uploaderHelp;
 		exit 0;
@@ -168,7 +167,7 @@ if($logDB){
 	};
 	if($@){
 		openLogfile() unless $loggingStarted;
-                print "WARNING - Unable to initialise requested external logger.  Error was $@\n";
+        print "WARNING - Unable to initialise requested external logger.  Error was $@\n";
 		print LOG "WARNING - Unable to initialise requested external logger.  Error was $@\n";
 		$externalLogger=undef;
 	}
