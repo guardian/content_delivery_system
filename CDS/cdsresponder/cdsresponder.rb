@@ -264,7 +264,7 @@ logger = Logger.new(STDOUT)
 $options = Trollop::options do
   opt :configfile, "Path to the configuration file", :type=>:string, :default=>"/etc/cdsresponder.conf"
   opt :region, "AWS region to work in", :type=>:string, :default=>"eu-west-1"
-  opt :port, "Port to bind to for healthcheck and montiroing", :type=>:integer, :default=>8000
+  opt :port, "Port to bind to for healthcheck and montiroing", :type=>:integer, :default=>80
 end
 
 #Read in the configuration file.  cfg is declared as a global variable ($ prefix)
