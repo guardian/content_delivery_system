@@ -162,7 +162,8 @@ class CDSResponder
       contents=f.read()
     }
     contents
-  rescue
+  rescue Exception=>e
+    Raven.capture_exception(e)
     @logger.error("Unable to read log from filename")
   end
 
@@ -187,7 +188,9 @@ class CDSResponder
 
           triggerfile=OutputTriggerFile(trigger_content, msg.id)
 
-          @pid = spawn("cds_run --route \"#{@routefile}\" --#{@cdsarg}=#{triggerfile}")
+          cmdline = "cds_run --route \"#{@routefile}\" --#{@cdsarg} #{triggerfile}"
+          @logger.debug("Commandline is #{cmdline}")
+          @pid = spawn(cmdline)
 
           exitstatus = Process.wait @pid
 
