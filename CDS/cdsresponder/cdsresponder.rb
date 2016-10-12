@@ -104,6 +104,7 @@ class CDSResponder
     @idle_timeout = idle_timeout
     @isexecuting=1
     @should_finish=false
+    @logger = Logger.new(STDOUT)
 
     if notification!=nil
       @sns=AWS::SNS.new(:region => 'eu-west-1')
@@ -138,7 +139,7 @@ class CDSResponder
   def DownloadRoute
     filename=GetUniqueFilename('/etc/cds_backend/routes')
 
-    puts "Got filename #{filename} for route file\n"
+    @logger.debug("Got filename #{filename} for route file")
 
     File.open(filename, 'w') { |f|
       f.write(GetRouteContent())
@@ -162,7 +163,7 @@ class CDSResponder
     }
     contents
   rescue
-    puts "Unable to read log from filename\n"
+    @logger.error("Unable to read log from filename")
   end
 
   def ThreadFunc
@@ -178,10 +179,11 @@ class CDSResponder
               trigger_content = jsonobject['Message']
             end
           rescue JSON::JSONError
-            print "Message on queue is not JSON"
+            @logger.debug("Message on queue is not JSON")
             trigger_content=msg.body
           end
-          puts trigger_content
+          @logger.debug("trigger content:")
+          @logger.debug(trigger_content)
 
           triggerfile=OutputTriggerFile(trigger_content, msg.id)
 
@@ -193,12 +195,14 @@ class CDSResponder
           @notification_topic.publish(msg.to_json)
 
         rescue Exception => e
-          puts e.message
-          puts e.backtrace.inspect
+          Raven.capture_exception(e)
+          @logger.error(e.message)
+          @logger.error(e.backtrace.inspect)
           begin
             @notification_topic.publish({'status' => 'error', 'message' => e.message, 'trace' => e.backtrace}.to_json)
           rescue Exception => not_excep
-            puts "Error passing on error message: #{not_excep.message}"
+            Raven.capture_exception(not_excep)
+            @logger.error("Error passing on error message: #{not_excep.message}")
           end
 
         ensure
@@ -207,7 +211,7 @@ class CDSResponder
           #if should_finish is set while messages still on the queue, terminate immediately by breaking out of the poll
           #loop while not waiting for timeout
           if @should_finish
-            puts "got should_finish signal"
+            @logger.info("got should_finish signal")
             @isexecuting = false
             break
           end
@@ -216,12 +220,12 @@ class CDSResponder
       #if should_finish is set while messages are NOT on the queue, then the poll times out without executing the loop break above.
       #so we must re-do the check here.
       if @should_finish
-        puts "got should_finish signal"
+        @logger.info("got should_finish signal")
         @isexecuting = false
         break
       end
     end #while @isexecuting
-    puts "reached end of threadfunc"
+    @logger.debug("reached end of threadfunc")
   end #def threadfunc
 
   #wait for the listener to terminate
@@ -241,24 +245,24 @@ class CDSResponder
 end #class CDSResponder
 
 def clean_shutdown(responders,server,timeout)
-  logger = Logger.new(STDOUT)
+  #can't use logger here because it's called from a trap context :(
   responders.each { |queue,resp|
-    puts "Shutting down listener for queue #{queue}"
+    puts "Shutting down responders for queue #{queue}"
     resp.should_finish=true
   }
   responders.each { |queue,resp|
-    puts "Waiting for termination of listener for queue #{queue}"
+    puts "Waiting for termination of responder for queue #{queue}"
     if resp.join(timeout)==nil
-      puts "Queue listener for #{queue} failed to terminate after #{timeout} seconds, forcibly terminating"
+      puts "Queue responder for #{queue} failed to terminate after #{timeout} seconds, forcibly terminating"
       resp.kill
     end
   }
-  puts "All listeners shut down, terminating server"
+  puts "All responders shut down, terminating server"
   server.shutdown
 end
 
 ### START MAIN
-
+logger = Logger.new(STDOUT)
 #Process any commandline options
 $options = Trollop::options do
   opt :configfile, "Path to the configuration file", :type=>:string, :default=>"/etc/cdsresponder.conf"
@@ -270,7 +274,7 @@ end
 begin
   $cfg=ConfigFile.new($options[:configfile])
 rescue Exception => e
-  puts "Unable to load configuration file: #{e.message}  Please consult the documentation, the online cdsconfig configuration tool or run with the -h option, for more information"
+  logger.error("Unable to load configuration file: #{e.message}  Please consult the documentation, the online cdsconfig configuration tool or run with the -h option, for more information")
   raise
 end
 
@@ -280,12 +284,11 @@ end
 
 Raven.capture do
   begin
-    puts "Commandline options:"
-    ap $options
-    puts "Loaded config:"
-    ap $cfg
+    logger.info("Commandline options:")
+    logger.info($options)
+    logger.info("Loaded config:")
+    logger.info($cfg)
 
-    sqs=AWS::SQS.new(:region => $options[:region])
     ddb=AWS::DynamoDB.new(:region => $options[:region])
 
     table=ddb.tables[$cfg.var['configuration-table']]
@@ -299,17 +302,15 @@ Raven.capture do
 
     table.items.each do |item|
       begin
-        puts item.hash_value
-        item.attributes.each_key do |key|
-          puts "\t#{key} => #{item.attributes[key]}\n";
-        end
         for i in 1..item.attributes['threads']
           responder=CDSResponder.new(item.attributes['queue-arn'], item.attributes['route-name'], "--input-"+item.attributes['input-type'], item.attributes['notification'], idle_timeout: 10)
           responders[item.attributes['queue-arn']] = responder
+          logger.info("Started up responder instance #{i} for #{item.attributes['queue-arn']}")
         end
 
-      rescue
-        puts "Responder failed to start up for #{item.attributes['queue-arn']}\n";
+      rescue Exception=>ex
+        logger.error("Responder failed to start up for #{item.attributes['queue-arn']}\n")
+        Raven.capture_exception(ex, :extra => {'message'=>"Responder failed to start up for #{item.attributes['queue-arn']}"})
         next
       end
     end
