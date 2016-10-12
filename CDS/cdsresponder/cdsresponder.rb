@@ -186,7 +186,10 @@ class CDSResponder
           triggerfile=OutputTriggerFile(trigger_content, msg.id)
 
           @pid = spawn("cds_run", "--route", @routefile, "--#{@cdsarg}", triggerfile)
-          msg=FinishedNotification.new(@routename, $?.exitstatus, GetLogfile(msg.id))
+
+          exitstatus = Process.wait @pid
+
+          msg=FinishedNotification.new(@routename, exitstatus, GetLogfile(msg.id))
           @notification_topic.publish(msg.to_json)
 
         rescue Exception => e
