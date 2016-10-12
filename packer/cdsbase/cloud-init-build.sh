@@ -24,7 +24,7 @@ apt-get -y install software-properties-common
 apt-add-repository ppa:brightbox/ruby-ng
 apt-get update
 apt-get -y install ruby2.2 ruby2.2-dev
-gem install awesome_print trollop sentry-raven aws-sdk-v1 aws-sdk-core aws-sdk-resources google-api-client launchy thin rest-client certifi sentry-raven elasticsearch
+gem install awesome_print trollop sentry-raven aws-sdk-v1 aws-sdk-core aws-sdk-resources google-api-client:'<0.9' launchy thin rest-client certifi sentry-raven elasticsearch
 
 
 echo ------------------------------------------
