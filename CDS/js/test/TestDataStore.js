@@ -14,12 +14,14 @@ describe('Datastore',function(){
 
 
     after(function(){
-        fs.unlink(process.env.cf_datastore_location);
+        //fs.unlink(process.env.cf_datastore_location);
     });
 
     describe('#set', function(){
+        var conn=new datastore.Connection("TestDataStore");
+
         it('should store a value to meta and return nothing', function(done){
-            datastore.set('meta','key','something').done(function(value){
+            datastore.set(conn,'meta','key','something').done(function(value){
                 done();
             },function(err){
                 //console.error(err);
@@ -28,13 +30,14 @@ describe('Datastore',function(){
         });
         it('should store a value to media and return nothing', function(){
             assert.doesNotThrow(function(){
-                datastore.set('media','mediaKey','somethingElse');
+                datastore.set(conn,'media','mediaKey','somethingElse');
             });
         });
     });
     describe('#get', function(){
+        var conn=new datastore.Connection("TestDataStore");
         it('should return the previously set value from meta', function(test_completed) {
-            datastore.get('meta','key').done(function(value){
+            datastore.get(conn,'meta','key').done(function(value){
                 assert.equal(value,'something');
                 test_completed();
             }, function(err){
@@ -43,7 +46,7 @@ describe('Datastore',function(){
 
         });
         it('should return the previously set value from media', function(test_completed) {
-            datastore.get('media','mediaKey').done(function(value){
+            datastore.get(conn,'media','mediaKey').done(function(value){
                 assert.equal(value,'somethingElse');
                 test_completed();
             }, function(err){
@@ -57,14 +60,25 @@ describe('Datastore',function(){
         // });
     });
     describe('#substituteString',function(){
-       it('should not modify a string without braces in', function(){
-
+        var conn=new datastore.Connection("TestDataStore");
+       it('should not modify a string without braces in', function(test_completed){
+            datastore.substituteString(conn,"test string with no braces").done(function(value){
+               assert.equal(value,"test string with no braces");
+                test_completed();
+           }, function(err){
+                test_completed(err);
+            });
        });
         it('should substitute {hour}:{min} for the current time', function(){
 
         });
-        it('should substitute a value for {meta:key}', function () {
-
+        it('should substitute a value for {meta:key}', function (test_completed) {
+            datastore.substituteString(conn,"I have a {meta:key} with {media:mediaKey}").done(function(value){
+                assert.equal(value,"I have a something with somethingElse");
+                test_completed();
+            }, function(err){
+                test_completed(err);
+            });
         });
         it('should substitute placeholder for {meta:undefinedkey}', function() {
 
