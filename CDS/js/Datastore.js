@@ -104,7 +104,7 @@ module.exports = {
                             fulfill();
                         }
                     });
-                });
+                });h
             },function(err){
                 reject(err);
             });
@@ -118,7 +118,7 @@ module.exports = {
             var promiseList=[];
             var matched=0;
             while(matches = param_matcher.exec(str)){
-                var matchtext = matches[0]
+                var matchtext = matches[0];
                 var type=matches[1];
                 var key=matches[2];
                 //console.log(type);
@@ -136,7 +136,7 @@ module.exports = {
                 //console.log(valueList);
                 for(var i=0;i<valueList.length;++i){
                     //var replacement = new RegExp();
-                    console.log("replacing " + valueList[i].find + " with " + valueList[i].replace)
+                    console.log("replacing " + valueList[i].find + " with " + valueList[i].replace);
                     str = str.replace(valueList[i].find,valueList[i].replace);
                 }
                 fulfill(str);
