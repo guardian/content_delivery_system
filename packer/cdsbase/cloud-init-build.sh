@@ -13,10 +13,10 @@ echo ------------------------------------------
 apt-get -y install python-pip e2fsprogs zip perl ffmpeg2theora libz-dev libcrypt-ssleay-perl liburi-encode-perl libnet-ssleay-perl libnet-idn-encode-perl \
 liblwp-protocol-https-perl libdbd-sqlite3-perl libyaml-perl libxml-sax-expatxs-perl libxml-xpath-perl libwww-perl libtemplate-perl libtemplate-perl-doc \
 libxml-simple-perl libjson-perl libjson-xs-perl libdate-manip-perl libnet-sslglue-perl libdigest-perl libdigest-sha-perl libdatetime-perl libdatetime-format-http-perl \
-libdbi-perl libhtml-stream-perl libfile-slurp-unicode-perl cpanminus zlib1g-dev build-essential s3cmd libsqlite3-dev
+libdbi-perl libhtml-stream-perl libfile-slurp-unicode-perl cpanminus zlib1g-dev build-essential s3cmd libsqlite3-dev nodejs
 pip install awscli
 
-###Step 5 - Ruby prerequisited
+###Step 5 - Ruby prerequisites
 echo ------------------------------------------
 echo Kickstarter: Installing Ruby prerequisites
 echo ------------------------------------------
@@ -37,6 +37,11 @@ chmod +x cpanm
 apt-get -y install libdbd-mysql-perl
 ./cpanm --force Amazon::SQS::Simple
 ./cpanm Data::UUID URL::Encode Net::FTP::Throttle Digest::SHA1 File::Touch Search::Elasticsearch
+
+echo ------------------------------------------
+echo Kickstarter: Installing JS prerequisites
+echo ------------------------------------------
+npm install sqlite3
 
 ###Step 6 - ffmpeg
 echo ------------------------------------------
