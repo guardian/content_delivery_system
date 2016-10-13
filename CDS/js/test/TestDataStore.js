@@ -82,7 +82,12 @@ describe('Datastore',function(){
             });
         });
         it('should substitute placeholder for {meta:undefinedkey}', function() {
-
+            datastore.substituteString(conn,"I have a {meta:undefinedkey}").done(function(value){
+                assert.equal(value,"I have a (value not found)");
+                test_completed();
+            }, function(err){
+                test_completed(err);
+            });
         });
     });
 });

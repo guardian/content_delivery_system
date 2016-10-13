@@ -42,6 +42,8 @@ echo ------------------------------------------
 echo Kickstarter: Installing JS prerequisites
 echo ------------------------------------------
 npm install sqlite3
+cd /usr/local/lib/cds_backend
+npm install
 
 ###Step 6 - ffmpeg
 echo ------------------------------------------

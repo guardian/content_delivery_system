@@ -11,6 +11,7 @@ provisioners:
     inline:
       - "sudo mkdir -p /tmp/features"
       - "sudo chown ubuntu /tmp/features"
+      - "sudo mkdir /usr/local/lib/cds_backend"
       - "sudo apt-get -y update"
   - type: file
     source: ../machine-images/packer/resources/features
@@ -22,6 +23,9 @@ provisioners:
   - type: shell
     script: ../machine-images/packer/resources/pre-cache.sh
     execute_command: "{{ .Vars }} sudo -E bash -x '{{ .Path }}'"
+  - type: file
+    source: ../../CDS/js/package.json
+    destination: /usr/local/lib/cds_backend
   - type: shell
     execute_command: "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
     script: "cloud-init-build.sh"

@@ -1,11 +1,21 @@
 /* put constructor stuff out here */
 var sqlite3 = require('sqlite3');
 var Promise = require('promise');
+const defaultLocalDefinitionsPath="/etc/cds_backend/conf.d";
 
 var db = new sqlite3.Database(process.env.cf_datastore_location);
 
-function Connection(whoami) {
+function Connection(whoami, path) {
     this.whoami=whoami;
+    if(path){
+        this.staticDefs=loadDefs(path);
+    } else {
+        this.staticDefs=loadDefs(defaultLocalDefinitionsPath);
+    }
+}
+
+function loadDefs(path) {
+
 }
 
 function getSource(type,myname){
@@ -21,7 +31,7 @@ function getSource(type,myname){
                 return;
             }
             var new_stmt = db.prepare("INSERT INTO sources (type,provider_method,ctime) values (?,?,?)");
-            new_stmt.run([type,myname,Date.now()], function(err){
+            new_stmt.run([type,myname,Math.floor(Date.now())], function(err){
                 if(err) {
                     reject(err);
                 } else {
@@ -30,6 +40,36 @@ function getSource(type,myname){
             });
         });
     });
+}
+
+function setMulti(conn, type, meta){
+    if(type!=="meta" && type!=="media" && type!=="tracks") throw "type must be meta, media or track";
+
+    return new Promise(function(fulfill,reject) {
+        getSource(type,conn.whoami).then(function(sourceid) {
+            var promises = [];
+            db.serialize(function () {
+                Object.keys(meta).forEach(function (key) {
+                    console.log(key + " => " + meta[key]);
+                    var stmt = db.prepare("insert into " + type + " (source_id,key,value) values (?,?,?)");
+                    stmt.run(sourceid, key, meta[key], function (err) {
+                        if (err) {
+                            console.error(err);
+                            reject(err);
+                        } else {
+                            fulfill();
+                        }
+                    });
+                });
+            });
+        },function(err){
+            reject(err);
+        });
+    });
+}
+
+function set(conn, type, key, value) {
+    return setMulti(conn,type,{[key]: value});
 }
 
 function get(conn,type, key, callback, userdata) { /* callback as function(err, value) */
@@ -44,11 +84,12 @@ function get(conn,type, key, callback, userdata) { /* callback as function(err, 
                         reject(err);
                     }
                     if (!row) {
-                        reject("no row found with key \'" + key + "\'");
+                        //reject("no row found with key \'" + key + "\'");
+                        fulfill("(value not found)");
                     } else {
                         //console.log(row);
                         if(callback){
-                            fulfill(callback(row.value,userdata));
+                            fulfill(callback(type,key,row.value,userdata));
                         } else {
                             fulfill(row.value);
                         }
@@ -85,31 +126,8 @@ module.exports = {
     close: function() {
         db.close();
     },
-    loadDefs: function(){
-
-    },
-    set: function(conn, type, key, value){
-        if(type!=="meta" && type!=="media" && type!=="tracks") throw "type must be meta, media or track";
-
-        return new Promise(function(fulfill,reject) {
-            getSource(type,conn.whoami).then(function(sourceid) {
-                db.serialize(function () {
-                    var stmt = db.prepare("insert into " + type + " (source_id,key,value) values (?,?,?)");
-                    stmt.run(sourceid, key, value);
-                    stmt.finalize(function (err, row) {
-                        if (err) {
-                            console.error(err);
-                            reject(err);
-                        } else {
-                            fulfill();
-                        }
-                    });
-                });h
-            },function(err){
-                reject(err);
-            });
-        });
-    },
+    set: set,
+    setMulti: setMulti,
     get: get,
     substituteString: function(conn,str){
         return new Promise(function(fulfill,reject) {
@@ -121,11 +139,8 @@ module.exports = {
                 var matchtext = matches[0];
                 var type=matches[1];
                 var key=matches[2];
-                //console.log(type);
-                //console.log(key);
 
-                var promise = get(conn,type,key,function(result,matchtext){
-                    //console.log("get promise callback: "+result);
+                var promise = get(conn,type,key,function(type,key,result,matchtext){
                     return {'find': matchtext, 'replace': result}
                 },matchtext);
                 promiseList.push(promise);
