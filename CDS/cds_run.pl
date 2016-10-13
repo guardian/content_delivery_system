@@ -275,7 +275,7 @@ else
     for ($i = 0; $i < $numberOfInputMethods; $i++) 
     {
     	$method = $inputMethods[$i];
-		$processReturnCode = executeMethod($method);	
+		$processReturnCode = executeMethod($method,$store);
 		
 	    if($processReturnCode == 1)
 	    {
@@ -333,7 +333,7 @@ if($externalLogger){
 		    for($i = 0; $i < $numberOfProcessMethods; $i++)
 		    {
 		    	$method = $processMethods[$i];
-		    	$processReturnCode = executeMethod($method);
+		    	$processReturnCode = executeMethod($method,$store);
 		    	
 	    		if($processReturnCode == 1)
 	    		{
@@ -357,7 +357,7 @@ if($externalLogger){
 		    for ($i = 0; $i < $numberOfOutputMethods; $i++) 
 		    {
 		    	$method = $outputMethods[$i];
-		    	$processReturnCode = executeMethod($method);	
+		    	$processReturnCode = executeMethod($method,$store);
 		    	
 	    		if($processReturnCode == 1)
 	    		{
@@ -386,7 +386,7 @@ if($externalLogger){
 	    for($i = 0; $i < $numberOfProcessMethods; $i++)
 	    {
 	    	$method = $processMethods[$i];
-	    	$processReturnCode = executeMethod($method);
+	    	$processReturnCode = executeMethod($method,$store);
 	    	
 	    	if($processReturnCode != 0)
 	    	{
@@ -412,7 +412,7 @@ if($externalLogger){
 	    for ($i = 0; $i < $numberOfOutputMethods; $i++) 
 	    {
 	    	$method = $outputMethods[$i];
-	    	$processReturnCode = executeMethod($method);	
+	    	$processReturnCode = executeMethod($method,$store);
 	    	
 	    	if($processReturnCode != 0)
 	    	{
@@ -576,7 +576,7 @@ $ENV{'cf_last_line'}=$failedMethod->{'lastLine'};
 	 
 foreach(@$methodList){
 	$method = $_;
-	$processReturnCode = executeMethod($method,update_status=>0);
+	$processReturnCode = executeMethod($method,$store,update_status=>0);
 	   
 #	print Dumper($failedMethod);
 	if($processReturnCode != 0)
@@ -591,7 +591,7 @@ $ENV{'cf_last_line'}=undef;
 }
 
 sub runSuccessMethods {
-my($methodList)=@_;
+my($methodList,$store)=@_;
 
 return if(not defined $methodList);
 if($externalLogger){
@@ -602,7 +602,7 @@ logOutput("Route succeeded.  Executing success methods.\n",method=>'CDS');
 
 foreach(@$methodList){
 	$method = $_;
-	$processReturnCode = executeMethod($method,update_status=>0);
+	$processReturnCode = executeMethod($method,$store,update_status=>0);
 
 	if($processReturnCode != 0)
 	 {
@@ -625,7 +625,7 @@ sub find_filename {
 # 1=>run failed for some reason (script flagged an error or did not exist - logged)
 # 2=>one of the file arguments requested in take-files did not exist, so the script didn't run.
 sub executeMethod{
-	my ($methodData,%args) = @_;
+	my ($methodData,$store,%args) = @_;
 	my $systemArguments;
 	my $methodName = $methodData->{'name'};
 	
@@ -648,7 +648,7 @@ sub executeMethod{
 		my $filename = find_filename($methodScriptsFolder . $methodName);
 		
 		# get any specified arguments for the process method and set environment varaibles accordingly
-		if(not setUpProcessArguments($methodData)){
+		if(not setUpProcessArguments($methodData,$store)){
 			logOutput("-ERROR: Arguments to method not properly defined.  Not running method $methodName.\n",method=>$methodName);
 			$returnCode = 2;
 		}
@@ -765,7 +765,7 @@ sub is_argument_valid {
 # this routine may need to be re-worked to be more data driven later
 # MSB, May 2009
 sub setUpProcessArguments{
-	my $processAttributesRef = shift(@_);
+	my ($processAttributesRef,$store = @_);
 		
 	my $value;
 	my $name;
@@ -859,7 +859,11 @@ sub setUpProcessArguments{
     }
     while ( my ($key, $value) = each(%$processAttributesRef) ) {
        	print "$key => $value\n";
-       	$ENV{$key} = $value if(is_argument_valid($key) and $key ne "take-files");
+       	if($store){
+       	    $ENV{$key} = $store.substitute_string($value) if(is_argument_valid($key) and $key ne "take-files");
+       	} else {
+       	    $ENV{$key} = $value if(is_argument_valid($key) and $key ne "take-files");
+       	}
    	} 		
 return 1;
 }
