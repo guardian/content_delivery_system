@@ -2,7 +2,8 @@ var assert = require('assert');
 const fs = require('fs');
 
 process.env.cf_datastore_location='./test.db';
-fs.unlink(process.env.cf_datastore_location);
+if(fs.existsSync(process.env.cf_datastore_location))
+    fs.unlink(process.env.cf_datastore_location);
 var datastore = require('../Datastore');
 
 describe('Datastore',function(){
