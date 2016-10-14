@@ -26,6 +26,9 @@ describe('Datastore',function(){
 
     after(function(){
         fs.unlink(process.env.cf_datastore_location);
+        fs.unlink(test_data_dir + "/file01.conf");
+        fs.unlink(test_data_dir + "/file02.conf");
+        fs.rmdir(test_data_dir);
     });
 
     describe('#set', function(){
