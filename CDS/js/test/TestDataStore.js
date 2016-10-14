@@ -1,6 +1,8 @@
 var assert = require('assert');
 const fs = require('fs');
+const mkpath = require('mkpath');
 
+const test_data_dir = "/tmp/cdstest/conf.d";
 process.env.cf_datastore_location='./test.db';
 if(fs.existsSync(process.env.cf_datastore_location))
     fs.unlink(process.env.cf_datastore_location);
@@ -11,6 +13,9 @@ describe('Datastore',function(){
            datastore.newDataStore().then(function(){
                done();
            });
+           mkpath.sync(test_data_dir,"0777");
+           fs.writeFileSync(test_data_dir + "/file01.conf","file01_key_01=data\n#file01 commnt line = stuff\n\nfile01_key_02 = data02\n","utf8");
+           fs.writeFileSync(test_data_dir + "/file02.conf","#file02 commnt line = stuff\n\nfile02_key_01=thing\nfile02_key_02 = ribbit\n","utf8");
        });
 
 
@@ -19,7 +24,7 @@ describe('Datastore',function(){
     });
 
     describe('#set', function(){
-        var conn=new datastore.Connection("TestDataStore");
+        var conn=new datastore.Connection("TestDataStore",test_data_dir);
 
         it('should store a value to meta and return nothing', function(done){
             datastore.set(conn,'meta','key','something').done(function(value){
@@ -36,7 +41,7 @@ describe('Datastore',function(){
         });
     });
     describe('#get', function(){
-        var conn=new datastore.Connection("TestDataStore");
+        var conn=new datastore.Connection("TestDataStore",test_data_dir);
         it('should return the previously set value from meta', function(test_completed) {
             datastore.get(conn,'meta','key').done(function(rtn){
                 assert.equal(rtn.value,'something');
@@ -75,7 +80,7 @@ describe('Datastore',function(){
         // });
     });
     describe('#substituteString',function(){
-        var conn=new datastore.Connection("TestDataStore");
+        var conn=new datastore.Connection("TestDataStore",test_data_dir);
        it('should not modify a string without braces in', function(test_completed){
             datastore.substituteString(conn,"test string with no braces").done(function(value){
                assert.equal(value,"test string with no braces");
@@ -84,12 +89,51 @@ describe('Datastore',function(){
                 test_completed(err);
             });
        });
-        it('should substitute {hour}:{min} for the current time', function(){
-
+        it('should substitute {hour}:{min} for the current time', function(test_completed){
+            datastore.substituteString(conn,"{hour}:{min}").done(function(value){
+                const d = new Date();
+                assert.equal(value,d.getHours() + ":" + d.getMinutes());
+                test_completed();
+            }, function(err){
+                test_completed(err);
+            })
+        });
+        it('should substitute {year}/{month}/{day} for the current date', function(test_completed){
+            datastore.substituteString(conn,"{year}/{month}/{day}").done(function(value){
+                const d = new Date();
+                assert.equal(value,d.getFullYear() + "/" + (d.getMonth()+1) + "/" + d.getDay());
+                test_completed();
+            }, function(err){
+                test_completed(err);
+            })
+        });
+        it('should substitute config file data for {config:file01_key_01} and similar', function(test_completed){
+           datastore.substituteString(conn,"{config:file01_key_01};{config:file02_key_02}").done(function(value){
+               assert.equal(value,"data;ribbit");
+               test_completed();
+           },function(err){
+               test_completed(err);
+           });
+        });
+        it('should substitute placeholder for {config:unknownkey} and similar', function(test_completed){
+            datastore.substituteString(conn,"{config:bababa};{config:file02_key_02}").done(function(value){
+                assert.equal(value,"(value not found);ribbit");
+                test_completed();
+            },function(err){
+                test_completed(err);
+            });
         });
         it('should substitute a value for {meta:key}', function (test_completed) {
             datastore.substituteString(conn,"I have a {meta:key} with {media:mediaKey}").done(function(value){
                 assert.equal(value,"I have a something with somethingElse");
+                test_completed();
+            }, function(err){
+                test_completed(err);
+            });
+        });
+        it('should substitute hostname for  {hostname}', function (test_completed) {
+            datastore.substituteString(conn,"I am {hostname}").done(function(value){
+                assert.equal(value,"I am " + process.env.HOSTNAME);
                 test_completed();
             }, function(err){
                 test_completed(err);
@@ -103,5 +147,6 @@ describe('Datastore',function(){
                 test_completed(err);
             });
         });
+
     });
 });
