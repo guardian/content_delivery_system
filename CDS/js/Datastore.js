@@ -50,7 +50,7 @@ function setMulti(conn, type, meta){
             var promises = [];
             db.serialize(function () {
                 Object.keys(meta).forEach(function (key) {
-                    console.log(key + " => " + meta[key]);
+                    //console.log(key + " => " + meta[key]);
                     var stmt = db.prepare("insert into " + type + " (source_id,key,value) values (?,?,?)");
                     stmt.run(sourceid, key, meta[key], function (err) {
                         if (err) {
@@ -85,13 +85,13 @@ function get(conn,type, key, callback, userdata) { /* callback as function(err, 
                     }
                     if (!row) {
                         //reject("no row found with key \'" + key + "\'");
-                        fulfill("(value not found)");
+                        fulfill({value: "(value not found)",type: type,key: key});
                     } else {
                         //console.log(row);
                         if(callback){
-                            fulfill(callback(type,key,row.value,userdata));
+                            fulfill(callback(row.value,type,key,userdata));
                         } else {
-                            fulfill(row.value);
+                            fulfill({value: row.value,type: type,key: key});
                         }
                     }
                 });
@@ -131,6 +131,11 @@ module.exports = {
     get: get,
     substituteString: function(conn,str){
         return new Promise(function(fulfill,reject) {
+            const static_subs = {
+                '{route-name}': process.env.cf_route_name,
+                '{hostname}': process.env.HOSTNAME,
+                '{ostype}': process.env.OSTYPE
+            };
             var param_matcher = /\{(\w+):([^}]+)\}/g;
 
             var promiseList=[];
@@ -140,7 +145,7 @@ module.exports = {
                 var type=matches[1];
                 var key=matches[2];
 
-                var promise = get(conn,type,key,function(type,key,result,matchtext){
+                var promise = get(conn,type,key,function(result,type,key,matchtext){
                     return {'find': matchtext, 'replace': result}
                 },matchtext);
                 promiseList.push(promise);
@@ -151,7 +156,7 @@ module.exports = {
                 //console.log(valueList);
                 for(var i=0;i<valueList.length;++i){
                     //var replacement = new RegExp();
-                    console.log("replacing " + valueList[i].find + " with " + valueList[i].replace);
+                    //console.log("replacing " + valueList[i].find + " with " + valueList[i].replace);
                     str = str.replace(valueList[i].find,valueList[i].replace);
                 }
                 fulfill(str);

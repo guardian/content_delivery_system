@@ -38,8 +38,10 @@ describe('Datastore',function(){
     describe('#get', function(){
         var conn=new datastore.Connection("TestDataStore");
         it('should return the previously set value from meta', function(test_completed) {
-            datastore.get(conn,'meta','key').done(function(value){
-                assert.equal(value,'something');
+            datastore.get(conn,'meta','key').done(function(rtn){
+                assert.equal(rtn.value,'something');
+                assert.equal(rtn.type,'meta');
+                assert.equal(rtn.key,'key');
                 test_completed();
             }, function(err){
                 test_completed(err);
@@ -47,14 +49,26 @@ describe('Datastore',function(){
 
         });
         it('should return the previously set value from media', function(test_completed) {
-            datastore.get(conn,'media','mediaKey').done(function(value){
-                assert.equal(value,'somethingElse');
+            datastore.get(conn,'media','mediaKey').done(function(rtn){
+                assert.equal(rtn.value,'somethingElse');
+                assert.equal(rtn.type,'media');
+                assert.equal(rtn.key,'mediaKey');
                 test_completed();
             }, function(err){
                 //console.error(err);
                 test_completed(err);
             });
 
+        });
+        it('should return placeholder text for an unknown key', function(test_completed) {
+            datastore.get(conn,'meta','unknownkey').done(function(rtn){
+                assert.equal(rtn.value,'(value not found)');
+                assert.equal(rtn.type,'meta');
+                assert.equal(rtn.key,'unknownkey');
+                test_completed();
+            }, function(err){
+                test_completed(err);
+            });
         });
         // it('should return the previously set value from media', function(){
         //     assert.equal(datastore.get('media','mediaKey'),'somethingElse');
