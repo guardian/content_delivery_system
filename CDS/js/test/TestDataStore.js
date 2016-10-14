@@ -9,23 +9,26 @@ if(fs.existsSync(process.env.cf_datastore_location))
 var datastore = require('../Datastore');
 
 describe('Datastore',function(){
+    var conn;
+
        before(function(done){
-           datastore.newDataStore().then(function(){
-               done();
-           });
-           mkpath.sync(test_data_dir,"0777");
+           mkpath.sync(test_data_dir+"/",0o777);
            fs.writeFileSync(test_data_dir + "/file01.conf","file01_key_01=data\n#file01 commnt line = stuff\n\nfile01_key_02 = data02\n","utf8");
            fs.writeFileSync(test_data_dir + "/file02.conf","#file02 commnt line = stuff\n\nfile02_key_01=thing\nfile02_key_02 = ribbit\n","utf8");
+           datastore.newDataStore().then(function(value){
+               conn=new datastore.Connection("TestDataStore",test_data_dir);
+               done();
+           }, function(err){
+               done(err);
+           });
        });
 
 
     after(function(){
-        //fs.unlink(process.env.cf_datastore_location);
+        fs.unlink(process.env.cf_datastore_location);
     });
 
     describe('#set', function(){
-        var conn=new datastore.Connection("TestDataStore",test_data_dir);
-
         it('should store a value to meta and return nothing', function(done){
             datastore.set(conn,'meta','key','something').done(function(value){
                 done();
@@ -39,9 +42,9 @@ describe('Datastore',function(){
                 datastore.set(conn,'media','mediaKey','somethingElse');
             });
         });
+
     });
     describe('#get', function(){
-        var conn=new datastore.Connection("TestDataStore",test_data_dir);
         it('should return the previously set value from meta', function(test_completed) {
             datastore.get(conn,'meta','key').done(function(rtn){
                 assert.equal(rtn.value,'something');
@@ -80,7 +83,6 @@ describe('Datastore',function(){
         // });
     });
     describe('#substituteString',function(){
-        var conn=new datastore.Connection("TestDataStore",test_data_dir);
        it('should not modify a string without braces in', function(test_completed){
             datastore.substituteString(conn,"test string with no braces").done(function(value){
                assert.equal(value,"test string with no braces");
