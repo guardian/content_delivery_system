@@ -142,6 +142,9 @@ class CommandLineOAuthHelper
   end
 end
 
+class InvalidCredentials < StandardError
+end
+
 def youtube_connect
 puts "Attempting to connect to YouTube..."
 begin
@@ -163,6 +166,10 @@ begin
 				puts "DEBUG: Got credentials:"
 				ap creds
 			end
+            
+            raise InvalidCredentials, "No credentials present in #{ENV['client_secrets']}" if(not creds)
+            raise InvalidCredentials, "Credentials in #{ENV['client_secrets']} not valid" if(not creds['web'] or not creds['web']['client_email'])
+            
 			client.authorization = Signet::OAuth2::Client.new(
 				:token_credential_uri => 'https://accounts.google.com/o/oauth2/token',
   				:audience => 'https://accounts.google.com/o/oauth2/token',
