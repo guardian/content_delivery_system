@@ -860,7 +860,7 @@ sub setUpProcessArguments{
     while ( my ($key, $value) = each(%$processAttributesRef) ) {
        	print "$key => $value\n";
        	if($store){
-       	    $ENV{$key} = $store.substitute_string($value) if(is_argument_valid($key) and $key ne "take-files");
+       	    $ENV{$key} = $store->substitute_string($value) if(is_argument_valid($key) and $key ne "take-files");
        	} else {
        	    $ENV{$key} = $value if(is_argument_valid($key) and $key ne "take-files");
        	}
