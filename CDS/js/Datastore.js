@@ -9,36 +9,40 @@ var db = new sqlite3.Database(process.env.cf_datastore_location);
 function Connection(whoami, path) {
     this.whoami=whoami;
     if(path){
-        this.staticDefs=loadDefs(path);
+        this.configDefs=loadDefs(path);
     } else {
-        this.staticDefs=loadDefs(defaultLocalDefinitionsPath);
+        this.configDefs=loadDefs(defaultLocalDefinitionsPath);
     }
-    //console.log(this.staticDefs);
 }
 
 function loadDefs(path) {
     const file_list = fs.readdirSync(path);
     const is_comment = /^#/;
     const matcher = /^(\w+)\s*=\s*(.*)$/;
-    rtn = {};
-    for(var i=0;i<file_list.length;++i){
-        //console.log("loadDefs: reading file " + file_list[i]);
-        var data = fs.readFileSync(path + "/" + file_list[i],'utf8');
-        var data_lines = data.split("\n");
 
-        for(var l=0;l<data_lines.length;++l){
-            //console.log(data_lines[l]);
-            if(is_comment.test(data_lines[l])) continue;
-            if(data_lines[l].length<3) continue; //shortest valid config line is 'a=b', 3 chars
-            matches = matcher.exec(data_lines[l]);
-            if(matches){
-                rtn[matches[1]] = matches[2];
-            } else {
-                console.error("line " + l + "(" + data_lines[l] + ") in " + file_list[i] + " does not match");
-            }
+    //Take each file and concatenate lines into single array
+    const data_lines = file_list.reduce((lines, currentFile) => {
+        var data = fs.readFileSync(path + "/" + currentFile,'utf8');
+        return lines.concat(data.split("\n"))
+    }, []);
+
+    //Filter any lines that aren't valid
+    const filteredLines = data_lines
+        .filter(line => line.length > 3) //shortest valid config line is 'a=b', 3 chars
+        .filter(line => !is_comment.test(line));
+
+    //Combine into single Key Value Object
+    return filteredLines.reduce((definitions, currentLine) => {
+        const matches = matcher.exec(currentLine);
+        if (matches) {
+            const matchObject = {};
+            matchObject[matches[1]] = matches[2];
+            return Object.assign({}, definitions, matchObject) ;
+        } else {
+            console.error("line " + currentLine + " is not valid");
+            return definitions;
         }
-    }
-    return rtn;
+    }, {});
 }
 
 function getSource(type,myname){
@@ -107,10 +111,8 @@ function get(conn,type, key, callback, userdata) { /* callback as function(err, 
                         reject(err);
                     }
                     if (!row) {
-                        //reject("no row found with key \'" + key + "\'");
                         fulfill({value: "(value not found)",type: type,key: key});
                     } else {
-                        //console.log(row);
                         if(callback){
                             fulfill(callback(row.value,type,key,userdata));
                         } else {
@@ -154,40 +156,46 @@ module.exports = {
     get: get,
     substituteString: function(conn,str){
         return new Promise(function(fulfill,reject) {
-            /* setup */
-            const d = new Date();
-            const static_subs = {
-                '{route-name}': process.env.cf_route_name,
-                '{hostname}': process.env.HOSTNAME,
-                '{ostype}': process.env.OSTYPE,
-                '{year}': d.getFullYear(),
-                '{month}': d.getMonth()+1,
-                '{day}': d.getDay(),
-                '{hour}': d.getHours(),
-                '{min}': d.getMinutes(),
-                '{sec}': d.getSeconds()
-            };
 
-            var promiseList=[];
-            var matched=0;
+            function replaceAllOccurances(string, matchText, replacementValue) {
+                //This replaces all occurances of matchText (by splitting) then replaces then with the value (by joining)
+                const sanitisedReplacement = replacementValue ? replacementValue : "undefined";
+                return string.split(matchText).join(sanitisedReplacement);
+            }
 
-            /* first, perform static substitutions */
-            Object.keys(static_subs).forEach(function(key){
-                //console.log("checking " + key + "(=>" + static_subs[key] + ") against " + str);
-                const matcher = new RegExp(key,'gi');
-                while(matches = matcher.exec(str)){
-                    //console.log(matches);
-                    var promise = new Promise(function(fulfill,reject){
-                        //console.log("subbing " + static_subs[key] + " for " + key);
-                        fulfill({find: key,replace: static_subs[key]});
-                    });
-                    promiseList.push(promise);
-                    ++matched;
-                }
-            });
+            function performStaticSubstitutions(str) {
+                const d = new Date();
+                const static_subs = {
+                    '{route-name}': process.env.cf_route_name,
+                    '{hostname}': process.env.HOSTNAME,
+                    '{ostype}': process.env.OSTYPE,
+                    '{year}': d.getFullYear(),
+                    '{month}': d.getMonth()+1,
+                    '{day}': d.getDay(),
+                    '{hour}': d.getHours(),
+                    '{min}': d.getMinutes(),
+                    '{sec}': d.getSeconds()
+                };
+
+                return Object.keys(static_subs).reduce((currentString, staticSubKey) => {
+                    return replaceAllOccurances(currentString, staticSubKey, static_subs[staticSubKey])
+                }, str)
+            }
+
+            function performConfigSubstitutions(str) {
+                if(!conn.configDefs) return str;
+                return Object.keys(conn.configDefs).reduce((currentString, currentDef) => {
+                    const matchText = "{config:" + currentDef + "}";
+                    return replaceAllOccurances(currentString, matchText, conn.configDefs[currentDef] )
+                }, str);
+            }
+
+            str = performStaticSubstitutions(str);
+            str = performConfigSubstitutions(str);
 
 
-            /* finally, perform datastore substitutions */
+            /* Perform the Async Datastore Replacements */
+            var promiseList = [];
             var param_matcher = /\{(\w+):([^}]+)\}/g;
 
             while(matches = param_matcher.exec(str)){
@@ -195,37 +203,25 @@ module.exports = {
                 var type=matches[1];
                 var key=matches[2];
 
-                if(type=='config') {
-                    promiseList.push(new Promise(function (fulfill, reject) {
-                        if (conn.staticDefs[key]) {
-                            fulfill({find: matchtext, replace: conn.staticDefs[key]});
-                        } else {
-                            fulfill({find: matchtext, replace: "(value not found)"});
-                        }
-                    }));
-                } else {
+                if(type !== 'config') {
                     promiseList.push(get(conn, type, key, function (result, type, key, matchtext) {
                         return {'find': matchtext, 'replace': result}
                     }, matchtext));
+                } else {
+                    promiseList.push(new Promise((fulfill, reject) => {
+                        fulfill({'find': matchtext, 'replace': "(value not found)"});
+                    }));
                 }
-                ++matched;
             }
-            //console.log(promiseList);
-            Promise.all(promiseList).done(function(valueList){
-                //console.log(valueList);
-                for(var i=0;i<valueList.length;++i){
-                    //var replacement = new RegExp();
-                    //console.log("replacing " + valueList[i].find + " with " + valueList[i].replace);
-                    str = str.replace(valueList[i].find,valueList[i].replace);
-                }
-                fulfill(str);
+
+            Promise.all(promiseList).done(function(replacementsList){
+                const returnString = replacementsList.reduce((currentString, replacementObj) => {
+                    return replaceAllOccurances(currentString, replacementObj.find, replacementObj.replace);
+                }, str);
+                fulfill(returnString);
             },function(err){
                 reject(err);
             });
-
-            if (matched==0){
-                fulfill(str);
-            }
         });
     }
 };

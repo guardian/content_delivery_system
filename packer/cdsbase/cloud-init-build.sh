@@ -41,8 +41,8 @@ apt-get -y install libdbd-mysql-perl
 echo ------------------------------------------
 echo Kickstarter: Installing JS prerequisites
 echo ------------------------------------------
-npm install sqlite3
 cd /usr/local/lib/cds_backend
+#package.json has been already put here by the Packer config in cdsbase-packer.yml
 npm install
 
 ###Step 6 - ffmpeg
