@@ -11,6 +11,9 @@ checkout:
     - chmod a+x ./circle_setup_rvm.sh
     - sudo -E ./circle_setup_rvm.sh
     - sudo -i /home/ubuntu/content_delivery_system/CDS/install.sh -y
+
+dependencies:
+  override:
     - npm install
         pwd: CDS/js
 
