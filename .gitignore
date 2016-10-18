@@ -14,3 +14,4 @@ keys/*
 test_routes/*
 project/*
 target/*
+node_modules
