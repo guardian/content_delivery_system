@@ -765,7 +765,7 @@ sub is_argument_valid {
 # this routine may need to be re-worked to be more data driven later
 # MSB, May 2009
 sub setUpProcessArguments{
-	my ($processAttributesRef,$store = @_);
+	my ($processAttributesRef,$store) = @_;
 		
 	my $value;
 	my $name;
