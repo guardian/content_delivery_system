@@ -1,20 +1,22 @@
-#first version of a config for testing via CircleCI
-
 machine:
+  node:
+    version: 4.6.0
   ruby:
     version: ruby-2.2.5
   java:
     version: oraclejdk8
-    
+
 checkout:
   post:
     - chmod a+x ./circle_setup_rvm.sh
     - sudo -E ./circle_setup_rvm.sh
     - sudo -i /home/ubuntu/content_delivery_system/CDS/install.sh -y
+    - cd CDS/js; npm install
 
 test:
   override:
     - bash ./tests/runtests.sh
+    - cd CDS/js; npm test
 
 deployment:
   riffraff_upload:
