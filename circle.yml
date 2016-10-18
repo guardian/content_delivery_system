@@ -12,7 +12,7 @@ checkout:
     - sudo -E ./circle_setup_rvm.sh
     - sudo -i /home/ubuntu/content_delivery_system/CDS/install.sh -y
     - npm install
-      - pwd: CDS/js
+        pwd: CDS/js
 
 test:
   override:
