@@ -5,17 +5,13 @@ machine:
     version: ruby-2.2.5
   java:
     version: oraclejdk8
-    
+
 checkout:
   post:
     - chmod a+x ./circle_setup_rvm.sh
     - sudo -E ./circle_setup_rvm.sh
     - sudo -i /home/ubuntu/content_delivery_system/CDS/install.sh -y
-
-dependencies:
-  override:
-    - npm install
-        pwd: CDS/js
+    - cd CDS/js; npm install
 
 test:
   override:
