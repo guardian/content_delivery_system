@@ -168,6 +168,8 @@ foreach(qw/cf_media_file cf_meta_file cf_inmeta_file cf_xml_file/){
 	
 	if($ENV{'output_path'}){
 		$dirname=$store->substitute_string($ENV{'output_path'});
+	} else {
+	    $dirname=dirname($ENV{$_});
 	}
 		
 	my $rv=do_file_move($ENV{$_},$new_file_name,$dirname,$debug);
