@@ -10,5 +10,8 @@
   "scripts": {
     "test": "mocha",
     "youtube": "node node_modules/.bin/mocha test/TestYoutubeUpload.js"
+  },
+  "devDependencies": {
+    "sinon": "^1.17.6"
   }
 }
