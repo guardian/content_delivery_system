@@ -1,12 +1,14 @@
 {
   "dependencies": {
-    "mocha": "3.1.2",
-    "sqlite3": "3.1.6",
-    "promise": "7.1.1",
     "chai-as-promised": "6.0.0",
-    "mkpath": "1.0.0"
+    "googleapis": "^14.0.0",
+    "mkpath": "1.0.0",
+    "mocha": "3.1.2",
+    "promise": "7.1.1",
+    "sqlite3": "3.1.6"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "youtube": "node node_modules/.bin/mocha test/TestYoutubeUpload.js"
   }
 }
