@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "aws-sdk": "^2.6.11",
     "chai-as-promised": "6.0.0",
     "googleapis": "^14.0.0",
     "mkpath": "1.0.0",
