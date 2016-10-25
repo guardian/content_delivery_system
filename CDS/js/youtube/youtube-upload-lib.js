@@ -1,9 +1,10 @@
-require('./youtube-env.js');
-
 const Promise = require('promise');
 const fs = require('fs');
 const youtubeAuth = require('./youtube-auth.js');
 const googleapis = require('googleapis');
+
+//If you are running the script locally, uncomment this line and populate the env file using the sample file provided to set the required environment variables
+//require('./youtube-env.js');
 
 function getYoutubeClient(authClient) {
     return youtube = googleapis.youtube({version: YOUTUBE_API_VERSION, auth: authClient});
