@@ -1,7 +1,7 @@
 const assert = require('assert');
 const fs = require('fs');
 
-var youtubeUpload = require('../youtube-upload-lib');
+var youtubeUpload = require('../../youtube/youtube-upload-lib');
 
 describe('YoutubeUpload', function() {
 

@@ -6,7 +6,9 @@ const fs = require('fs');
 const AWS = require('aws-sdk');
 const Promise = require('promise');
 
-const youtubeAuth = require('../youtube-auth');
+const youtubeAuth = require('../../youtube/youtube-auth');
+
+const CREDENTIALS_PATH = './test/youtube/lib/youtube_credentials.json';
 
 describe('youtubeAuth', function() {
 
@@ -23,7 +25,7 @@ describe('youtubeAuth', function() {
 
         it('should fetch credentials from credentials file if no bucket specified', function() {
 
-            process.env.client_secrets = './test/lib/youtube_credentials.json';
+            process.env.client_secrets = CREDENTIALS_PATH;
 
             return youtubeAuth.getCredentials()
             .then(function(credentials) {
@@ -60,7 +62,7 @@ describe('youtubeAuth', function() {
 
         it('should return auth client when credentials file is found', function(done) {
 
-            process.env.client_secrets = './test/lib/youtube_credentials.json';
+            process.env.client_secrets = CREDENTIALS_PATH;
             const setCredentialsSpy = sinon.spy(OAuth2.prototype, 'setCredentials');
 
             return youtubeAuth.getAuthClient().done(function(credentials) {
