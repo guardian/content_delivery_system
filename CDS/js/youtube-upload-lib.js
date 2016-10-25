@@ -1,7 +1,9 @@
 require('./youtube-env.js');
+
 const Promise = require('promise');
 const fs = require('fs');
-const getAuthClient = require('./youtube-auth');
+const youtubeAuth = require('./youtube-auth.js');
+const googleapis = require('googleapis');
 
 function getYoutubeClient(authClient) {
     return youtube = googleapis.youtube({version: YOUTUBE_API_VERSION, auth: authClient});
@@ -74,22 +76,23 @@ function getYoutubeData() {
 
 function uploadToYoutube() {
 
-    const authClient = getAuthClient();
-    const youtubeClient = getYoutubeClient(authClient);
-    const youtubeData = getYoutubeData();
+    return youtubeAuth.getAuthClient()
+    .then(function(authClient) {
+        const youtubeClient = getYoutubeClient(authClient);
+        const youtubeData = getYoutubeData();
 
-    return new Promise(function(fulfill, reject) {
+        return new Promise(function(fulfill, reject) {
 
-        youtubeClient.videos.insert(youtubeData, function (err, result) {
-             if (err) reject(err);
-             if (result) fulfill(result);
-        })
+            youtubeClient.videos.insert(youtubeData, function (err, result) {
+                 if (err) reject(err);
+                 if (result) fulfill(result);
+            })
+        });
     });
 }
 
 module.exports = {
     uploadToYoutube: uploadToYoutube,
-    getAuthClient: getAuthClient,
     getMetadata: getMetadata,
     getYoutubeData: getYoutubeData
 };
