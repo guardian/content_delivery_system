@@ -6,13 +6,16 @@ const Promise = require('promise');
 AWS.config.region = 'eu-west-1';
 
 
-YOUTUBE_API_VERSION = 'v3';
-CREDENTIALS_OBJECT_KEY = 's3-credentials.json';
+const YOUTUBE_API_VERSION = 'v3';
+const CREDENTIALS_OBJECT_KEY = 's3-credentials.json';
+//If you are running this script locally and want to use a
+//local credentials file instead, comment out this line
+const CREDENTIALS_BUCKET = 'youtube-upload-credentials';
 
 function getCredentials() {
 
     return new Promise(function(fulfill, reject) {
-        const bucket = process.env.credentials_bucket;
+        const bucket = CREDENTIALS_BUCKET;
         const filePath = process.env.client_secrets;
 
         if (!filePath && !bucket) {

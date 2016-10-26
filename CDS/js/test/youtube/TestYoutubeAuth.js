@@ -15,34 +15,7 @@ describe('youtubeAuth', function() {
     describe('getCredentials', function() {
 
 
-        it('should raise an error if credentials path and bucket name is missing', function(done) {
-
-            assert.throws(function() {
-                youtubeAuth.getAuthClient();
-                done();
-            });
-        });
-
-        it('should fetch credentials from credentials file if no bucket specified', function() {
-
-            process.env.client_secrets = CREDENTIALS_PATH;
-
-            return youtubeAuth.getCredentials()
-            .then(function(credentials) {
-                assert.equal(credentials.refresh_token, 'refresh');
-                assert.equal(credentials.access_token, null);
-                assert.equal(credentials.client_secret, 'secret');
-                assert.equal(credentials.client_id, 'id');
-                assert.equal(credentials.token_expiry, 2);
-
-                delete process.env.client_secrets;
-
-            });
-        });
-
-        it('should fetch credentials from bucket when bucket name is specified', function() {
-
-            process.env.credentials_bucket = 'bucket';
+        it('should fetch credentials from bucket', function() {
 
            var getObject = AWS.S3.prototype.getObject = sinon.stub();
            const buffer = new Buffer('"credentials"');
@@ -52,7 +25,6 @@ describe('youtubeAuth', function() {
             return youtubeAuth.getCredentials()
             .then(function(credentials) {
                 assert.equal(credentials, 'credentials');
-                delete process.env.credentials_bucket;
             });
         });
     });

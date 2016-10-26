@@ -3,8 +3,6 @@
 //This method uploads the video specified in the cnf_media_file parameter to youtube.
 //It expects the following arguments:
 //<cnf_media_file> - the path to the media file you are uploading
-//<credentials_bucket> - the name of the bucket that stores the credentials for youtube
-//<client_secrets> - path to a local credentials file. The script will look for this file if the credentials_bucket paramter is missing
 //<title> - the title of the video to be uploaded
 //<description> - the description of the video
 //<category_id> - the category id for the video
