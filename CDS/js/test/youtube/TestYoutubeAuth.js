@@ -42,10 +42,7 @@ describe('youtubeAuth', function() {
                 assert(setCredentialsSpy.calledOnce);
 
                 const authCredentials = setCredentialsSpy.lastCall.args[0];
-                assert.equal(authCredentials.access_token, null);
                 assert.equal(authCredentials.refresh_token, 'refresh');
-                //TODO: check for token refresh
-
                 done();
             });
         });

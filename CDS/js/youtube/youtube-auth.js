@@ -5,8 +5,6 @@ const AWS = require('aws-sdk');
 const Promise = require('promise');
 AWS.config.region = 'eu-west-1';
 
-
-const YOUTUBE_API_VERSION = 'v3';
 const CREDENTIALS_OBJECT_KEY = 's3-credentials.json';
 //If you are running this script locally and want to use a
 //local credentials file instead, comment out this line
@@ -15,13 +13,12 @@ const CREDENTIALS_BUCKET = 'youtube-upload-credentials';
 function getCredentials() {
 
     return new Promise(function(fulfill, reject) {
-        const bucket = CREDENTIALS_BUCKET;
+        //const bucket = CREDENTIALS_BUCKET;
         const filePath = process.env.client_secrets;
 
         if (!filePath && !bucket) {
             reject (new Error('Cannot upload to youtube: no filepath or bucket name for credentials provided'));
         }
-
 
         if (bucket) {
             const s3 = new AWS.S3();
@@ -58,12 +55,8 @@ function getAuthClient() {
     return getCredentials()
     .then(function (credentials) {
 
-        const tokenExpiry = (credentials.token_expiry - Date.now()).ceil
-
         var oauth2Client = new OAuth2(credentials.client_id, credentials.client_secret);
         oauth2Client.setCredentials({
-            access_token: null,
-            expiry_date: tokenExpiry,
             refresh_token: credentials.refresh_token
         });
 
