@@ -23,12 +23,13 @@ require 'date'
 require 'PLUTO/Entity'
 require 'Vidispine/VSStorage'
 require 'Vidispine/VSMetadataElements'
+require 'Vidispine/VSCollection'
+require 'Vidispine/VSItem'
 require 'CDS/Datastore'
 require 'yaml'
 require 'awesome_print'
 require 'fileutils'
 require 'net/http'
-require 'rest_client'
 
 class InvalidMetadataError < StandardError
 end
@@ -250,8 +251,8 @@ else
 			'gnm_commission_title' => proj.metadata['gnm_commission_title'],
 			'gnm_project_headline' => proj.metadata['gnm_project_headline'],
 			'gnm_commission_workinggroup' => proj.metadata['gnm_commission_workinggroup'],
-			'__collection' => $project,
-			'__ancestor_collection' => $project,
+#			'__collection' => $project,
+#			'__ancestor_collection' => $project,	
 			}.merge!($extraMeta),
 			tags: $transcodeTags,
 		)
@@ -263,8 +264,8 @@ else
 			'gnm_commission_title' => proj.metadata['gnm_commission_title'],
 			'gnm_project_headline' => proj.metadata['gnm_project_headline'],
 			'gnm_commission_workinggroup' => proj.metadata['gnm_commission_workinggroup'],
-			'__collection' => $project,
-			'__ancestor_collection' => $project,
+#			'__collection' => $project,
+#			'__ancestor_collection' => $project,
 			}.merge!($extraMeta),
 			tags: [],
 		)
@@ -326,6 +327,29 @@ $store.set('meta', {'master_id' => fileRef.memberOfItem.id})
 #once asset is imported, should update the metadata with project & commission names, etc.
 #exit(7)
 
+itemimported=VSItem.new($host,$port,$user,$passwd) 
+
+begin
+    itemimported.populate(fileRef.memberOfItem.id)
+rescue VSException=>e
+    puts "-ERROR: Unable to look up Vidispine item '#{vsid}'"
+    puts e.to_s
+    #exit(1)
+rescue Exception=>e
+    puts "-ERROR: Unable to look up Vidispine item '#{vsid}'"
+   puts e.message
+    puts e.backtrace
+    #exit(1)
+end
+
+
+collection = VSCollection.new($host,$port,$user,$passwd)
+
+collection.populate($project)
+
+collection.addChild(fileRef.memberOfItem)
+
+itemimported.setMetadata({ 'gnm_master_generic_status' => 'None' }, groupname: nil)
 
 def post_xml url_string, xml_string
   uri = URI.parse url_string
@@ -345,8 +369,11 @@ puts "Attempting to import Final Cut Pro XML file"
 
 #post_xml("http://#{$host}/nle/item/#{fileRef.memberOfItem.id}/sidecar/?platform=mac&nle=ppro",fcpxml)
 
+require 'rest_client'
+
 $resturl = "http://#{$user}:#{$passwd}@#{$host}/master/#{fileRef.memberOfItem.id}/ingest/upload_edl/"
 
 response = RestClient.post $resturl, :edl_file => File.new($xmlfileinput)
 
 puts response.to_str
+

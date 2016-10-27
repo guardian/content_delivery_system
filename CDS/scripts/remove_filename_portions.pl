@@ -73,11 +73,11 @@ my($baseName)=@_;
 				$stringAt = index($baseName,$newstring);
 				print "\n'$newstring' is contained within $baseName at $stringAt\n" if($ENV{'debug'});
 				if($stringAt<1){
-					$baseName = substr($baseName,scalar($newstring));
+					$baseName = substr($baseName,length($newstring));
 				} else {
 					$baseName = substr($baseName,0,$stringAt);
 				}
-				$baseName=substr($baseName,1) if($baseName[0] eq $delimiter);
+				$baseName=substr($baseName,1) if($baseName[0] == $delimiter);
 				chop $baseName if($baseName=~/$delimiter$/);
 			}
 		}
@@ -168,6 +168,8 @@ foreach(qw/cf_media_file cf_meta_file cf_inmeta_file cf_xml_file/){
 	
 	if($ENV{'output_path'}){
 		$dirname=$store->substitute_string($ENV{'output_path'});
+	} else {
+	    $dirname=dirname($ENV{$_});
 	}
 		
 	my $rv=do_file_move($ENV{$_},$new_file_name,$dirname,$debug);

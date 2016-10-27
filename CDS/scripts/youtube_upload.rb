@@ -73,9 +73,8 @@ FILE_POSTFIX = '-oauth2.json'
 class CommandLineOAuthHelper
 
   def initialize(scope,filename=nil)
-    if(filename!=nil) then
-	puts "Using provided filename #{filename} for authorisation credentials."
-    end
+		puts "Using provided filename #{filename} for authorisation credentials." if(filename!=nil)
+
     credentials = Google::APIClient::ClientSecrets.load(filename)
     @authorization = Signet::OAuth2::Client.new(
       :authorization_uri => credentials.authorization_uri,
@@ -142,6 +141,9 @@ class CommandLineOAuthHelper
   end
 end
 
+class InvalidCredentials < StandardError
+end
+
 def youtube_connect
 puts "Attempting to connect to YouTube..."
 begin
@@ -163,6 +165,10 @@ begin
 				puts "DEBUG: Got credentials:"
 				ap creds
 			end
+            
+			raise InvalidCredentials, "No credentials present in #{ENV['client_secrets']}" if(not creds)
+			raise InvalidCredentials, "Credentials in #{ENV['client_secrets']} not valid" if(not creds['web'] or not creds['web']['client_email'])
+            
 			client.authorization = Signet::OAuth2::Client.new(
 				:token_credential_uri => 'https://accounts.google.com/o/oauth2/token',
   				:audience => 'https://accounts.google.com/o/oauth2/token',
@@ -318,11 +324,12 @@ begin
 		f.write(videos_catlist_response)
 		f.flock(File::LOCK_UN)
 	}
+rescue InvalidCredentials=>e
+	puts "-ERROR: #{e.message}"
+		ap e.backtrace if(ENV['debug'])
 rescue Exception=>e
 	puts "-ERROR: Unable to refresh category list: #{e.message}"
-	if(ENV['debug'])
-		ap e.backtrace
-	end
+	ap e.backtrace if(ENV['debug'])
 end
 
 end #def download_data
@@ -332,30 +339,27 @@ class ArgumentError < StandardError
 end
 
 def assert_args(argnames)
-
-argnames.each do |name|
-	unless(ENV[name])
-		raise ArgumentError, "-ERROR: You need to define the argument <#{name}> in the routefile."
+	argnames.each do |name|
+		unless(ENV[name])
+			raise ArgumentError, "-ERROR: You need to define the argument <#{name}> in the routefile."
+		end
 	end
-end
-
 end #def assert_args
 
 def errorReportContains(reportInfo,fields)
-
-begin
-  reportInfo['error']['errors'].each do |error|
-    fields.each {|k,v|
-      if error[k] and error[k] == v
-	return true
-      end
-    }
-  end #errors.each
-  return false
-rescue IndexError=>e
-  $stderr.puts "-WARNING: indexerror #{e.message} occurred while scanning error report"
-  return false
-end #exception handling
+	begin
+		reportInfo['error']['errors'].each do |error|
+			fields.each {|k,v|
+				if error[k] and error[k] == v
+		return true
+				end
+			}
+		end #errors.each
+		return false
+	rescue IndexError=>e
+		$stderr.puts "-WARNING: indexerror #{e.message} occurred while scanning error report"
+		return false
+	end #exception handling
 
 end #errorReportContains
 
@@ -426,20 +430,21 @@ if ENV['category_id']
     body[:snippet][:categoryId]=$store.substitute_string(ENV['category_id'])
 end
 
-access="private"
+body[:status][:privacyStatus]="private"
 if ENV['access']
 	body[:status][:privacyStatus]=$store.substitute_string(ENV['access'])
 	# <access>{public|private|unlisted} - the ensure that the access policy for the video is set as such. You can set this from the data$store by using a substitution , e.g. {meta:yt_access_policy} sets according to the 'yt_access_policy'
 end
-owner_acct=""
+
 if ENV['owner_account']
     owner_acct = $store.substitute_string(ENV['owner_account'])
     parts = owner_acct.split('|')
     owner_acct = parts[0] if(parts.length > 1)
-	params[:onBehalfOfContentOwner]=owner_acct
+	  params[:onBehalfOfContentOwner]=owner_acct
 	# <owner_account>blah - [OPTIONAL] specifies that the content should be uploaded on behalf of the given account.  This may fail on certain types of account. It sets the 'onBehalfOfContentOwner' field, which Google#'s documentation states "is intended exclusively for YouTube content partners". You can set this from the data$store by using a substitution. 
 end
-owner_chl=""
+
+
 if ENV['owner_channel']
     owner_chl = $store.substitute_string(ENV['owner_channel'])
     parts = owner_chl.split('|')
@@ -517,8 +522,8 @@ end
 gps_coords=""
 if ENV['gps_coords']
 	params=$store.substitute_string(ENV['gps_coords']).scan(/[\d\.]+/)
-	body[:recordingDetails][:location][:latitude]=params[0].to_f()
-	body[:recordingDetails][:location][:longitude]=params[1].to_f()
+	body[:recordingDetails][:location][:latitude]=params[0].to_f
+	body[:recordingDetails][:location][:longitude]=params[1].to_f
 	# <owner_channel>blah - [OPTIONAL] specified that the content should be uploaded to the given channel.  This may fail on certain types of account. It sets the 'onBehalfOfContentOwnerChannel' field, which Google#'s documentation states "is intended exclusively for YouTube content partners". You can set this from the data$store by using a substitution.
 end
 # <gps_coords>{lat}:{long} - [OPTIONAL] Set the given latitude/longitude as the location where the media was recorded. You can set this from the data$store by using a substitution 

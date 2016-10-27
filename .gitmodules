@@ -1,0 +1,3 @@
+[submodule "packer/machine-images"]
+	path = packer/machine-images
+	url = https://github.com/guardian/machine-images.git
