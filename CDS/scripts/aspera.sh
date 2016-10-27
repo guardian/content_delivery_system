@@ -4,16 +4,25 @@
 # It assumes that you have Aspera client installed, licensed and working.
 #
 #Arguments:
-# <host>sftp.hostname.com - upload to this server 
-# <username>blah - log in with this username 
+# <take-files>{media|meta|inmeta|xml} - upload these files to the server.
+# <host>asperaserver.hostname.com - upload to this server
+# <username>blah - log in with this username
 # <remote_path>/path/to/upload/ -  change to this directory to upload the file. Should end with a /.
 # <password>text - Password for the Aspera server.
+# <debug/> [OPTIONAL] - get more verbose output from Aspera client
 #END DOC
 
 if [ "${debug}" != "" ]; then
 echo
 set
 echo -----------------
+fi
+
+ASCP_CMD = `which ascp`
+
+if [ ! -x "${ASCP_CMD}" ]; then
+    echo "-ERROR: Unable to find a working ascp command.  Is the Aspera client installed?"
+    exit 1
 fi
 
 DATASTORE=`which cds_datastore.pl`
@@ -73,7 +82,7 @@ export ASPERA_SCP_PASS=$PASSWORD
 RESULT="0"
 
 if [ "$cf_media_file" != "" ]; then
-	ascp --host=$HOST --user=$USERNAME --mode=send $EXTRAFLAGS $cf_media_file $REMOTEPATH/$UPLOAD_MEDIA
+	ascp --host=$HOST --user=$USERNAME --mode=send $EXTRAFLAGS "$cf_media_file" "$REMOTEPATH/$UPLOAD_MEDIA"
 	
 	CODE=$?
 
@@ -86,7 +95,7 @@ if [ "$cf_media_file" != "" ]; then
 fi
 
 if [ "$cf_meta_file" != "" ]; then
-	ascp --host=$HOST --user=$USERNAME --mode=send $EXTRAFLAGS $cf_meta_file $REMOTEPATH/$UPLOAD_META
+	ascp --host=$HOST --user=$USERNAME --mode=send $EXTRAFLAGS "${cf_meta_file}" "$REMOTEPATH/$UPLOAD_META"
 	
 	CODE=$?
 
@@ -99,7 +108,7 @@ if [ "$cf_meta_file" != "" ]; then
 fi
 
 if [ "$cf_inmeta_file" != "" ]; then
-	ascp --host=$HOST --user=$USERNAME --mode=send $EXTRAFLAGS $cf_inmeta_file $REMOTEPATH/$UPLOAD_INMETA
+	ascp --host=$HOST --user=$USERNAME --mode=send $EXTRAFLAGS "$cf_inmeta_file" "$REMOTEPATH/$UPLOAD_INMETA"
 	
 	CODE=$?
 
@@ -112,7 +121,7 @@ if [ "$cf_inmeta_file" != "" ]; then
 fi
 
 if [ "$cf_xml_file" != "" ]; then
-	ascp --host=$HOST --user=$USERNAME --mode=send $EXTRAFLAGS $cf_xml_file $REMOTEPATH/$UPLOAD_XML
+	ascp --host=$HOST --user=$USERNAME --mode=send $EXTRAFLAGS "$cf_xml_file" "$REMOTEPATH/$UPLOAD_XML"
 	
 	CODE=$?
 
