@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:simpleType name="routetype">
+	  <xs:restriction base="xs:string">
+		<xs:pattern value="( active | test )"/>
+	  </xs:restriction>
+	</xs:simpleType>
+	
+	<xs:element name="route">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="input-method" minOccurs="1" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+						</xs:sequence>
+						<xs:attribute name="name" type="xs:string" use="required"/>
+					</xs:complexType>	
+				</xs:element>
+				<xs:element name="process-method" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+						</xs:sequence>
+						<xs:attribute name="name" type="xs:string" use="required"/>
+					</xs:complexType>	
+				</xs:element>
+				<xs:element name="output-method" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+						</xs:sequence>
+						<xs:attribute name="name" type="xs:string" use="required"/>
+					</xs:complexType>	
+				</xs:element>
+				<xs:element name="success-method" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+						</xs:sequence>
+						<xs:attribute name="name" type="xs:string" use="required"/>
+					</xs:complexType>	
+				</xs:element>
+				<xs:element name="fail-method" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+						</xs:sequence>
+						<xs:attribute name="name" type="xs:string" use="required"/>
+					</xs:complexType>	
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="type" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema> 

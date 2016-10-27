@@ -21,7 +21,8 @@ echo WARNING - ffmpeg2theora may not support all incoming files correctly.  It\'
 
 #FIXME - should sanitize arguments really
 
-F2T_BIN="/usr/local/bin/ffmpeg2theora"
+F2T_BIN=`which ffmpeg2theora`
+
 if [ ! -x "${F2T_BIN}" ]; then
 	echo Could not find ${F2T_BIN} or it is not executable.  Please ensure that you have installed ffmpeg2theora before trying to use this method.
 	echo You should be able to find it at http://v2v.cc/~j/ffmpeg2theora/

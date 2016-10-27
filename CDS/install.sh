@@ -69,6 +69,7 @@ if [ -x "${APTGET}" ]; then	#We have apt so are running on a debian-type system
 	echo If you are not using apt-provided versions of Perl, Ruby-gems, then you should press
 	echo CTRL-C to stop the install and ensure that they are installed and up to date.
 	echo Then re-run the install and type S \[enter\] here to skip
+	echo Ruby is now NOT installed by default below. You should run apt-get install ruby-{version} once this installer completes.
 	echo
 	echo Most users should type C \[enter\] to continue, and then Y \(yes\) when APT asks you if you want
 	echo to install the packages
@@ -90,7 +91,7 @@ if [ -x "${APTGET}" ]; then	#We have apt so are running on a debian-type system
 	"C" )
         #zlib1g-dev is required for nokogiri in aws-sdk-v1
 		apt-get ${pkgargs} update
-		apt-get ${pkgargs} install perl cpanminus ruby2.0 ruby2.0-dev zlib1g-dev build-essential s3cmd libsqlite3-dev
+		apt-get ${pkgargs} install perl cpanminus zlib1g-dev build-essential s3cmd libsqlite3-dev
 		if [ "$?" != "0" ]; then
 			echo
 			echo -------------------------------------------------------
@@ -252,41 +253,12 @@ if [ "${PRINSTALLED}" == "0" ]; then
 	read junk
 fi
 
-#ensure that system ruby is version 2.0
-#FIXME - need to implement a flag to make this optional
-if [ -x "/usr/bin/ruby2.0" ]; then
-    rm -f /usr/bin/ruby
-    ln -s /usr/bin/ruby2.0 /usr/bin/ruby
-    rm -f /usr/bin/gem
-    ln -s /usr/bin/gem2.0 /usr/bin/gem
-fi
 
 #Attempt to install the AWS SDK for Ruby....
 GEM=`which gem`
 
-if [ -x "${GEM}" ]; then 
-	echo Installing Amazon Web Services libraries for Ruby...
-	gem install aws-sdk-v1
-	echo
+if [ -x "${GEM}" ]; then
 	echo -----------------------------------------------------
-	if [ "$?" != "0" ]; then
-		echo Gem reported an error installing the library.  This may be because it is already installed,
-		echo or it could be an error.  Ensure that the Ruby development files are installed \(ruby-dev package on Debian-based systems\), or try updating your Ruby installation and trying again.
-		echo Remember that the AWS library does NOT work with Ruby version 1.8 or 1.9.  If you have an error with Nokogiri, this is probably because the gem command is not for Ruby 2.x.  Make sure that you have ruby 2.0 installed and your default Gem installation is also from the 2.0 installation \(check with ruby --version and gem --version\).  The safest way to do this is to uninstall ruby1.8 and ruby-gems if you can.  The correct version of gem is included in the ruby2.0 package.
-		echo See the log immediately above for more information.
-		echo
-		echo Press \[ENTER\] to continue
-		read junk
-	else
-		echo AWS libraries installed sucessfully
-	fi
-
-	echo Installing Google client API library for Ruby...
-	gem install google-api-client launchy thin
-	
-	echo Installing Rest Client library for Ruby...
-	gem install rest-client
-
 	cd ${SOURCE_DIR}/Ruby
 	echo Building and installing CDS library for Ruby...
 	gem build cdslib.gemspec
