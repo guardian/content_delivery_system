@@ -1,14 +1,11 @@
-const Promise = require('promise');
-const fs = require('fs');
-const youtubeAuth = require('./youtube-auth.js');
-const googleapis = require('googleapis');
+var Promise = require('promise');
+var fs = require('fs');
+var youtubeAuth = require('./youtube-auth.js');
+var googleapis = require('googleapis');
+var OAuth2 = googleapis.auth.OAuth2;
+var dataStore = require('../DataStore.js');
 
-//If you are running the script locally, uncomment this line and populate the env file using the sample file provided to set the required environment variables
-//require('./youtube-env.js');
-
-function getYoutubeClient(authClient) {
-    return youtube = googleapis.youtube({version: YOUTUBE_API_VERSION, auth: authClient});
-}
+const YOUTUBE_API_VERSION = 'v3';
 
 function getMetadata() {
     var title, description, category, status;
@@ -47,54 +44,63 @@ function getMetadata() {
 function getYoutubeData() {
     const metadata = getMetadata();
     const mediaPath = process.env.cnf_media_file;
-    const params = {
-        uploadType: 'multipart'
-    };
 
     if (!mediaPath) {
         throw new Error('Cannot upload to youtube: missing media file path');
     }
 
-    if (process.env.channel) {
+    if (process.env.owner_channel) {
         if (!process.env.owner_account) {
             throw new Error('Cannot upload to youtube: missing account owner');
         }
-
-        params.onBehalfOfContentOwner = process.env.owner_account;
-        params.onBehalfOfContentOwnerChannel = process.env.channel;
     }
 
     var youtubeData = {
          'part': 'snippet,status',
          'resource': metadata,
          'media': {body: fs.readFileSync(mediaPath)},
-         'parameters': params
+         'uploadType': 'multipart',
+         'onBehalfOfContentOwner': process.env.owner_account,
+         'onBehalfOfContentOwnerChannel': process.env.owner_channel
     };
     return youtubeData;
 
 }
 
+function saveResultToDataStore(result) {
+    var connection = new dataStore.Connection("YoutubeDataStore");
+    return dataStore.set(connection, 'meta', 'youtube_id', result.id);
+}
 
 function uploadToYoutube() {
 
     return youtubeAuth.getAuthClient()
-    .then(function(authClient) {
-        const youtubeClient = getYoutubeClient(authClient);
-        const youtubeData = getYoutubeData();
+    .then((oauth2) => {
 
-        return new Promise(function(fulfill, reject) {
+       var youtubeClient = googleapis.youtube({version: YOUTUBE_API_VERSION, auth: oauth2});
+       const youtubeData = this.getYoutubeData();
 
-            youtubeClient.videos.insert(youtubeData, function (err, result) {
-                 if (err) reject(err);
-                 if (result) fulfill(result);
+       return new Promise((fulfill, reject) => {
+            youtubeClient.videos.insert(youtubeData, (err, result) => {
+                if (err) reject(err);
+                if (result) {
+                    this.saveResultToDataStore(result)
+                    .then(() => {
+                        fulfill(result);
+                    })
+                    .catch((err) => {
+                        fulfill(result);
+                    });
+                 }
             })
-        });
+       });
     });
 }
 
 module.exports = {
     uploadToYoutube: uploadToYoutube,
     getMetadata: getMetadata,
-    getYoutubeData: getYoutubeData
+    getYoutubeData: getYoutubeData,
+    saveResultToDataStore: saveResultToDataStore
 };
 
