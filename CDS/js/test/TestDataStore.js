@@ -31,6 +31,14 @@ describe('Datastore',function(){
         fs.rmdir(test_data_dir);
     });
 
+    describe('#datastore', function() {
+        it('should not error if the datastore path is not valid', function(done){
+            assert.doesNotThrow(function(){
+                newconn=new datastore.Connection("TestDataStore","/path/that/is/not/valid/conf.d");
+                done();
+            });
+        });
+    });
     describe('#set', function(){
         it('should store a value to meta and return nothing', function(done){
             datastore.set(conn,'meta','key','something').done(function(value){
