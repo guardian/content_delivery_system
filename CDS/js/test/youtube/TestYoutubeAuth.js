@@ -12,6 +12,8 @@ var Promise = require('promise');
 var pem = require('pem');
 var fs = require('fs');
 
+process.env.cf_datastore_location='location';
+var dataStore = require('../../Datastore.js');
 var youtubeAuth = require('../../youtube/youtube-auth');
 
 const CREDENTIALS_PATH = './test/youtube/lib/youtube_credentials.json';
@@ -20,6 +22,26 @@ const INVALID_CREDENTIALS_PATH = './test/youtube/lib/invalid_youtube_credentials
 describe('youtubeAuth', () => {
 
     describe('#readP12', () => {
+        var stringSubstituteStub, p12Read, writeFile;
+
+        beforeEach(() => {
+            stringSubstituteStub = sinon.stub(dataStore, 'substituteStrings', (connection, val) => {
+                return new Promise((fulfill) => {
+                    fulfill(val);
+                });
+            });
+            p12Read = sinon.stub(pem, 'readPkcs12');
+            p12Read.yields(null, {key: 'key'});
+
+            writeFile = sinon.stub(fs, 'writeFileSync');
+
+        });
+
+        afterEach(() => {
+            stringSubstituteStub.restore();
+            writeFile.restore();
+            p12Read.restore();
+        });
 
         it('should raise exception if private key or passphase is missing', () => {
 
@@ -31,40 +53,53 @@ describe('youtubeAuth', () => {
             process.env.private_key = 'key';
             process.env.passphrase = 'passphrase';
 
-            var p12Read = pem.readPkcs12 = sinon.stub();
-            p12Read.yields(null, {key: 'key'});
-
-            var writeFile = fs.writeFileSync = sinon.stub();
-
             return youtubeAuth.readP12()
             .then(() => {
                 sinon.assert.calledOnce(p12Read);
+                sinon.assert.calledOnce(stringSubstituteStub);
                 sinon.assert.calledOnce(writeFile);
                 sinon.assert.calledWith(writeFile, './privatekey.pem', 'key', 'utf8');
+                return;
             });
 
         });
     });
 
     describe('#getCredentials', () => {
+        var fsStub;
+        var stringSubstituteStub;
+
+        before(() => {
+            fsStub = sinon.stub(fs, 'readFileSync').returns('{"credentials": "credentials"}');
+        });
+
+        after(() => {
+            fsStub.restore();
+        });
+
+        beforeEach(() => {
+            stringSubstituteStub = sinon.stub(dataStore, 'substituteString', (connection, val) => {
+                return new Promise((fulfill) => {
+                    fulfill(val);
+                });
+            });
+        });
+
+        afterEach(() => {
+            stringSubstituteStub.restore();
+        });
 
         it('should raise an exception if no path to credentials file provided', () => {
 
             return assert.isRejected(youtubeAuth.getCredentials(), 'Cannot upload to youtube: client secrets file path not provided');
         });
 
-        it('should raise an exception if credentials file cannot be parsed', () => {
-
-            process.env.client_secrets = INVALID_CREDENTIALS_PATH;
-            return assert.isRejected(youtubeAuth.getCredentials(), 'Cannot read credentials : SyntaxError: Unexpected token I in JSON at position 0');
-
-        });
-
         it('should fetch credentials when path is provided', () => {
 
             process.env.client_secrets = CREDENTIALS_PATH;
 
-            return assert.eventually.deepEqual(youtubeAuth.getCredentials(), { credentials: 'credentials'});
+            assert.eventually.deepEqual(youtubeAuth.getCredentials(), { credentials: 'credentials'});
+            return;
         });
     });
 
@@ -181,6 +216,8 @@ describe('youtubeAuth', () => {
                 const authArg = setCredentialsSpy.lastCall.args[0];
                 assert.equal(authArg.access_token, 'token');
                 credentialsStub.restore();
+                setCredentialsSpy.restore();
+                jwtStub.restore();
                 return;
 
             });

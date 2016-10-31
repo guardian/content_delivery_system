@@ -1,4 +1,5 @@
 var assert = require('assert');
+var sinon = require('sinon');
 const fs = require('fs');
 const mkpath = require('mkpath');
 
@@ -6,7 +7,7 @@ const test_data_dir = "/tmp/cdstest/conf.d";
 process.env.cf_datastore_location='./test.db';
 if(fs.existsSync(process.env.cf_datastore_location))
     fs.unlink(process.env.cf_datastore_location);
-var datastore = require('../Datastore');
+var datastore = require('../Datastore.js');
 
 describe('Datastore',function(){
     var conn;
@@ -93,7 +94,33 @@ describe('Datastore',function(){
         //     assert.equal(datastore.get('media','mediaKey'),'somethingElse');
         // });
     });
+
+    describe('#substituteStrings', function() {
+        var substituteStub;
+
+        before(function() {
+            substituteStub = sinon.stub(datastore, 'substituteString', function(connection, value) {
+                return value;
+            });
+        });
+
+        after(function() {
+            substituteStub.restore();
+        });
+
+        it('should substitute multiple strings', function() {
+            return datastore.substituteStrings(null, ['a', 'b', 'c'])
+            .then((value) => {
+                assert.equal(value.length, 3);
+                assert.equal(value[0], 'a');
+                assert.equal(value[1], 'b');
+                assert.equal(value[2], 'c');
+            });
+        });
+    });
+
     describe('#substituteString',function(){
+
        it('should not modify a string without braces in', function(test_completed){
             datastore.substituteString(conn,"test string with no braces").done(function(value){
                assert.equal(value,"test string with no braces");

@@ -4,6 +4,7 @@ var fs = require('fs');
 var Promise = require('promise');
 var pem = require('pem');
 var Q = require('q');
+var dataStore = require('../Datastore.js');
 
 const SECRET_KEY_FILE_PATH = './privatekey.pem';
 const SCOPES = [
@@ -13,43 +14,48 @@ const SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload"
 ];
 
-function getCredentials() {
+function getCredentials(connection) {
 
     return new Promise((fulfill, reject) => {
 
-        const credentialsFile = process.env.client_secrets;
-        if (!credentialsFile) {
+        if (!process.env.client_secrets) {
             reject (new Error('Cannot upload to youtube: client secrets file path not provided'));
         }
-
-        try {
-            fulfill(JSON.parse(fs.readFileSync(credentialsFile,'utf8')));
-        } catch (ex) {
-            reject(new Error('Cannot read credentials : ' + ex));
-        }
+        fulfill(dataStore.substituteString(connection, process.env.client_secrets)
+        .then((credentialsFile) => {
+            return (JSON.parse(fs.readFileSync(credentialsFile,'utf8')));
+        }));
     });
 }
 
-function readP12() {
+function readP12(connection) {
     return new Promise((fulfill, reject) => {
 
         if (!process.env.private_key || !process.env.passphrase) {
             reject (new Error('Cannot upload to youtube: private key and passphrase required'));
         }
 
-        pem.readPkcs12(process.env.private_key, {p12Password: process.env.passphrase}, (err, result) => {
-            if (err) reject(err);
-            if (result) {
-                fs.writeFileSync(SECRET_KEY_FILE_PATH, result.key, 'utf8');
-                fulfill();
-            }
-        });
+        fulfill(dataStore.substituteStrings(connection, [process.env.private_key, process.env.passphrase])
+        .then(function(results) {
+            var privateKey, passphrase;
+            [privateKey, passphrase] = results;
+
+            return new Promise((fulfill, reject) => {
+                pem.readPkcs12(privateKey, {p12Password: passphrase}, (err, result) => {
+                    if (err) reject(err);
+                    if (result) {
+                        fs.writeFileSync(SECRET_KEY_FILE_PATH, result.key, 'utf8');
+                        fulfill();
+                    }
+                });
+            });
+        }));
     })
 }
 
-function getAuthClient() {
+function getAuthClient(connection) {
 
-    return Q.all([this.getCredentials(), this.readP12()])
+    return Q.all([this.getCredentials(connection), this.readP12(connection)])
     .spread((credentials) => {
 
         if (!credentials.client_id) {

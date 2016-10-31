@@ -129,6 +129,76 @@ function get(conn,type, key, callback, userdata) { /* callback as function(err, 
     });
 }
 
+function substituteString(conn,str){
+    return new Promise(function(fulfill,reject) {
+
+        function replaceAllOccurances(string, matchText, replacementValue) {
+            //This replaces all occurances of matchText (by splitting) then replaces then with the value (by joining)
+            const sanitisedReplacement = replacementValue ? replacementValue : "undefined";
+            return string.split(matchText).join(sanitisedReplacement);
+        }
+
+        function performStaticSubstitutions(str) {
+            const d = new Date();
+            const static_subs = {
+                '{route-name}': process.env.cf_route_name,
+                '{hostname}': process.env.HOSTNAME,
+                '{ostype}': process.env.OSTYPE,
+                '{year}': d.getFullYear(),
+                '{month}': d.getMonth()+1,
+                '{day}': d.getDay(),
+                '{hour}': d.getHours(),
+                '{min}': d.getMinutes(),
+                '{sec}': d.getSeconds()
+            };
+
+            return Object.keys(static_subs).reduce((currentString, staticSubKey) => {
+                return replaceAllOccurances(currentString, staticSubKey, static_subs[staticSubKey])
+            }, str)
+        }
+
+        function performConfigSubstitutions(str) {
+            if(!conn.configDefs) return str;
+            return Object.keys(conn.configDefs).reduce((currentString, currentDef) => {
+                const matchText = "{config:" + currentDef + "}";
+                return replaceAllOccurances(currentString, matchText, conn.configDefs[currentDef] )
+            }, str);
+        }
+
+        str = performStaticSubstitutions(str);
+        str = performConfigSubstitutions(str);
+
+
+        /* Perform the Async Datastore Replacements */
+        var promiseList = [];
+        var param_matcher = /\{(\w+):([^}]+)\}/g;
+
+        while(matches = param_matcher.exec(str)){ var matchtext = matches[0];
+            var type=matches[1];
+            var key=matches[2];
+
+            if(type !== 'config') {
+                promiseList.push(get(conn, type, key, function (result, type, key, matchtext) {
+                    return {'find': matchtext, 'replace': result}
+                }, matchtext));
+            } else {
+                promiseList.push(new Promise((fulfill, reject) => {
+                    fulfill({'find': matchtext, 'replace': "(value not found)"});
+                }));
+            }
+        }
+
+        Promise.all(promiseList).done(function(replacementsList){
+            const returnString = replacementsList.reduce((currentString, replacementObj) => {
+                return replaceAllOccurances(currentString, replacementObj.find, replacementObj.replace);
+            }, str);
+            fulfill(returnString);
+        },function(err){
+            reject(err);
+        });
+    });
+}
+
 module.exports = {
     Connection: Connection,
     newDataStore: function() {
@@ -158,74 +228,8 @@ module.exports = {
     set: set,
     setMulti: setMulti,
     get: get,
-    substituteString: function(conn,str){
-        return new Promise(function(fulfill,reject) {
-
-            function replaceAllOccurances(string, matchText, replacementValue) {
-                //This replaces all occurances of matchText (by splitting) then replaces then with the value (by joining)
-                const sanitisedReplacement = replacementValue ? replacementValue : "undefined";
-                return string.split(matchText).join(sanitisedReplacement);
-            }
-
-            function performStaticSubstitutions(str) {
-                const d = new Date();
-                const static_subs = {
-                    '{route-name}': process.env.cf_route_name,
-                    '{hostname}': process.env.HOSTNAME,
-                    '{ostype}': process.env.OSTYPE,
-                    '{year}': d.getFullYear(),
-                    '{month}': d.getMonth()+1,
-                    '{day}': d.getDay(),
-                    '{hour}': d.getHours(),
-                    '{min}': d.getMinutes(),
-                    '{sec}': d.getSeconds()
-                };
-
-                return Object.keys(static_subs).reduce((currentString, staticSubKey) => {
-                    return replaceAllOccurances(currentString, staticSubKey, static_subs[staticSubKey])
-                }, str)
-            }
-
-            function performConfigSubstitutions(str) {
-                if(!conn.configDefs) return str;
-                return Object.keys(conn.configDefs).reduce((currentString, currentDef) => {
-                    const matchText = "{config:" + currentDef + "}";
-                    return replaceAllOccurances(currentString, matchText, conn.configDefs[currentDef] )
-                }, str);
-            }
-
-            str = performStaticSubstitutions(str);
-            str = performConfigSubstitutions(str);
-
-
-            /* Perform the Async Datastore Replacements */
-            var promiseList = [];
-            var param_matcher = /\{(\w+):([^}]+)\}/g;
-
-            while(matches = param_matcher.exec(str)){
-                var matchtext = matches[0];
-                var type=matches[1];
-                var key=matches[2];
-
-                if(type !== 'config') {
-                    promiseList.push(get(conn, type, key, function (result, type, key, matchtext) {
-                        return {'find': matchtext, 'replace': result}
-                    }, matchtext));
-                } else {
-                    promiseList.push(new Promise((fulfill, reject) => {
-                        fulfill({'find': matchtext, 'replace': "(value not found)"});
-                    }));
-                }
-            }
-
-            Promise.all(promiseList).done(function(replacementsList){
-                const returnString = replacementsList.reduce((currentString, replacementObj) => {
-                    return replaceAllOccurances(currentString, replacementObj.find, replacementObj.replace);
-                }, str);
-                fulfill(returnString);
-            },function(err){
-                reject(err);
-            });
-        });
-    }
+    substituteString: substituteString,
+    substituteStrings: function(conn, strs) {
+        return Promise.all(strs.map((str) => this.substituteString(conn, str)));
+    },
 };

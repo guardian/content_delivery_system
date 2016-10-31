@@ -1,73 +1,99 @@
-var assert = require('assert');
+var chai = require('chai');
+var assert = chai.assert;
+var  chaiAsPromised = require('chai-as-promised');
+var sinon = require('sinon');
+
+chai.use(chaiAsPromised);
+
 var fs = require('fs');
 var sinon = require('sinon');
+process.env.cf_datastore_location = 'datastore';
 var youtubeUpload = require('../../youtube/youtube-upload-lib');
 var youtubeAuth = require('../../youtube/youtube-auth');
 var googleapis = require('googleapis');
+var dataStore = require('../../Datastore.js');
 
-process.env.cf_datastore_location = 'datastore';
 
 describe('YoutubeUpload', () => {
+    var stringSubstituteStub;
+
+    beforeEach(() => {
+        stringSubstituteStub = sinon.stub(dataStore, 'substituteStrings', (connection, val) => {
+            return new Promise((fulfill) => {
+                fulfill(val);
+            });
+        });
+
+    });
+
+    afterEach(() => {
+        stringSubstituteStub.restore();
+    });
 
     describe('#getYoutubeData', () => {
+        var metadataStub, readStub;
 
         beforeEach(() => {
             process.env.cnf_media_file = './media';
             process.env.owner_account = 'account';
             process.env.owner_channel = 'channel';
+            metadataStub = sinon.stub(youtubeUpload, 'getMetadata').returns(new Promise((fulfill, reject) => {
+                fulfill({});
+            }));
+            readStub = sinon.stub(fs, 'readFileSync');
+
         });
 
         afterEach(() => {
             delete process.env.media_path;
             delete process.env.owner_account;
             delete process.env.owner_channel;
+            metadataStub.restore();
+            readStub.restore();
         });
 
-        it('should parse youtube data correctly when all variables exist', (done) => {
+        it('should parse youtube data correctly when all variables exist', () => {
 
-            var fsStub = sinon.stub(fs, 'readFileSync');
+            return youtubeUpload.getYoutubeData(null)
+            .then((data) => {
+                assert.equal(data.part, 'snippet,status');
+                assert.ok(data.resource);
+                assert.ok(data.media);
 
-            const data = youtubeUpload.getYoutubeData();
-            assert.equal(data.part, 'snippet,status');
-            assert.ok(data.resource);
-            assert.ok(data.media);
-
-            assert.equal(data.onBehalfOfContentOwner, 'account');
-            assert.equal(data.onBehalfOfContentOwnerChannel, 'channel');
-            assert.equal(data.uploadType, 'multipart');
-
-            done();
+                assert.equal(data.onBehalfOfContentOwner, 'account');
+                assert.equal(data.onBehalfOfContentOwnerChannel, 'channel');
+                assert.equal(data.uploadType, 'multipart');
+                sinon.assert.calledOnce(stringSubstituteStub);
+                return;
+            });
         });
+            //check that called datastore method
 
-        it('should raise an exception if no media path provided', (done) => {
+        it('should raise an exception if no media path provided', () => {
+
             delete process.env.cnf_media_file;
 
-            assert.throws(youtubeUpload.getYoutubeData, Error, 'Cannot upload to youtube: missing a file path');
-
-            done();
+            return assert.isRejected(youtubeUpload.getYoutubeData(), 'Cannot upload to youtube: missing media file path');
 
         });
 
-        it('should raise an exception if channel is specified without an account owner', (done) => {
+        it('should raise an exception if channel is specified without an account owner', () => {
             delete process.env.owner_account;
 
-            assert.throws(youtubeUpload.getYoutubeData, Error, 'Cannot upload to youtube: missing account owner');
-
-            done();
+            assert.isRejected(youtubeUpload.getYoutubeData(), 'Cannot upload to youtube: missing account owner');
 
         });
 
-        it('should include paramters if account owner are both missing', (done) => {
+        it('should include paramters if account owner are both missing', () => {
             delete process.env.owner_account;
             delete process.env.owner_channel;
 
-            const data = youtubeUpload.getYoutubeData();
+            return youtubeUpload.getYoutubeData(null)
+            .then((data) => {
 
-            assert.equal(data.onBehalfOfContentOwner, undefined);
-            assert.equal(data.onBehalfOfContentOwnerChannel, undefined);
-
-            done();
-
+                assert.equal(data.onBehalfOfContentOwner, undefined);
+                assert.equal(data.onBehalfOfContentOwnerChannel, undefined);
+            });
         });
 
     });
@@ -88,55 +114,51 @@ describe('YoutubeUpload', () => {
             delete process.env.access;
         });
 
-        it('should parse metadata when all environment variables exist', (done) => {
-            const metadata = youtubeUpload.getMetadata();
+        it('should parse metadata when all environment variables exist', () => {
+            return youtubeUpload.getMetadata()
+            .then((metadata) => {
 
-            assert.ok(metadata.snippet);
-            const snippet = metadata.snippet;
+                assert.ok(metadata.snippet);
+                const snippet = metadata.snippet;
 
-            assert.ok(metadata.status);
-            const status = metadata.status.privacyStatus;
+                assert.ok(metadata.status);
+                const status = metadata.status.privacyStatus;
 
-            assert.equal(snippet.title, 'title');
-            assert.equal(snippet.description, 'description');
-            assert.equal(snippet.categoryId, 2);
-            assert.equal(status, 'status');
-
-            done();
+                assert.equal(snippet.title, 'title');
+                assert.equal(snippet.description, 'description');
+                assert.equal(snippet.categoryId, 2);
+                assert.equal(status, 'status');
+                return;
+            });
         });
 
-        it('should throw if no title provided', (done) => {
+        it('should throw if no title provided', () => {
             delete process.env.title;
 
-            assert.throws(youtubeUpload.getMetadata, Error, 'Cannot upload to youtube: missing a title');
+            return assert.isRejected(youtubeUpload.getMetadata(), 'Cannot upload to youtube: missing a title');
 
-            done();
         });
 
-        it('should throw if no description provided', (done) => {
+        it('should throw if no description provided', () => {
             delete process.env.description;
 
-            assert.throws(youtubeUpload.getMetadata, Error, 'Cannot upload to youtube: missing a description');
+            return assert.isRejected(youtubeUpload.getMetadata(), 'Cannot upload to youtube: missing a description');
 
-            done();
         });
 
-        it('should throw if no category provided', (done) => {
+        it('should throw if no category provided', () => {
             delete process.env.category_id;
 
-            assert.throws(youtubeUpload.getMetadata, Error, 'Cannot upload to youtube: missing a category id');
-
-            done();
+            return assert.isRejected(youtubeUpload.getMetadata(), 'Cannot upload to youtube: missing a category id');
         });
 
-        it('should use default status if no status provided', (done) => {
+        it('should use default status if no status provided', () => {
             delete process.env.access;
-            const metadata = youtubeUpload.getMetadata();
-            const status = metadata.status.privacyStatus;
-
-            assert.equal(status, 'private');
-
-            done();
+            return youtubeUpload.getMetadata()
+            .then((metadata) => {
+                const status = metadata.status.privacyStatus;
+                return assert.equal(status, 'private');
+            });
         });
     });
     describe('#uploadToYoutube', () => {
@@ -160,12 +182,14 @@ describe('YoutubeUpload', () => {
                 }
             });
 
-            var dataStub = sinon.stub(youtubeUpload, 'getYoutubeData').returns({});
+            var dataStub = sinon.stub(youtubeUpload, 'getYoutubeData');
+            dataStub.returns(new Promise((fulfill) => {
+                fulfill({});
+            }));
 
-            var saveResultsStub = sinon.stub(youtubeUpload, 'saveResultToDataStore');
-
-            saveResultsStub.returns(new Promise((fulfill) =>{
-                fulfill();
+            var saveResultsStub = sinon.stub(dataStore, 'set');
+            saveResultsStub.returns(new Promise((fulfill) => {
+                fulfill({});
             }));
 
             return youtubeUpload.uploadToYoutube()
@@ -175,6 +199,11 @@ describe('YoutubeUpload', () => {
                 sinon.assert.calledOnce(dataStub);
                 sinon.assert.calledOnce(saveResultsStub);
                 assert.equal(result.id, 'id');
+                authStub.restore();
+                youtubeStub.restore();
+                dataStub.restore();
+                saveResultsStub.restore();
+                return;
             });
         });
     });

@@ -7,93 +7,102 @@ var dataStore = require('../DataStore.js');
 
 const YOUTUBE_API_VERSION = 'v3';
 
-function getMetadata() {
-    var title, description, category, status;
+function getMetadata(connection) {
 
-    if (!process.env.title) {
-        throw new Error('Cannot upload to youtube: missing a title');
-    }
+    return new Promise((fulfill, reject) => {
 
-    title = process.env.title;
-
-    if (!process.env.description) {
-        throw new Error('Cannot upload to youtube: missing a description');
-    }
-
-    description = process.env.description;
-
-    if (!process.env.category_id) {
-        throw new Error('Cannot upload to youtube: missing a category id');
-    }
-
-    category = process.env.category_id;
-
-    status = process.env.access ? process.env.access : 'private';
-
-
-    return {
-        snippet: {
-            title: title,
-            description: description,
-            categoryId: category
-        },
-        status: { privacyStatus: status }
-    }
-}
-
-function getYoutubeData() {
-    const metadata = getMetadata();
-    const mediaPath = process.env.cnf_media_file;
-
-    if (!mediaPath) {
-        throw new Error('Cannot upload to youtube: missing media file path');
-    }
-
-    if (process.env.owner_channel) {
-        if (!process.env.owner_account) {
-            throw new Error('Cannot upload to youtube: missing account owner');
+        if (!process.env.title) {
+            reject(new Error('Cannot upload to youtube: missing a title'));
         }
-    }
 
-    var youtubeData = {
-         'part': 'snippet,status',
-         'resource': metadata,
-         'media': {body: fs.readFileSync(mediaPath)},
-         'uploadType': 'multipart',
-         'onBehalfOfContentOwner': process.env.owner_account,
-         'onBehalfOfContentOwnerChannel': process.env.owner_channel
-    };
-    return youtubeData;
+        if (!process.env.description) {
+            reject(new Error('Cannot upload to youtube: missing a description'));
+        }
 
+        if (!process.env.category_id) {
+            reject(new Error('Cannot upload to youtube: missing a category id'));
+        }
+
+        fulfill(dataStore.substituteStrings(connection, [process.env.title, process.env.description, process.env.category_id, process.env.access])
+        .then((substitutedStrings) => {
+            var title, description, category_id, status;
+            [title, description, category_id, status] = substitutedStrings;
+
+            return {
+                snippet: {
+                    title: title,
+                    description: description,
+                    categoryId: category_id
+                },
+                status: { privacyStatus: status ? status : 'private'}
+            }
+        }));
+    });
 }
 
-function saveResultToDataStore(result) {
-    var connection = new dataStore.Connection("YoutubeDataStore");
-    return dataStore.set(connection, 'meta', 'youtube_id', result.id);
+function getYoutubeData(connection) {
+    return this.getMetadata(connection)
+    .then((metadata) => {
+        const mediaPath = process.env.cnf_media_file;
+
+        if (!process.env.cnf_media_file) {
+            throw new Error('Cannot upload to youtube: missing media file path');
+        }
+
+        if (process.env.owner_channel) {
+            if (!process.env.owner_account) {
+                throw new Error('Cannot upload to youtube: missing account owner');
+            }
+        }
+
+        return dataStore.substituteStrings(connection, [process.env.cnf_media_file, process.env.owner_channel, process.env.owner_account])
+        .then((substitutedStrings) => {
+            var mediaPath, ownerChannel, ownerAccount;
+            [mediaPath, ownerChannel, ownerAccount] = substitutedStrings;
+
+            var youtubeData = {
+                'part': 'snippet,status',
+                'resource': metadata,
+                'media': {body: fs.readFileSync(mediaPath)},
+                'uploadType': 'multipart'
+            };
+
+            if (ownerChannel) {
+                youtubeData.onBehalfOfContentOwner = ownerAccount;
+                youtubeData.onBehalfOfContentOwnerChannel = ownerChannel;
+            }
+
+            return youtubeData;
+        });
+    });
 }
 
-function uploadToYoutube() {
+function uploadToYoutube(connection) {
 
-    return youtubeAuth.getAuthClient()
+    return youtubeAuth.getAuthClient(connection)
     .then((oauth2) => {
 
        var youtubeClient = googleapis.youtube({version: YOUTUBE_API_VERSION, auth: oauth2});
-       const youtubeData = this.getYoutubeData();
+       return this.getYoutubeData(connection)
+        .then((youtubeData) => {
 
-       return new Promise((fulfill, reject) => {
-            youtubeClient.videos.insert(youtubeData, (err, result) => {
-                if (err) reject(err);
-                if (result) {
-                    this.saveResultToDataStore(result)
-                    .then(() => {
-                        fulfill(result);
-                    })
-                    .catch((err) => {
-                        fulfill(result);
-                    });
-                 }
-            })
-       });
+           return new Promise((fulfill, reject) => {
+                youtubeClient.videos.insert(youtubeData, (err, result) => {
+                    if (err) reject(err);
+                    if (result) {
+                        fulfill(
+                            dataStore.set(connection, 'meta', 'youtube_id', result.id)
+                            .then(() => {
+                                return result;
+                            })
+                            .catch((err) => {
+                                return result;
+                            })
+                        );
+                     }
+                })
+           });
+        });
     });
 }
 
@@ -101,6 +110,5 @@ module.exports = {
     uploadToYoutube: uploadToYoutube,
     getMetadata: getMetadata,
     getYoutubeData: getYoutubeData,
-    saveResultToDataStore: saveResultToDataStore
 };
 
