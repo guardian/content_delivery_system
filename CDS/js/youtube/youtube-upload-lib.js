@@ -3,7 +3,7 @@ var fs = require('fs');
 var youtubeAuth = require('./youtube-auth.js');
 var googleapis = require('googleapis');
 var OAuth2 = googleapis.auth.OAuth2;
-var dataStore = require('../DataStore.js');
+var dataStore = require('../Datastore');
 
 const YOUTUBE_API_VERSION = 'v3';
 

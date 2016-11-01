@@ -10,7 +10,7 @@ var sinon = require('sinon');
 var youtubeUpload = require('../../youtube/youtube-upload-lib');
 var youtubeAuth = require('../../youtube/youtube-auth');
 var googleapis = require('googleapis');
-var dataStore = require('../../Datastore.js');
+var dataStore = require('../../Datastore');
 
 
 describe('YoutubeUpload', () => {

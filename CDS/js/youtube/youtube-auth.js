@@ -4,7 +4,7 @@ var fs = require('fs');
 var Promise = require('promise');
 var pem = require('pem');
 var Q = require('q');
-var dataStore = require('../Datastore.js');
+var dataStore = require('../Datastore');
 
 const SECRET_KEY_FILE_PATH = './privatekey.pem';
 const SCOPES = [

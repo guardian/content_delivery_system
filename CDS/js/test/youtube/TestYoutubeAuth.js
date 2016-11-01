@@ -11,7 +11,7 @@ var Promise = require('promise');
 var pem = require('pem');
 var fs = require('fs');
 
-var dataStore = require('../../Datastore.js');
+var dataStore = require('../../Datastore');
 var youtubeAuth = require('../../youtube/youtube-auth');
 
 const CREDENTIALS_PATH = './test/youtube/lib/youtube_credentials.json';
