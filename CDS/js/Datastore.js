@@ -4,7 +4,7 @@ const fs = require('fs');
 const Promise = require('promise');
 const defaultLocalDefinitionsPath="/etc/cds_backend/conf.d";
 
-var db = new sqlite3.Database(process.env.cf_datastore_location);
+var db;
 
 function Connection(whoami, path) {
     this.whoami=whoami;
@@ -16,8 +16,10 @@ function Connection(whoami, path) {
 }
 
 function loadDefs(path) {
+
+    var file_list;
     try {
-        const file_list = fs.readdirSync(path);
+        file_list = fs.readdirSync(path);
     } catch(e){
         return {};
     }
@@ -202,6 +204,9 @@ function substituteString(conn,str){
 module.exports = {
     Connection: Connection,
     newDataStore: function() {
+
+        db = new sqlite3.Database(process.env.cf_datastore_location);
+
         return new Promise(function(fulfill, reject) {
             db.serialize(function () {
                 db.parallelize(function () {

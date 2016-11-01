@@ -4,25 +4,26 @@ const fs = require('fs');
 const mkpath = require('mkpath');
 
 const test_data_dir = "/tmp/cdstest/conf.d";
-process.env.cf_datastore_location='./test.db';
-if(fs.existsSync(process.env.cf_datastore_location))
-    fs.unlink(process.env.cf_datastore_location);
 var datastore = require('../Datastore.js');
 
 describe('Datastore',function(){
     var conn;
 
-       before(function(done){
-           mkpath.sync(test_data_dir+"/",0o777);
-           fs.writeFileSync(test_data_dir + "/file01.conf","file01_key_01=data\n#file01 commnt line = stuff\n\nfile01_key_02 = data02\n","utf8");
-           fs.writeFileSync(test_data_dir + "/file02.conf","#file02 commnt line = stuff\n\nfile02_key_01=thing\nfile02_key_02 = ribbit\n","utf8");
-           datastore.newDataStore().then(function(value){
-               conn=new datastore.Connection("TestDataStore",test_data_dir);
-               done();
-           }, function(err){
-               done(err);
-           });
-       });
+    before(function(){
+
+        process.env.cf_datastore_location='./test.db';
+
+        if(fs.existsSync(process.env.cf_datastore_location)){
+            fs.unlinkSync(process.env.cf_datastore_location);
+        }
+
+        mkpath.sync(test_data_dir+"/",0o777);
+        fs.writeFileSync(test_data_dir + "/file01.conf","file01_key_01=data\n#file01 commnt line = stuff\n\nfile01_key_02 = data02\n","utf8");
+        fs.writeFileSync(test_data_dir + "/file02.conf","#file02 commnt line = stuff\n\nfile02_key_01=thing\nfile02_key_02 = ribbit\n","utf8");
+
+         conn=new datastore.Connection("TestDataStore",test_data_dir);
+         return datastore.newDataStore();
+    });
 
 
     after(function(){

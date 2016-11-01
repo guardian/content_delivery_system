@@ -12,7 +12,6 @@ var Promise = require('promise');
 var pem = require('pem');
 var fs = require('fs');
 
-process.env.cf_datastore_location='location';
 var dataStore = require('../../Datastore.js');
 var youtubeAuth = require('../../youtube/youtube-auth');
 
@@ -41,6 +40,10 @@ describe('youtubeAuth', () => {
             stringSubstituteStub.restore();
             writeFile.restore();
             p12Read.restore();
+        });
+
+        after(() => {
+            delete process.env.cf_datastore_location;
         });
 
         it('should raise exception if private key or passphase is missing', () => {

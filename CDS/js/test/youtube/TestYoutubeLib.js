@@ -7,7 +7,6 @@ chai.use(chaiAsPromised);
 
 var fs = require('fs');
 var sinon = require('sinon');
-process.env.cf_datastore_location = 'datastore';
 var youtubeUpload = require('../../youtube/youtube-upload-lib');
 var youtubeAuth = require('../../youtube/youtube-auth');
 var googleapis = require('googleapis');
@@ -28,6 +27,10 @@ describe('YoutubeUpload', () => {
 
     afterEach(() => {
         stringSubstituteStub.restore();
+    });
+
+    after(() => {
+        delete process.env.cf_datastore_location;
     });
 
     describe('#getYoutubeData', () => {
@@ -67,7 +70,6 @@ describe('YoutubeUpload', () => {
                 return;
             });
         });
-            //check that called datastore method
 
         it('should raise an exception if no media path provided', () => {
 
