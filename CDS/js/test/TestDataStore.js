@@ -180,7 +180,7 @@ describe('Datastore',function(){
                 test_completed(err);
             });
         });
-        it('should substitute placeholder for {meta:undefinedkey}', function() {
+        it('should substitute placeholder for {meta:undefinedkey}', function(test_completed) {
             datastore.substituteString(conn,"I have a {meta:undefinedkey}").done(function(value){
                 assert.equal(value,"I have a (value not found)");
                 test_completed();

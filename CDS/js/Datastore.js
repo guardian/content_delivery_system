@@ -116,14 +116,17 @@ function get(conn,type, key, callback, userdata) { /* callback as function(err, 
                         console.error(err);
                         reject(err);
                     }
+                    var rtn;
                     if (!row) {
-                        fulfill({value: "(value not found)",type: type,key: key});
+                        rtn = {value: "(value not found)",type: type,key: key};
                     } else {
-                        if(callback){
-                            fulfill(callback(row.value,type,key,userdata));
-                        } else {
-                            fulfill({value: row.value,type: type,key: key});
-                        }
+                        rtn = {value: row.value,type: type,key: key}
+                    }
+
+                    if(callback){
+                        fulfill(callback(rtn.value, rtn.type, rtn.key, userdata));
+                    } else {
+                        fulfill(rtn);
                     }
                 });
             });
