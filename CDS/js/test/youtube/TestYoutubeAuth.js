@@ -7,7 +7,6 @@ chai.use(chaiAsPromised);
 
 var googleapis = require('googleapis');
 var OAuth2 = googleapis.auth.OAuth2;
-var AWS = require('aws-sdk');
 var Promise = require('promise');
 var pem = require('pem');
 var fs = require('fs');
