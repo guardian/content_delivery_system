@@ -15,7 +15,7 @@
 var youtubeLib = require('../js/youtube/youtube-upload-lib');
 var dataStore = require('../js/Datastore');
 
-var connection = new dataStore.Connection("YoutubeDataStore");
+var connection = new dataStore.Connection("youtube-upload.js");
 
 youtubeLib.uploadToYoutube(connection)
 .then(function(response) {
