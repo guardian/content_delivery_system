@@ -43,9 +43,9 @@ function getMetadata(connection) {
 function getYoutubeData(connection) {
     return this.getMetadata(connection)
     .then((metadata) => {
-        const mediaPath = process.env.cnf_media_file;
+        const mediaPath = process.env.cf_media_file;
 
-        if (!process.env.cnf_media_file) {
+        if (!process.env.cf_media_file) {
             throw new Error('Cannot upload to youtube: missing media file path');
         }
 
@@ -55,7 +55,7 @@ function getYoutubeData(connection) {
             }
         }
 
-        return dataStore.substituteStrings(connection, [process.env.cnf_media_file, process.env.owner_channel, process.env.owner_account])
+        return dataStore.substituteStrings(connection, [process.env.cf_media_file, process.env.owner_channel, process.env.owner_account])
         .then((substitutedStrings) => {
             var mediaPath, ownerChannel, ownerAccount;
             [mediaPath, ownerChannel, ownerAccount] = substitutedStrings;

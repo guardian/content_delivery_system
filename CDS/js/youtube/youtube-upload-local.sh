@@ -12,7 +12,7 @@ cd ../..
 export "cf_datastore_location"=$data_store;
 ./cds_create_datastore.pl
 ./cds_datastore.pl set meta key value
-export "cnf_media_file"="";
+export "cf_media_file"="";
 export "client_secrets"="";
 export "title"="";
 export "description"="";

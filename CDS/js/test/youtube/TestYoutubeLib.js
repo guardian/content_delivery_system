@@ -37,7 +37,7 @@ describe('YoutubeUpload', () => {
         var metadataStub, readStub;
 
         beforeEach(() => {
-            process.env.cnf_media_file = './media';
+            process.env.cf_media_file = './media';
             process.env.owner_account = 'account';
             process.env.owner_channel = 'channel';
             metadataStub = sinon.stub(youtubeUpload, 'getMetadata').returns(new Promise((fulfill, reject) => {
@@ -73,7 +73,7 @@ describe('YoutubeUpload', () => {
 
         it('should raise an exception if no media path provided', () => {
 
-            delete process.env.cnf_media_file;
+            delete process.env.cf_media_file;
 
             return assert.isRejected(youtubeUpload.getYoutubeData(), 'Cannot upload to youtube: missing media file path');
 
