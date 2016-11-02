@@ -1,3 +1,7 @@
+#Fill in the environmental variables to run the youtube upload script locally
+#The credentials needed to run the script are stored in s3.
+#It contains files containing the private key and the client secrets. You need to
+#download these files and provide paths to them here. The passphrase variable is also stored here.
 #!/bin/bash -e
 cd "${0%/*}"
 data_store="/tmp/test.db"
