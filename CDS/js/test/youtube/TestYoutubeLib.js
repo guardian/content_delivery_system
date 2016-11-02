@@ -75,7 +75,7 @@ describe('YoutubeUpload', () => {
 
             delete process.env.cf_media_file;
 
-            return assert.isRejected(youtubeUpload.getYoutubeData(), 'Cannot upload to youtube: missing media file path');
+            return assert.isRejected(youtubeUpload.getYoutubeData(), 'Cannot upload to youtube: missing media file path. Make sure that media has been specified in the route');
 
         });
 

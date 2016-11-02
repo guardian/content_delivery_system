@@ -46,7 +46,7 @@ function getYoutubeData(connection) {
         const mediaPath = process.env.cf_media_file;
 
         if (!process.env.cf_media_file) {
-            throw new Error('Cannot upload to youtube: missing media file path');
+            throw new Error('Cannot upload to youtube: missing media file path. Make sure that media has been specified in the route');
         }
 
         if (process.env.owner_channel) {
