@@ -43,7 +43,7 @@ describe('YoutubeUpload', () => {
             metadataStub = sinon.stub(youtubeUpload, 'getMetadata').returns(new Promise((fulfill, reject) => {
                 fulfill({});
             }));
-            readStub = sinon.stub(fs, 'readFileSync');
+            readStub = sinon.stub(fs, 'createReadStream');
 
         });
 

@@ -63,7 +63,7 @@ function getYoutubeData(connection) {
             var youtubeData = {
                 'part': 'snippet,status',
                 'resource': metadata,
-                'media': {body: fs.readFileSync(mediaPath)},
+                'media': {body: fs.createReadStream(mediaPath)},
                 'uploadType': 'multipart'
             };
 
