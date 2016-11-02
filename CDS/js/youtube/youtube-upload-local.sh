@@ -18,5 +18,4 @@ export "owner_account"="";
 export "owner_channel"="";
 export "passphrase"="";
 export "private_key"="";
-cd js/youtube;
-node ./youtube-upload.js
+node ./scripts/youtube-upload.js
