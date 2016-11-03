@@ -1,23 +1,25 @@
-const crypto = require('crypto');
+var crypto = require('crypto');
+process.env.cf_datastore_location = "";
+var datastore = require('./Datastore');
 
 module.exports = {
-    makeHMACToken: function(date, uri) {
+    makeHMACToken: function(connection, date, uri) {
 
-        return new Promise((fulfill, reject) => {
-
-            if (!process.env.shared_secret) {
+        if (!process.env.shared_secret) {
+            return new Promise((fulfill, reject) => {
                 reject(new Error('Cannot add assets to media atom maker: missing shared secret'));
-            }
+            });
+        }
 
-            const sharedSecret = process.env.shared_secret;
+        return datastore.substituteString(connection, process.env.shared_secret)
+        .then(sharedSecret => {
 
             const hmac = crypto.createHmac('sha256', sharedSecret);
             const content = date + '\n' + uri;
 
             hmac.update(content, 'utf-8');
 
-            fulfill("HMAC " + hmac.digest('base64'));
+            return "HMAC " + hmac.digest('base64');
         });
-
     }
 };
