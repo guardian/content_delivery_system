@@ -166,14 +166,15 @@ describe('YoutubeUpload', () => {
     });
     describe('#uploadToYoutube', () => {
 
-        it('should upload to youtube', () => {
+        var authStub, youtubeStub, dataStub, saveResultsStub;
 
-            var authStub = sinon.stub(youtubeAuth, 'getAuthClient');
+        before(() => {
+            authStub = sinon.stub(youtubeAuth, 'getAuthClient');
             authStub.returns(new Promise((fulfill) => {
                 fulfill({});
             }));
 
-            var youtubeStub = sinon.stub(googleapis, 'youtube');
+            youtubeStub = sinon.stub(googleapis, 'youtube');
             youtubeStub.returns({
                 videos: {
                     insert: function(data, cb) {
@@ -185,15 +186,26 @@ describe('YoutubeUpload', () => {
                 }
             });
 
-            var dataStub = sinon.stub(youtubeUpload, 'getYoutubeData');
+            dataStub = sinon.stub(youtubeUpload, 'getYoutubeData');
             dataStub.returns(new Promise((fulfill) => {
                 fulfill({});
             }));
 
-            var saveResultsStub = sinon.stub(dataStore, 'set');
+            saveResultsStub = sinon.stub(dataStore, 'set');
             saveResultsStub.returns(new Promise((fulfill) => {
                 fulfill({});
             }));
+        });
+
+        after(() => {
+            authStub.restore();
+            youtubeStub.restore();
+            dataStub.restore();
+            saveResultsStub.restore();
+        });
+
+
+        it('should upload to youtube', () => {
 
             return youtubeUpload.uploadToYoutube()
             .then((result) => {
@@ -202,10 +214,6 @@ describe('YoutubeUpload', () => {
                 sinon.assert.calledOnce(dataStub);
                 sinon.assert.calledOnce(saveResultsStub);
                 assert.equal(result.id, 'id');
-                authStub.restore();
-                youtubeStub.restore();
-                dataStub.restore();
-                saveResultsStub.restore();
                 return;
             });
         });
