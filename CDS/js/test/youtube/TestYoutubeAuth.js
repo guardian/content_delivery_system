@@ -129,7 +129,7 @@ describe('youtubeAuth', () => {
             credentialsStub.returns(promise);
 
 
-            assert.isRejected(youtubeAuth.getAuthClient(), 'Credentials file is missing client_id property');
+            assert.isRejected(youtubeAuth.getAuthClient(), 'Credentials file is missing web.client_id property');
 
             credentialsStub.restore();
             return;

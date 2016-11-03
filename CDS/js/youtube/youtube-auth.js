@@ -58,7 +58,7 @@ function getAuthClient(connection) {
     .spread((credentials) => {
 
         if (!credentials.client_id) {
-            throw new Error('Credentials file is missing client_id property');
+            throw new Error('Credentials file is missing web.client_id property');
         }
 
         if (!credentials.client_secret) {
