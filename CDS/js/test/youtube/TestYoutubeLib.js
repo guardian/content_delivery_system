@@ -12,7 +12,6 @@ var youtubeAuth = require('../../youtube/youtube-auth');
 var googleapis = require('googleapis');
 var dataStore = require('../../Datastore');
 
-
 describe('YoutubeUpload', () => {
     var stringSubstituteStub;
 
@@ -102,10 +101,12 @@ describe('YoutubeUpload', () => {
 
     describe('#getMetadata', () => {
 
+        const CATEGORY_ID = 2;
+
         beforeEach(() => {
             process.env.title = 'title';
             process.env.description = 'description';
-            process.env.category_id = 2;
+            process.env.category_id = CATEGORY_ID;
             process.env.access = 'status';
         });
 
@@ -128,7 +129,7 @@ describe('YoutubeUpload', () => {
 
                 assert.equal(snippet.title, 'title');
                 assert.equal(snippet.description, 'description');
-                assert.equal(snippet.categoryId, 2);
+                assert.equal(snippet.categoryId, CATEGORY_ID);
                 assert.equal(status, 'status');
                 return;
             });
