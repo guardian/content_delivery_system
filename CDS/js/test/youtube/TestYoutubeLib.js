@@ -86,7 +86,7 @@ describe('YoutubeUpload', () => {
 
         });
 
-        it('should include paramters if account owner are both missing', () => {
+        it('should not include content owner and channel if owner and channel parameters are missing', () => {
             delete process.env.owner_account;
             delete process.env.owner_channel;
 
