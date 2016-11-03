@@ -96,30 +96,6 @@ describe('Datastore',function(){
         // });
     });
 
-    describe('#substituteStrings', function() {
-        var substituteStub;
-
-        before(function() {
-            substituteStub = sinon.stub(datastore, 'substituteString', function(connection, value) {
-                return value;
-            });
-        });
-
-        after(function() {
-            substituteStub.restore();
-        });
-
-        it('should substitute multiple strings', function() {
-            return datastore.substituteStrings(null, ['a', 'b', 'c'])
-            .then((value) => {
-                assert.equal(value.length, 3);
-                assert.equal(value[0], 'a');
-                assert.equal(value[1], 'b');
-                assert.equal(value[2], 'c');
-            });
-        });
-    });
-
     describe('#substituteString',function(){
 
        it('should not modify a string without braces in', function(test_completed){
