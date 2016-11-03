@@ -16,7 +16,11 @@ function Connection(whoami, path) {
 }
 
 function loadDefs(path) {
-    const file_list = fs.readdirSync(path);
+    try {
+        const file_list = fs.readdirSync(path);
+    } catch(e){
+        return {};
+    }
     const is_comment = /^#/;
     const matcher = /^(\w+)\s*=\s*(.*)$/;
 
