@@ -105,7 +105,7 @@ function get(conn,type, key, callback, userdata) { /* callback as function(err, 
         getSource(type, conn.whoami).then(function (sourceid) {
             db.serialize(function () {
                 var stmt = db.prepare("select value from " + type + " where key=?");
-                stmt.get(sourceid, key, function (err, row) {
+                stmt.get(key, function (err, row) {
                     if (err) {
                         console.error(err);
                         reject(err);
