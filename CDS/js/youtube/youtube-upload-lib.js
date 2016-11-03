@@ -9,34 +9,37 @@ const YOUTUBE_API_VERSION = 'v3';
 
 function getMetadata(connection) {
 
-    return new Promise((fulfill, reject) => {
-
-        if (!process.env.title) {
+    if (!process.env.title) {
+        return new Promise((fulfill, reject) => {
             reject(new Error('Cannot upload to youtube: missing a title'));
-        }
+        });
+    }
 
-        if (!process.env.description) {
+    if (!process.env.description) {
+        return new Promise((fulfill, reject) => {
             reject(new Error('Cannot upload to youtube: missing a description'));
-        }
+        });
+    }
 
-        if (!process.env.category_id) {
+    if (!process.env.category_id) {
+        return new Promise((fulfill, reject) => {
             reject(new Error('Cannot upload to youtube: missing a category id'));
+        });
+    }
+
+    return dataStore.substituteStrings(connection, [process.env.title, process.env.description, process.env.category_id, process.env.access])
+    .then((substitutedStrings) => {
+        var title, description, category_id, status;
+        [title, description, category_id, status] = substitutedStrings;
+
+        return {
+            snippet: {
+                title: title,
+                description: description,
+                categoryId: category_id
+            },
+            status: { privacyStatus: status ? status : 'private'}
         }
-
-        fulfill(dataStore.substituteStrings(connection, [process.env.title, process.env.description, process.env.category_id, process.env.access])
-        .then((substitutedStrings) => {
-            var title, description, category_id, status;
-            [title, description, category_id, status] = substitutedStrings;
-
-            return {
-                snippet: {
-                    title: title,
-                    description: description,
-                    categoryId: category_id
-                },
-                status: { privacyStatus: status ? status : 'private'}
-            }
-        }));
     });
 }
 

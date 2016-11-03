@@ -16,41 +16,40 @@ const SCOPES = [
 
 function getCredentials(connection) {
 
-    return new Promise((fulfill, reject) => {
-
-        if (!process.env.client_secrets) {
+    if (!process.env.client_secrets) {
+        return new Promise((fulfill, reject) => {
             reject (new Error('Cannot upload to youtube: client secrets file path not provided'));
-        }
-        fulfill(dataStore.substituteString(connection, process.env.client_secrets)
-        .then((credentialsFile) => {
-            return (JSON.parse(fs.readFileSync(credentialsFile,'utf8')));
-        }));
+        });
+    }
+    return dataStore.substituteString(connection, process.env.client_secrets)
+    .then((credentialsFile) => {
+        return JSON.parse(fs.readFileSync(credentialsFile,'utf8'));
     });
 }
 
 function readP12(connection) {
-    return new Promise((fulfill, reject) => {
 
-        if (!process.env.private_key || !process.env.passphrase) {
+    if (!process.env.private_key || !process.env.passphrase) {
+        return new Promise((fulfill, reject) => {
             reject (new Error('Cannot upload to youtube: private key and passphrase required'));
-        }
+        });
+    }
 
-        fulfill(dataStore.substituteStrings(connection, [process.env.private_key, process.env.passphrase])
-        .then(function(results) {
-            var privateKey, passphrase;
-            [privateKey, passphrase] = results;
+    return dataStore.substituteStrings(connection, [process.env.private_key, process.env.passphrase])
+    .then(function(results) {
+        var privateKey, passphrase;
+        [privateKey, passphrase] = results;
 
-            return new Promise((fulfill, reject) => {
-                pem.readPkcs12(privateKey, {p12Password: passphrase}, (err, result) => {
-                    if (err) reject(err);
-                    if (result) {
-                        fs.writeFileSync(SECRET_KEY_FILE_PATH, result.key, 'utf8');
-                        fulfill();
-                    }
-                });
+        return new Promise((fulfill, reject) => {
+            pem.readPkcs12(privateKey, {p12Password: passphrase}, (err, result) => {
+                if (err) reject(err);
+                if (result) {
+                    fs.writeFileSync(SECRET_KEY_FILE_PATH, result.key, 'utf8');
+                    fulfill();
+                }
             });
-        }));
-    })
+        });
+    });
 }
 
 function getAuthClient(connection) {
