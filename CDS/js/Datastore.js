@@ -17,7 +17,7 @@ function Connection(whoami, path) {
 
 function loadDefs(path) {
 
-    var file_list;
+    let file_list;
     try {
         file_list = fs.readdirSync(path);
     } catch(e){
