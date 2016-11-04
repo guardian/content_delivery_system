@@ -21,14 +21,22 @@ describe('addAsset', () => {
         const TOKEN = 'token';
         const dateRegex = /^[A-Z][a-z]{2}\,\s\d{2}\s[A-Z][a-z]{2}\s\d{4}\s\d{2}:\d{2}:\d{2}\sGMT$/i;
 
-        var datastoreStub, connectionStub, hmacStub;
+        var datastoreStub, hmacStub, initialiseStub, stringsStub;
 
         before(() => {
-            connectionStub = sinon.createStubInstance(datastore.Connection);
+            sinon.createStubInstance(datastore.Connection);
+
+            initialiseStub = sinon.stub(datastore, 'initialiseDb');
 
             datastoreStub = sinon.stub(datastore, 'get', (connection, type, key) => {
                 return new Promise((fulfill) => {
                     fulfill({ value: key });
+                });
+            });
+
+            stringsStub = sinon.stub(datastore, 'substituteStrings', (connection, values) => {
+                return new Promise((fulfill) => {
+                    fulfill(values);
                 });
             });
 
@@ -42,15 +50,24 @@ describe('addAsset', () => {
         after(() => {
             hmacStub.restore();
             datastoreStub.restore();
+            initialiseStub.restore();
         });
 
         it('should raise an exception if url base is missing', () => {
-            return assert.isRejected(asset.postAsset(), 'Cannot add assets to media atom maker: missing url base');
+            return assert.isRejected(asset.postAsset(), 'Cannot add assets to media atom: missing url base');
+
+        });
+
+        it('should raise an exception if url base is missing', () => {
+            process.env.url_base = URL_BASE;
+
+            return assert.isRejected(asset.postAsset(), 'Cannot add assets to media atom: missing atom id');
 
         });
 
         it('should post asset to atom maker', () => {
             process.env.url_base = URL_BASE;
+            process.env.atom_id = 'atom_id';
 
             var reqwest = nock(URL_BASE, {
                     reqheaders: {
@@ -68,8 +85,9 @@ describe('addAsset', () => {
             return asset.postAsset()
             .then(response => {
                 assert.ok(response.ok);
-                sinon.assert.calledTwice(datastoreStub);
+                sinon.assert.calledOnce(datastoreStub);
                 sinon.assert.calledOnce(hmacStub);
+                sinon.assert.calledOnce(stringsStub);
                 return;
             });
 

@@ -10,23 +10,31 @@ function postAsset() {
 
     if (!process.env.url_base) {
         return new Promise((fulfill, reject) => {
-            reject(new Error('Cannot add assets to media atom maker: missing url base'))
+            reject(new Error('Cannot add assets to media atom: missing url base'))
+        });
+    }
+    if (!process.env.atom_id) {
+        return new Promise((fulfill, reject) => {
+            reject(new Error('Cannot add assets to media atom: missing atom id'))
         });
     }
 
-    var connection = new datastore.Connection('AddAtomMakerAssets');
+    var connection = new datastore.Connection('AddAAsset');
+    datastore.initialiseDb();
+    let urlBase, atomId;
 
-    return datastore.substituteString(connection, process.env.url_base)
-    .then(urlBase => {
+    return datastore.substituteStrings(connection, [process.env.url_base, process.env.atom_id])
+    .then(substitutedStrings => {
+        var urlBase, atomId;
+        [urlBase, atomId] = substitutedStrings;
 
-        return Promise.all([datastore.get(connection, 'meta', 'youtube_url'), datastore.get(connection, 'meta', 'atom_id')])
-        .then(results => {
+        return datastore.get(connection, 'meta', 'youtube_url')
+        .then(result => {
             const date = (new Date()).toUTCString();
 
-            const youtubeUrl = results[0].value;
+            const youtubeUrl = result.value;
 
             const data = { uri: youtubeUrl };
-            const atomId = results[1].value;
             const uri = uriBase.replace(/:id/, atomId);
             const url = urlBase + uri;
 
