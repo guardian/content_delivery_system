@@ -5,12 +5,13 @@
 //It expects the following arguments:
 //<url_base> the base of media atom maker url
 //<shared_secret> secret shared with media atom maker that allows posting to it
+//<atom_id> id of the atom the asset is being added to
 
 var asset = require('../js/add-asset-lib');
 
 asset.postAsset()
 .then(response => {
-    console.log('+SUCCESS: added an asset ', response);
+    console.log('+SUCCESS: added an asset to ', response._url.path);
     if (process.env.debug) {
         console.log('response returned ', response);
     }
