@@ -1,5 +1,4 @@
 var crypto = require('crypto');
-process.env.cf_datastore_location = "";
 var datastore = require('./Datastore');
 
 module.exports = {
