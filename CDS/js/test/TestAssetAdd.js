@@ -16,6 +16,33 @@ var nock = require('nock');
 describe('addAsset', () => {
 
     describe('#postAsset', () => {
+        const URL_BASE = 'https://www.base';
+        const URI = '/api2/atom/atom_id/asset';
+        const TOKEN = 'token';
+        const dateRegex = /^[A-Z][a-z]{2}\,\s\d{2}\s[A-Z][a-z]{2}\s\d{4}\s\d{2}:\d{2}:\d{2}\sGMT$/i;
+
+        var datastoreStub, connectionStub, hmacStub;
+
+        before(() => {
+            connectionStub = sinon.createStubInstance(datastore.Connection);
+
+            datastoreStub = sinon.stub(datastore, 'get', (connection, type, key) => {
+                return new Promise((fulfill) => {
+                    fulfill({ value: key });
+                });
+            });
+
+            hmacStub = sinon.stub(hmac, 'makeHMACToken').returns(
+                new Promise(fulfill => {
+                    fulfill(TOKEN);
+                })
+            );
+        });
+
+        after(() => {
+            hmacStub.restore();
+            datastoreStub.restore();
+        });
 
         it('should raise an exception if url base is missing', () => {
             return assert.isRejected(asset.postAsset(), 'Cannot add assets to media atom maker: missing url base');
@@ -23,26 +50,7 @@ describe('addAsset', () => {
         });
 
         it('should post asset to atom maker', () => {
-
-            const URL_BASE = 'https://www.base';
-            const URI = '/api2/atom/atom_id/asset';
-            const TOKEN = 'token';
-            const dateRegex = /^[A-Z][a-z]{2}\,\s\d{2}\s[A-Z][a-z]{2}\s\d{4}\s\d{2}:\d{2}:\d{2}\sGMT$/i;
             process.env.url_base = URL_BASE;
-
-            var connectionStub = sinon.createStubInstance(datastore.Connection);
-
-            var datastoreStub = sinon.stub(datastore, 'get', (connection, type, key) => {
-                return new Promise((fulfill) => {
-                    fulfill({ value: key });
-                });
-            });
-
-            var hmacStub = sinon.stub(hmac, 'makeHMACToken').returns(
-                new Promise(fulfill => {
-                    fulfill(TOKEN);
-                })
-            );
 
             var reqwest = nock(URL_BASE, {
                     reqheaders: {
