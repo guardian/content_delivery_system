@@ -5,8 +5,12 @@ const Promise = require('promise');
 const defaultLocalDefinitionsPath="/etc/cds_backend/conf.d";
 
 var db;
+function initialiseDb() {
+   db = new sqlite3.Database(process.env.cf_datastore_location);
+}
 
 function Connection(whoami, path) {
+
     this.whoami=whoami;
     if(path){
         this.configDefs=loadDefs(path);
@@ -55,10 +59,6 @@ function getSource(type,myname){
     return new Promise(function(fulfill,reject) {
         var stmt = db.prepare("SELECT id FROM sources WHERE type=? and provider_method=?");
         stmt.get([type, myname], function (err, row) {
-            if (err) {
-                reject(err);
-                return;
-            }
             if (row) {
                 fulfill(row.id);
                 return;
@@ -208,8 +208,6 @@ module.exports = {
     Connection: Connection,
     newDataStore: function() {
 
-        db = new sqlite3.Database(process.env.cf_datastore_location);
-
         return new Promise(function(fulfill, reject) {
             db.serialize(function () {
                 db.parallelize(function () {
@@ -240,4 +238,5 @@ module.exports = {
     substituteStrings: function(conn, strs) {
         return Promise.all(strs.map((str) => this.substituteString(conn, str)));
     },
+    initialiseDb: initialiseDb
 };
