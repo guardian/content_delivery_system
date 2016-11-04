@@ -4,7 +4,7 @@ var datastore = require('./Datastore');
 var hmac = require('./hmac');
 
 const urlBase = process.env.url_base;
-const uriBase = '/api2/atom/:id/asset';
+const path = '/api2/atom/:id/asset';
 
 function postAsset() {
 
@@ -35,7 +35,7 @@ function postAsset() {
             const youtubeUrl = result.value;
 
             const data = { uri: youtubeUrl };
-            const uri = uriBase.replace(/:id/, atomId);
+            const uri = path.replace(/:id/, atomId);
             const url = urlBase + uri;
 
             return hmac.makeHMACToken(connection, date, uri)
