@@ -9,7 +9,7 @@ cd ..
 ./cds_create_datastore.pl
 #Change the values here to what you want to get set in the datastore
 ./cds_datastore.pl set meta youtube_url url
-./cds_datastore.pl set meta atom_id id
 export "url_base"="";
 export "shared_secret"="";
+export "atom_id"="";
 node ./scripts/add-asset.js
