@@ -25,7 +25,6 @@ function postAsset() {
 
     return datastore.substituteStrings(connection, [process.env.url_base, process.env.atom_id])
     .then(substitutedStrings => {
-        var urlBase, atomId;
         [urlBase, atomId] = substitutedStrings;
 
         return datastore.get(connection, 'meta', 'youtube_url')
