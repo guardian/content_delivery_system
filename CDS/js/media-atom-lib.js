@@ -4,24 +4,60 @@ var datastore = require('./Datastore');
 var hmac = require('./hmac');
 
 const urlBase = process.env.url_base;
-const path = '/api2/atom/:id/asset';
+const assetPath = '/api2/atom/:id/asset';
+const metadataPath = '/api2/atom/:id/metadata';
+
+function checkExistenceAndSubstitute(connection, variables) {
+    const missingIndex = variables.findIndex(variable => {
+        return !variable.value
+    });
+
+    if (missingIndex !== -1) {
+        return new Promise((fulfill, reject) => {
+            reject(new Error(variables[missingIndex].error));
+        });
+    }
+
+    return datastore.substituteStrings(connection, variables.map(variable => variable.value));
+};
+
+
+function fetchMetadata(connection) {
+
+    const requiredVariables = [{value: process.env.url_base, error: 'Cannot add assets to media atom: missing url base'}, {value: process.env.atom_id, error: 'Cannot add assets to media atom: missing atom id'}];
+
+    let urlBase, atomId;
+    return checkExistenceAndSubstitute(connection, requiredVariables)
+    .then(substitutedStrings => {
+        [urlBase, atomId] = substitutedStrings;
+
+        const date = (new Date()).toUTCString();
+        const uri = metadataPath.replace(/:id/, atomId);
+        const url = urlBase + uri;
+
+        return hmac.makeHMACToken(connection, date, uri)
+        .then(token => {
+            return reqwest({
+                url: url,
+                method: 'GET',
+                contentType: 'application/json',
+                headers: {
+                    'X-Gu-Tools-HMAC-Date': date,
+                    'X-Gu-Tools-HMAC-Token': token,
+                    'X-Gu-Tools-Service-Name': 'content_delivery_system'
+                }
+            });
+        });
+    });
+};
+
 
 function postAsset(connection) {
 
-    if (!process.env.url_base) {
-        return new Promise((fulfill, reject) => {
-            reject(new Error('Cannot add assets to media atom: missing url base'))
-        });
-    }
-    if (!process.env.atom_id) {
-        return new Promise((fulfill, reject) => {
-            reject(new Error('Cannot add assets to media atom: missing atom id'))
-        });
-    }
+    const requiredVariables = [{value: process.env.url_base, error: 'Cannot add assets to media atom: missing url base'}, {value: process.env.atom_id, error: 'Cannot add assets to media atom: missing atom id'}];
 
     let urlBase, atomId;
-
-    return datastore.substituteStrings(connection, [process.env.url_base, process.env.atom_id])
+    return checkExistenceAndSubstitute(connection, requiredVariables)
     .then(substitutedStrings => {
         [urlBase, atomId] = substitutedStrings;
 
@@ -32,7 +68,7 @@ function postAsset(connection) {
             const youtubeUrl = result.value;
 
             const data = { uri: youtubeUrl };
-            const uri = path.replace(/:id/, atomId);
+            const uri = assetPath.replace(/:id/, atomId);
             const url = urlBase + uri;
 
             return hmac.makeHMACToken(connection, date, uri)
@@ -55,6 +91,7 @@ function postAsset(connection) {
 }
 
 module.exports = {
-    postAsset: postAsset
+    postAsset: postAsset,
+    fetchMetadata: fetchMetadata
 };
 

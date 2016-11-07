@@ -13,41 +13,83 @@ var reqwest = require('reqwest');
 var nock = require('nock');
 
 
-describe('addAsset', () => {
+describe('mediaAtomLib', () => {
+
+    var datastoreStub, hmacStub, stringsStub;
+    const URL_BASE = 'https://www.base';
+    const TOKEN = 'token';
+    const dateRegex = /^[A-Z][a-z]{2}\,\s\d{2}\s[A-Z][a-z]{2}\s\d{4}\s\d{2}:\d{2}:\d{2}\sGMT$/i;
+
+    beforeEach(() => {
+
+        datastoreStub = sinon.stub(datastore, 'get', (connection, type, key) => {
+            return new Promise((fulfill) => {
+                fulfill({ value: key });
+            });
+        });
+
+        stringsStub = sinon.stub(datastore, 'substituteStrings', (connection, values) => {
+            return new Promise((fulfill) => {
+                fulfill(values);
+            });
+        });
+
+        hmacStub = sinon.stub(hmac, 'makeHMACToken').returns(
+            new Promise(fulfill => {
+                fulfill(TOKEN);
+            })
+        );
+    });
+
+    afterEach(() => {
+        hmacStub.restore();
+        datastoreStub.restore();
+        stringsStub.restore();
+        delete process.env.url_base;
+        delete process.env.atom_id;
+    });
+
+    describe('#fetchMetadata', () => {
+        const URI = '/api2/atom/atom_id/metadata';
+
+        it('should raise an exception if url base is missing', () => {
+            return assert.isRejected(atomLib.fetchMetadata(), 'Cannot add assets to media atom: missing url base');
+
+        });
+
+        it('should raise an exception if url base is missing', () => {
+            process.env.url_base = URL_BASE;
+
+            return assert.isRejected(atomLib.fetchMetadata(), 'Cannot add assets to media atom: missing atom id');
+        });
+
+        it('should post asset to atom maker', () => {
+            process.env.url_base = URL_BASE;
+            process.env.atom_id = 'atom_id';
+
+            var reqwest = nock(URL_BASE, {
+                    reqheaders: {
+                        'X-Gu-Tools-HMAC-Date': dateRegex,
+                        'X-Gu-Tools-HMAC-Token': TOKEN,
+                        'X-Gu-Tools-Service-Name': 'content_delivery_system'
+                    }})
+                .get(URI)
+                .reply(200, {
+                    ok: 'ok'
+                });
+
+            return atomLib.fetchMetadata()
+            .then(response => {
+                assert.ok(response.ok);
+                sinon.assert.calledOnce(hmacStub);
+                sinon.assert.calledOnce(stringsStub);
+                return;
+            });
+        });
+    });
 
     describe('#postAsset', () => {
-        const URL_BASE = 'https://www.base';
         const URI = '/api2/atom/atom_id/asset';
-        const TOKEN = 'token';
-        const dateRegex = /^[A-Z][a-z]{2}\,\s\d{2}\s[A-Z][a-z]{2}\s\d{4}\s\d{2}:\d{2}:\d{2}\sGMT$/i;
-
-        var datastoreStub, hmacStub, stringsStub;
-
-        before(() => {
-
-            datastoreStub = sinon.stub(datastore, 'get', (connection, type, key) => {
-                return new Promise((fulfill) => {
-                    fulfill({ value: key });
-                });
-            });
-
-            stringsStub = sinon.stub(datastore, 'substituteStrings', (connection, values) => {
-                return new Promise((fulfill) => {
-                    fulfill(values);
-                });
-            });
-
-            hmacStub = sinon.stub(hmac, 'makeHMACToken').returns(
-                new Promise(fulfill => {
-                    fulfill(TOKEN);
-                })
-            );
-        });
-
-        after(() => {
-            hmacStub.restore();
-            datastoreStub.restore();
-        });
 
         it('should raise an exception if url base is missing', () => {
             return assert.isRejected(atomLib.postAsset(), 'Cannot add assets to media atom: missing url base');
@@ -85,8 +127,6 @@ describe('addAsset', () => {
                 sinon.assert.calledOnce(stringsStub);
                 return;
             });
-
         });
-
     });
 });
