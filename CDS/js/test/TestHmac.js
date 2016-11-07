@@ -7,7 +7,7 @@ chai.use(chaiAsPromised);
 
 var crypto = require('crypto');
 var hmac = require('../hmac');
-var datastore = require('../datastore');
+var datastore = require('../Datastore');
 
 describe('hmac', () => {
 
