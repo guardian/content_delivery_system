@@ -11,7 +11,6 @@ var mediaAtomLib = require('../js/media-atom-lib');
 var dataStore = require('../js/Datastore');
 
 var connection = new dataStore.Connection("add-asset.js");
-dataStore.initialiseDb();
 
 mediaAtomLib.postAsset(connection)
 .then(response => {

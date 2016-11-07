@@ -10,7 +10,6 @@ var mediaAtomLib = require('../js/media-atom-lib');
 var dataStore = require('../js/Datastore');
 
 var connection = new dataStore.Connection("fetch-metadata.js");
-dataStore.initialiseDb();
 
 mediaAtomLib.fetch(connection)
 .then(response => {
