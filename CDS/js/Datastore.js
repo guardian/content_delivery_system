@@ -6,7 +6,9 @@ const defaultLocalDefinitionsPath="/etc/cds_backend/conf.d";
 
 var db;
 function initialiseDb() {
-   db = new sqlite3.Database(process.env.cf_datastore_location);
+    if (!db) {
+        db = new sqlite3.Database(process.env.cf_datastore_location);
+    }
 }
 
 function Connection(whoami, path) {
