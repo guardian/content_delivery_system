@@ -6,7 +6,7 @@ var hmac = require('./hmac');
 const urlBase = process.env.url_base;
 const path = '/api2/atom/:id/asset';
 
-function postAsset() {
+function postAsset(connection) {
 
     if (!process.env.url_base) {
         return new Promise((fulfill, reject) => {
@@ -19,8 +19,6 @@ function postAsset() {
         });
     }
 
-    var connection = new datastore.Connection('AddAAsset');
-    datastore.initialiseDb();
     let urlBase, atomId;
 
     return datastore.substituteStrings(connection, [process.env.url_base, process.env.atom_id])

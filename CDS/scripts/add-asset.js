@@ -7,9 +7,13 @@
 //<shared_secret> secret shared with media atom maker that allows posting to it
 //<atom_id> id of the atom the asset is being added to
 
-var asset = require('../js/add-asset-lib');
+var mediaAtomLib = require('../js/media-atom-lib');
+var dataStore = require('../js/Datastore');
 
-asset.postAsset()
+var connection = new dataStore.Connection("add-asset.js");
+dataStore.initialiseDb();
+
+mediaAtomLib.postAsset(connection)
 .then(response => {
     console.log('+SUCCESS: added an asset to ', response._url.path);
     if (process.env.debug) {

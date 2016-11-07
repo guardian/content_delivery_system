@@ -7,7 +7,7 @@ chai.use(chaiAsPromised);
 
 process.env.cf_datastore_location = "location";
 var datastore = require('../Datastore');
-var asset = require('../add-asset-lib');
+var atomLib = require('../media-atom-lib');
 var hmac = require('../hmac');
 var reqwest = require('reqwest');
 var nock = require('nock');
@@ -21,12 +21,9 @@ describe('addAsset', () => {
         const TOKEN = 'token';
         const dateRegex = /^[A-Z][a-z]{2}\,\s\d{2}\s[A-Z][a-z]{2}\s\d{4}\s\d{2}:\d{2}:\d{2}\sGMT$/i;
 
-        var datastoreStub, hmacStub, initialiseStub, stringsStub;
+        var datastoreStub, hmacStub, stringsStub;
 
         before(() => {
-            sinon.createStubInstance(datastore.Connection);
-
-            initialiseStub = sinon.stub(datastore, 'initialiseDb');
 
             datastoreStub = sinon.stub(datastore, 'get', (connection, type, key) => {
                 return new Promise((fulfill) => {
@@ -50,19 +47,17 @@ describe('addAsset', () => {
         after(() => {
             hmacStub.restore();
             datastoreStub.restore();
-            initialiseStub.restore();
         });
 
         it('should raise an exception if url base is missing', () => {
-            return assert.isRejected(asset.postAsset(), 'Cannot add assets to media atom: missing url base');
+            return assert.isRejected(atomLib.postAsset(), 'Cannot add assets to media atom: missing url base');
 
         });
 
         it('should raise an exception if url base is missing', () => {
             process.env.url_base = URL_BASE;
 
-            return assert.isRejected(asset.postAsset(), 'Cannot add assets to media atom: missing atom id');
-
+            return assert.isRejected(atomLib.postAsset(), 'Cannot add assets to media atom: missing atom id');
         });
 
         it('should post asset to atom maker', () => {
@@ -82,7 +77,7 @@ describe('addAsset', () => {
                     ok: 'ok'
                 });
 
-            return asset.postAsset()
+            return atomLib.postAsset()
             .then(response => {
                 assert.ok(response.ok);
                 sinon.assert.calledOnce(datastoreStub);
