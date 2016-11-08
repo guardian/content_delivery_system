@@ -5,7 +5,7 @@ var hmac = require('./hmac');
 
 const urlBase = process.env.url_base;
 const assetPath = '/api2/atom/:id/asset';
-const metadataPath = '/api2/atom/:id/metadata';
+const metadataPath = '/api2/atom/:id'
 
 function checkExistenceAndSubstitute(connection, variables) {
     const missingIndex = variables.findIndex(variable => {
@@ -48,8 +48,8 @@ function fetchMetadata(connection) {
                 }
             })
             .then(response => {
-                var title = 'title';
-                var description = 'description';
+                const title = response.data.title;
+                const description = response.data.description;
                 return Promise.all([datastore.set(connection, 'meta', 'atom_title', title), datastore.set(connection, 'meta', 'atom_description', description)])
                 .then(() => {
                     return response;

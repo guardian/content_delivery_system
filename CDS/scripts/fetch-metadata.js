@@ -11,11 +11,11 @@ var dataStore = require('../js/Datastore');
 
 var connection = new dataStore.Connection("fetch-metadata.js");
 
-mediaAtomLib.fetch(connection)
+mediaAtomLib.fetchMetadata(connection)
 .then(response => {
-    console.log('+SUCCESS: Fetched metadata successfully from atom with id ', );
+    console.log('+SUCCESS: Fetched metadata successfully from atom with id ', response.id);
     if (process.env.debug) {
-        console.log('response returned from youtube api ', response);
+        console.log('response returned from media atom maker api', response);
     }
 
     process.exit();

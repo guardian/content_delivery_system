@@ -53,7 +53,7 @@ describe('mediaAtomLib', () => {
     });
 
     describe('#fetchMetadata', () => {
-        const URI = '/api2/atom/atom_id/metadata';
+        const URI = '/api2/atom/atom_id';
 
         it('should raise an exception if url base is missing', () => {
             return assert.isRejected(atomLib.fetchMetadata(), 'Cannot add assets to media atom: missing url base');
@@ -66,7 +66,7 @@ describe('mediaAtomLib', () => {
             return assert.isRejected(atomLib.fetchMetadata(), 'Cannot add assets to media atom: missing atom id');
         });
 
-        it('should post asset to atom maker', () => {
+        it('should fetch atom from media atom maker', () => {
             process.env.url_base = URL_BASE;
             process.env.atom_id = 'atom_id';
 
@@ -78,12 +78,17 @@ describe('mediaAtomLib', () => {
                     }})
                 .get(URI)
                 .reply(200, {
-                    ok: 'ok'
+                    data: {
+                        title: 'title',
+                        description: 'description'
+                    }
                 });
 
             return atomLib.fetchMetadata()
             .then(response => {
-                assert.ok(response.ok);
+                assert.ok(response.data);
+                assert.equal(response.data.title, 'title');
+                assert.equal(response.data.description, 'description');
                 sinon.assert.calledOnce(hmacStub);
                 sinon.assert.calledOnce(stringsStub);
                 sinon.assert.calledTwice(datastoreSetStub);
