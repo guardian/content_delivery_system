@@ -11,11 +11,11 @@ fi
 cd ../..
 export "cf_datastore_location"=$data_store;
 ./cds_create_datastore.pl
-./cds_datastore.pl set meta key value
+#Change the values here to what you want to get set in the datastore
+./cds_datastore.pl set meta atom_title 'title'
+./cds_datastore.pl set meta atom_description 'description'
 export "cf_media_file"="";
 export "client_secrets"="";
-export "title"="";
-export "description"="";
 export "category_id"="";
 export "access"="";
 export "owner_account"="";
