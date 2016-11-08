@@ -46,6 +46,14 @@ function fetchMetadata(connection) {
                     'X-Gu-Tools-HMAC-Token': token,
                     'X-Gu-Tools-Service-Name': 'content_delivery_system'
                 }
+            })
+            .then(response => {
+                var title = 'title';
+                var description = 'description';
+                return Promise.all([datastore.set(connection, 'meta', 'atom_title', title), datastore.set(connection, 'meta', 'atom_description', description)])
+                .then(() => {
+                    return response;
+                });
             });
         });
     });

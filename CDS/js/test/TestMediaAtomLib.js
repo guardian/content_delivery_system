@@ -15,12 +15,14 @@ var nock = require('nock');
 
 describe('mediaAtomLib', () => {
 
-    var datastoreStub, hmacStub, stringsStub;
+    var datastoreStub, hmacStub, stringsStub, datastoreSetStub;
     const URL_BASE = 'https://www.base';
     const TOKEN = 'token';
     const dateRegex = /^[A-Z][a-z]{2}\,\s\d{2}\s[A-Z][a-z]{2}\s\d{4}\s\d{2}:\d{2}:\d{2}\sGMT$/i;
 
     beforeEach(() => {
+
+        datastoreSetStub = sinon.stub(datastore, 'set');
 
         datastoreStub = sinon.stub(datastore, 'get', (connection, type, key) => {
             return new Promise((fulfill) => {
@@ -45,6 +47,7 @@ describe('mediaAtomLib', () => {
         hmacStub.restore();
         datastoreStub.restore();
         stringsStub.restore();
+        datastoreSetStub.restore();
         delete process.env.url_base;
         delete process.env.atom_id;
     });
@@ -83,6 +86,7 @@ describe('mediaAtomLib', () => {
                 assert.ok(response.ok);
                 sinon.assert.calledOnce(hmacStub);
                 sinon.assert.calledOnce(stringsStub);
+                sinon.assert.calledTwice(datastoreSetStub);
                 return;
             });
         });
