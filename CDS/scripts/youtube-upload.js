@@ -5,8 +5,6 @@
 //<client_secrets> - path to the client secrets file with client id, client secret and client email
 //<private_key> path to encrypted private key file
 //<passphrase> passphrase for the key file
-//<title> - the title of the video to be uploaded
-//<description> - the description of the video
 //<category_id> - the category id for the video
 //<access> - the level of access for the video
 //<owner_channel> - [OPTIONAL] the channel you are uploading to
@@ -16,7 +14,6 @@ var youtubeLib = require('../js/youtube/youtube-upload-lib');
 var dataStore = require('../js/Datastore');
 
 var connection = new dataStore.Connection("youtube-upload.js");
-dataStore.initialiseDb();
 
 youtubeLib.uploadToYoutube(connection)
 .then(response => {

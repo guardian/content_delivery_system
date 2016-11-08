@@ -29,7 +29,7 @@ describe('YoutubeUpload', () => {
     });
 
     after(() => {
-        delete process.env.cf_datastore_location;
+        delete process.env.cf_dataStore_location;
     });
 
     describe('#getYoutubeData', () => {
@@ -102,19 +102,22 @@ describe('YoutubeUpload', () => {
     describe('#getMetadata', () => {
 
         const CATEGORY_ID = 2;
+        var dataStoreStub;
 
         beforeEach(() => {
-            process.env.title = 'title';
-            process.env.description = 'description';
             process.env.category_id = CATEGORY_ID;
             process.env.access = 'status';
+            dataStoreStub = sinon.stub(dataStore, 'get', (connection, type, key) => {
+                return new Promise(fulfill => {
+                    fulfill({ value: key });
+                });
+            });
         });
 
         afterEach(() => {
-            delete process.env.title;
-            delete process.env.description;
             delete process.env.category_id;
             delete process.env.access;
+            dataStoreStub.restore();
         });
 
         it('should parse metadata when all environment variables exist', () => {
@@ -127,26 +130,13 @@ describe('YoutubeUpload', () => {
                 assert.ok(metadata.status);
                 const status = metadata.status.privacyStatus;
 
-                assert.equal(snippet.title, 'title');
-                assert.equal(snippet.description, 'description');
+                assert.equal(snippet.title, 'atom_title');
+                assert.equal(snippet.description, 'atom_description');
                 assert.equal(snippet.categoryId, CATEGORY_ID);
                 assert.equal(status, 'status');
+                sinon.assert.calledTwice(dataStoreStub);
                 return;
             });
-        });
-
-        it('should throw if no title provided', () => {
-            delete process.env.title;
-
-            return assert.isRejected(youtubeUpload.getMetadata(), 'Cannot upload to youtube: missing a title');
-
-        });
-
-        it('should throw if no description provided', () => {
-            delete process.env.description;
-
-            return assert.isRejected(youtubeUpload.getMetadata(), 'Cannot upload to youtube: missing a description');
-
         });
 
         it('should throw if no category provided', () => {

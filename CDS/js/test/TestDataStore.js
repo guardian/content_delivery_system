@@ -22,7 +22,6 @@ describe('Datastore',function(){
         fs.writeFileSync(test_data_dir + "/file02.conf","#file02 commnt line = stuff\n\nfile02_key_01=thing\nfile02_key_02 = ribbit\n","utf8");
 
          conn=new datastore.Connection("TestDataStore",test_data_dir);
-         datastore.initialiseDb();
          return datastore.newDataStore();
     });
 

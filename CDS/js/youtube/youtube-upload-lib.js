@@ -9,37 +9,31 @@ const YOUTUBE_API_VERSION = 'v3';
 
 function getMetadata(connection) {
 
-    if (!process.env.title) {
-        return new Promise((fulfill, reject) => {
-            reject(new Error('Cannot upload to youtube: missing a title'));
-        });
-    }
-
-    if (!process.env.description) {
-        return new Promise((fulfill, reject) => {
-            reject(new Error('Cannot upload to youtube: missing a description'));
-        });
-    }
-
     if (!process.env.category_id) {
         return new Promise((fulfill, reject) => {
             reject(new Error('Cannot upload to youtube: missing a category id'));
         });
     }
 
-    return dataStore.substituteStrings(connection, [process.env.title, process.env.description, process.env.category_id, process.env.access])
+    return dataStore.substituteStrings(connection, [process.env.category_id, process.env.access])
     .then((substitutedStrings) => {
-        var title, description, category_id, status;
-        [title, description, category_id, status] = substitutedStrings;
+        let category_id, status;
+        [category_id, status] = substitutedStrings;
 
-        return {
-            snippet: {
-                title: title,
-                description: description,
-                categoryId: category_id
-            },
-            status: { privacyStatus: status ? status : 'private'}
-        }
+        return Promise.all([dataStore.get(connection, 'meta', 'atom_title'), dataStore.get(connection, 'meta', 'atom_description')])
+        .then(results => {
+            let title, description;
+            [title, description] = results.map(result => result.value);
+
+            return {
+                snippet: {
+                    title: title,
+                    description: description,
+                    categoryId: category_id
+                },
+                status: { privacyStatus: status ? status : 'private'}
+            };
+        });
     });
 }
 
