@@ -75,7 +75,7 @@ describe('addAsset', () => {
                         'X-Gu-Tools-HMAC-Token': TOKEN,
                         'X-Gu-Tools-Service-Name': 'content_delivery_system'
                     }})
-                .post(URI, {
+                .put(URI, {
                     uri: 'youtube_url'
                 })
                 .reply(200, {

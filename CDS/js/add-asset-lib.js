@@ -42,7 +42,7 @@ function postAsset() {
 
                 return reqwest({
                     url: url,
-                    method: 'POST',
+                    method: 'PUT',
                     contentType: 'application/json',
                     headers: {
                         'X-Gu-Tools-HMAC-Date': date,
