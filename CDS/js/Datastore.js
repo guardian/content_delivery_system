@@ -235,6 +235,5 @@ module.exports = {
     substituteString: substituteString,
     substituteStrings: function(conn, strs) {
         return Promise.all(strs.map((str) => this.substituteString(conn, str)));
-    },
-    initialiseDb: initialiseDb
+    }
 };
