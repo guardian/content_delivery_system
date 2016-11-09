@@ -6,6 +6,7 @@ var hmac = require('./hmac');
 const urlBase = process.env.url_base;
 const assetPath = '/api2/atom/:id/asset';
 const metadataPath = '/api2/atom/:id'
+const youtubePrefix = 'https://www.youtube.com/watch?v='
 
 function checkExistenceAndSubstitute(connection, variables) {
     const missingIndex = variables.findIndex(variable => {
@@ -69,11 +70,11 @@ function postAsset(connection) {
     .then(substitutedStrings => {
         [urlBase, atomId] = substitutedStrings;
 
-        return datastore.get(connection, 'meta', 'youtube_url')
+        return datastore.get(connection, 'meta', 'youtube_id')
         .then(result => {
             const date = (new Date()).toUTCString();
 
-            const youtubeUrl = result.value;
+            const youtubeUrl = youtubePrefix + result.value;
 
             const data = { uri: youtubeUrl };
             const uri = assetPath.replace(/:id/, atomId);
