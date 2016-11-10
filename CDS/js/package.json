@@ -1,4 +1,6 @@
 {
+  "name": "CDS v3 Node.js dependencies",
+  "version": "3.0.0",
   "dependencies": {
     "chai-as-promised": "6.0.0",
     "crypto": "0.0.3",

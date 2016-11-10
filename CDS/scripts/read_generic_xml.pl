@@ -103,6 +103,8 @@ $delimiter=$ENV{'delimiter'} if($ENV{'delimiter'});
 
 my @files;
 push @files,$ENV{'cf_xml_file'} if($ENV{'cf_xml_file'});
+push @files,$ENV{'cf_inmeta_file'} if($ENV{'cf_inmeta_file'});
+push @files,$ENV{'cf_meta_file'} if($ENV{'cf_meta_file'});
 
 if($ENV{'extra_files'}){
 	my @extras=split /\|/,$store->substitute_string($ENV{'extra_files'});
