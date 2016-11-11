@@ -122,7 +122,7 @@ describe('mediaAtomLib', () => {
                         'X-Gu-Tools-Service-Name': 'content_delivery_system'
                     }})
                 .put(URI, {
-                    uri: 'youtube_url'
+                    uri: 'https://www.youtube.com/watch?v=youtube_id'
                 })
                 .reply(200, {
                     ok: 'ok'
