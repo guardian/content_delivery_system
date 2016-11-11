@@ -6,8 +6,8 @@
 //<shared_secret> secret shared with the media atom maker that allows fetching data from the api
 //<atom_id> the id of the atom data is being fetched from
 
-var mediaAtomLib = require('../js/media-atom-lib');
-var dataStore = require('../js/Datastore');
+var mediaAtomLib = require('./js_utils/media-atom-lib');
+var dataStore = require('./js_utils/Datastore');
 
 var connection = new dataStore.Connection("fetch-metadata.js");
 
