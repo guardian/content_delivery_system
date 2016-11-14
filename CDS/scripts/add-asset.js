@@ -6,6 +6,7 @@
 //<url_base> the base of media atom maker url
 //<shared_secret> secret shared with media atom maker that allows posting to it
 //<atom_id> id of the atom the asset is being added to
+//<asset_url_base> an optional base url of the asset. The youtube id of the asset is appended to this url. If it is not provided, a default url is used.
 
 var mediaAtomLib = require('../js/media-atom-lib');
 var dataStore = require('../js/Datastore');

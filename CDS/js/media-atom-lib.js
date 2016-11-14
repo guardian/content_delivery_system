@@ -10,7 +10,7 @@ const youtubePrefix = 'https://www.youtube.com/watch?v='
 
 function checkExistenceAndSubstitute(connection, variables) {
     const missingIndex = variables.findIndex(variable => {
-        return !variable.value
+        return !variable.value && variable.error;
     });
 
     if (missingIndex !== -1) {
@@ -19,16 +19,23 @@ function checkExistenceAndSubstitute(connection, variables) {
         });
     }
 
-    return datastore.substituteStrings(connection, variables.map(variable => variable.value));
+    return datastore.substituteStrings(connection,
+        variables.reduce((substitutions, variable) => {
+          if (variable.value) {
+            substitutions.push(variable.value);
+          }
+          return substitutions;
+        }, [])
+    );
 };
 
 
 function fetchMetadata(connection) {
 
-    const requiredVariables = [{value: process.env.url_base, error: 'Cannot add assets to media atom: missing url base'}, {value: process.env.atom_id, error: 'Cannot add assets to media atom: missing atom id'}];
+    const environmentVariables = [{value: process.env.url_base, error: 'Cannot add assets to media atom: missing url base'}, {value: process.env.atom_id, error: 'Cannot add assets to media atom: missing atom id'}];
 
     let urlBase, atomId;
-    return checkExistenceAndSubstitute(connection, requiredVariables)
+    return checkExistenceAndSubstitute(connection, environmentVariables)
     .then(substitutedStrings => {
         [urlBase, atomId] = substitutedStrings;
 
@@ -63,18 +70,29 @@ function fetchMetadata(connection) {
 
 function postAsset(connection) {
 
-    const requiredVariables = [{value: process.env.url_base, error: 'Cannot add assets to media atom: missing url base'}, {value: process.env.atom_id, error: 'Cannot add assets to media atom: missing atom id'}];
+    const environmentVariables = [
+      {value: process.env.url_base, error: 'Cannot add assets to media atom: missing url base'},
+      {value: process.env.atom_id, error: 'Cannot add assets to media atom: missing atom id'},
+      {value: process.env.asset_url, error: null}
+    ];
 
-    let urlBase, atomId;
-    return checkExistenceAndSubstitute(connection, requiredVariables)
+    let urlBase, atomId, assetBase;
+
+    return checkExistenceAndSubstitute(connection, environmentVariables)
     .then(substitutedStrings => {
-        [urlBase, atomId] = substitutedStrings;
+
+        if (substitutedStrings.length === 2) {
+          [urlBase, atomId] = substitutedStrings;
+          assetBase = youtubePrefix;
+        } else if (substitutedStrings.length === 3) {
+          [urlBase, atomId, assetBase] = substitutedStrings;
+        }
 
         return datastore.get(connection, 'meta', 'youtube_id')
         .then(result => {
             const date = (new Date()).toUTCString();
 
-            const youtubeUrl = youtubePrefix + result.value;
+            const youtubeUrl = assetBase + result.value;
 
             const data = { uri: youtubeUrl };
             const uri = assetPath.replace(/:id/, atomId);
