@@ -14,9 +14,9 @@ export "cf_datastore_location"=$data_store;
 #Change the values here to what you want to get set in the datastore
 ./cds_datastore.pl set meta atom_title 'title'
 ./cds_datastore.pl set meta atom_description 'description'
+./cds_datastore.pl set meta category_id 2
 export "cf_media_file"="";
 export "client_secrets"="";
-export "category_id"="";
 export "access"="";
 export "owner_account"="";
 export "owner_channel"="";
