@@ -11,12 +11,12 @@ checkout:
     - chmod a+x ./circle_setup_rvm.sh
     - sudo -E ./circle_setup_rvm.sh
     - sudo -i /home/ubuntu/content_delivery_system/CDS/install.sh -y
-    - cd CDS/js; npm install
+    - cd CDS/scripts/js_utils; npm install
 
 test:
   override:
     - bash ./tests/runtests.sh
-    - cd CDS/js; npm test
+    - cd CDS/scripts/js_utils; npm test
 
 deployment:
   riffraff_upload:
