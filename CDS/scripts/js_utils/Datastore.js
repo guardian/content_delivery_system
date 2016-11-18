@@ -136,6 +136,11 @@ function substituteString(conn,str){
     return new Promise(function(fulfill,reject) {
 
         function replaceAllOccurances(string, matchText, replacementValue) {
+
+            if (!string) {
+                return string;
+            }
+
             //This replaces all occurances of matchText (by splitting) then replaces then with the value (by joining)
             const sanitisedReplacement = replacementValue ? replacementValue : "undefined";
             return string.split(matchText).join(sanitisedReplacement);
