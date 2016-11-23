@@ -98,10 +98,8 @@ describe('mediaAtomLib', () => {
           'X-Gu-Tools-Service-Name': 'content_delivery_system'
         })
         .post(URI, {
-          id: 'youtube_id'})
-          .reply(200, {
-            status: 'DONE'
-          });
+          youtubeId: 'youtube_id'})
+          .reply(200)
 
         return atomLib.makeAssetActive()
           .then(response => {
@@ -125,15 +123,11 @@ describe('mediaAtomLib', () => {
           'X-Gu-Tools-Service-Name': 'content_delivery_system'
         })
         .post(URI, {
-          id: 'youtube_id'})
-          .reply(200, {
-            status: 'PENDING'
-          })
+          youtubeId: 'youtube_id'})
+          .reply(400, 'Asset encoding in process')
         .post(URI, {
-          id: 'youtube_id'})
-          .reply(200, {
-            status: 'DONE'
-          });
+          youtubeId: 'youtube_id'})
+          .reply(200)
 
         return atomLib.makeAssetActive()
           .then(response => {

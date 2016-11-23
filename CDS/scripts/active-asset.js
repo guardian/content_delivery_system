@@ -14,11 +14,7 @@ var connection = new dataStore.Connection("add-asset.js");
 
 mediaAtomLib.makeAssetActive(connection)
 .then(response => {
-    console.log('+SUCCESS: made an asset active ', response._url.path);
-    if (process.env.debug) {
-        console.log('response returned ', response);
-    }
-
+  console.log('+SUCCESS: made an asset active ', response);
     process.exit();
 }).catch(error => {
     console.log('-ERROR in making an asset active ', error);

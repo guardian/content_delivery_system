@@ -75,6 +75,7 @@ function fetchMetadata(connection) {
                 });
 =======
 
+        return HMACRequest.makeRequest(connection, date, uri, urlBase, 'GET')
         .then(response => {
             const title = response.data.title;
             const description = response.data.description;
@@ -103,25 +104,26 @@ function makeAssetActive(connection) {
     [urlBase, atomId] = results[0];
     youtubeId = results[1].value;
 
-    const date = (new Date()).toUTCString();
-    const data = { id: youtubeId };
+    const data = { youtubeId: youtubeId };
     const uri = activeAssetPath.replace(/:id/, atomId);
 
     function makeActive() {
 
+      const date = (new Date()).toUTCString();
       return HMACRequest.makeRequest(connection, date, uri, urlBase, 'POST', data)
       .then(response => {
-        console.log('returned response was ', response);
-        if (response.status === 'DONE') {
-          return response;
+        return response;
+      })
+      .catch(error => {
+        if (error.response === 'Asset encoding in process') {
+          return this.setPollingInterval(counter)
+          .then(() => {
+            counter++;
+            return makeActive.bind(this)();
+          });
+        } else {
+          throw new Error(error);
         }
-
-        return this.setPollingInterval(counter)
-        .then(() => {
-          counter++;
-          return makeActive.bind(this)();
-        });
-
       });
     }
 
@@ -131,8 +133,8 @@ function makeAssetActive(connection) {
 
 function setPollingInterval(counter) {
 
-    const INTERVAL = 210000;
-    const MAX_TRIES = 10;
+    const INTERVAL = 21000;
+    const MAX_TRIES = 100;
 
     if (counter > MAX_TRIES) {
       return new Promise((fulfill, reject) => {
