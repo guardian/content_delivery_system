@@ -78,20 +78,54 @@ describe('mediaAtomLib', () => {
                     }})
                 .get(URI)
                 .reply(200, {
-                    data: {
-                        title: 'title',
-                        description: 'description'
-                    }
+                  title: 'title',
+                  description: 'description'
                 });
 
             return atomLib.fetchMetadata()
             .then(response => {
-                assert.ok(response.data);
-                assert.equal(response.data.title, 'title');
-                assert.equal(response.data.description, 'description');
+                assert.equal(response.title, 'title');
+                assert.equal(response.description, 'description');
                 sinon.assert.calledOnce(hmacStub);
                 sinon.assert.calledOnce(stringsStub);
-                sinon.assert.calledThrice(datastoreSetStub);
+                sinon.assert.calledTwice(datastoreSetStub);
+                return;
+            });
+        });
+        it('should pick the biggest possible image', () => {
+            process.env.url_base = URL_BASE;
+            process.env.atom_id = 'atom_id';
+
+            var reqwest = nock(URL_BASE, {
+                    reqheaders: {
+                        'X-Gu-Tools-HMAC-Date': dateRegex,
+                        'X-Gu-Tools-HMAC-Token': TOKEN,
+                        'X-Gu-Tools-Service-Name': 'content_delivery_system'
+                    }})
+                .get(URI)
+                .reply(200, {
+                  posterImage: {
+                    assets: [
+                      {
+                        size: 1,
+                        file: 'small'
+                      },
+                      {
+                        size: 3000000,
+                        file: 'big'
+                      },
+                      {
+                        size: 10000,
+                        file: 'best'
+                      }
+                    ]
+                  }
+                });
+
+            return atomLib.fetchMetadata()
+            .then(response => {
+                sinon.assert.calledOnce(datastoreSetStub);
+                sinon.assert.calledWith(datastoreSetStub, undefined, 'meta', 'poster_image', 'best');
                 return;
             });
         });

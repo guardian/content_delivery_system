@@ -7,6 +7,7 @@ const urlBase = process.env.url_base;
 const assetPath = '/api2/atoms/:id/assets';
 const metadataPath = '/api2/atoms/:id'
 const youtubePrefix = 'https://www.youtube.com/watch?v='
+const MAX_FILE_SIZE = 2000000;
 
 function checkExistenceAndSubstitute(connection, variables) {
     const missingIndex = variables.findIndex(variable => {
@@ -60,10 +61,44 @@ function fetchMetadata(connection) {
                 const description = response.description;
                 const categoryId = response.youtubeCategoryId;
 
-                return Promise.all([datastore.set(connection, 'meta', 'atom_title', title), datastore.set(connection, 'meta', 'atom_description', description), datastore.set(connection, 'meta', 'atom_category', categoryId)])
-                .then(() => {
-                    return response;
-                });
+                let propertiesToSet = [];
+                if (title) {
+                  propertiesToSet.push({
+                    name: 'atom_title',
+                    value: title
+                  });
+                }
+
+                if (description) {
+                  propertiesToSet.push({
+                    name: 'atom_description',
+                    value: description
+                  });
+                }
+
+                if (categoryId) {
+                  propertiesToSet.push({
+                    name: 'atom_category',
+                    value: description
+                  });
+                }
+
+                if (response.posterImage) {
+                  const sortedAssets = response.posterImage.assets.sort((asset1, asset2) => {
+                    return asset2.size - asset1.size;
+                  });
+
+                  const bestAsset = sortedAssets.find(asset => { return asset.size <= MAX_FILE_SIZE; }).file;
+
+                  propertiesToSet.push({
+                    name: 'poster_image',
+                    value: bestAsset
+                  });
+                }
+
+                return Promise.all(propertiesToSet.map(property => { datastore.set(connection, 'meta', property.name, property.value)}))
+
+                .then(() => { return response });
             });
         });
     });
