@@ -15,6 +15,7 @@ export "cf_datastore_location"=$data_store;
 ./cds_datastore.pl set meta atom_title 'title'
 ./cds_datastore.pl set meta atom_description 'description'
 ./cds_datastore.pl set meta category_id 2
+./cds_datastore.pl set meta poster_image 'url'
 export "cf_media_file"="";
 export "client_secrets"="";
 export "access"="";
