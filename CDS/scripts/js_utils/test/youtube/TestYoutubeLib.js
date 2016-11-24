@@ -15,34 +15,24 @@ var dataStore = require('../../Datastore');
 describe('YoutubeUpload', () => {
     var stringSubstituteStub;
 
-    beforeEach(() => {
-        stringSubstituteStub = sinon.stub(dataStore, 'substituteStrings', (connection, val) => {
-            return new Promise((fulfill) => {
-                fulfill(val);
-            });
-        });
-
-    });
-
-    afterEach(() => {
-        stringSubstituteStub.restore();
-    });
-
-    after(() => {
-        delete process.env.cf_dataStore_location;
-    });
-
     describe('#getYoutubeData', () => {
-        var metadataStub, readStub;
+        var metadataStub, readStub, stringsSubstituteStub;
 
         beforeEach(() => {
             process.env.cf_media_file = './media';
             process.env.owner_account = 'account';
             process.env.owner_channel = 'channel';
+
             metadataStub = sinon.stub(youtubeUpload, 'getMetadata').returns(new Promise((fulfill, reject) => {
                 fulfill({});
             }));
             readStub = sinon.stub(fs, 'createReadStream');
+
+            stringsSubstituteStub = sinon.stub(dataStore, 'substituteStrings', (connection, val) => {
+                return new Promise((fulfill) => {
+                    fulfill(val);
+                });
+            });
 
         });
 
@@ -52,6 +42,7 @@ describe('YoutubeUpload', () => {
             delete process.env.owner_channel;
             metadataStub.restore();
             readStub.restore();
+            stringsSubstituteStub.restore();
         });
 
         it('should parse youtube data correctly when all variables exist', () => {
@@ -65,7 +56,7 @@ describe('YoutubeUpload', () => {
                 assert.equal(data.onBehalfOfContentOwner, 'account');
                 assert.equal(data.onBehalfOfContentOwnerChannel, 'channel');
                 assert.equal(data.uploadType, 'multipart');
-                sinon.assert.calledOnce(stringSubstituteStub);
+                sinon.assert.calledOnce(stringsSubstituteStub);
                 return;
             });
         });
@@ -101,23 +92,27 @@ describe('YoutubeUpload', () => {
 
     describe('#getMetadata', () => {
 
-        const CATEGORY_ID = 2;
-        var dataStoreStub;
+        var dataStoreStub, stringSubstituteStub;
 
         beforeEach(() => {
-            process.env.category_id = CATEGORY_ID;
             process.env.access = 'status';
             dataStoreStub = sinon.stub(dataStore, 'get', (connection, type, key) => {
                 return new Promise(fulfill => {
                     fulfill({ value: key });
                 });
             });
+
+            stringSubstituteStub = sinon.stub(dataStore, 'substituteString', (connection, val) => {
+                return new Promise((fulfill) => {
+                    fulfill(val);
+                });
+            });
         });
 
         afterEach(() => {
-            delete process.env.category_id;
             delete process.env.access;
             dataStoreStub.restore();
+            stringSubstituteStub.restore();
         });
 
         it('should parse metadata when all environment variables exist', () => {
@@ -132,17 +127,12 @@ describe('YoutubeUpload', () => {
 
                 assert.equal(snippet.title, 'atom_title');
                 assert.equal(snippet.description, 'atom_description');
-                assert.equal(snippet.categoryId, CATEGORY_ID);
+                assert.equal(snippet.categoryId, 'category_id');
                 assert.equal(status, 'status');
-                sinon.assert.calledTwice(dataStoreStub);
+                sinon.assert.calledThrice(dataStoreStub);
+                sinon.assert.calledOnce(stringSubstituteStub);
                 return;
             });
-        });
-
-        it('should throw if no category provided', () => {
-            delete process.env.category_id;
-
-            return assert.isRejected(youtubeUpload.getMetadata(), 'Cannot upload to youtube: missing a category id');
         });
 
         it('should use default status if no status provided', () => {

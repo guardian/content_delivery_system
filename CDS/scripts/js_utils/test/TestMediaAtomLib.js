@@ -53,7 +53,7 @@ describe('mediaAtomLib', () => {
     });
 
     describe('#fetchMetadata', () => {
-        const URI = '/api2/atom/atom_id';
+        const URI = '/api2/atoms/atom_id';
 
         it('should raise an exception if url base is missing', () => {
             return assert.isRejected(atomLib.fetchMetadata(), 'Cannot add assets to media atom: missing url base');
@@ -91,14 +91,14 @@ describe('mediaAtomLib', () => {
                 assert.equal(response.data.description, 'description');
                 sinon.assert.calledOnce(hmacStub);
                 sinon.assert.calledOnce(stringsStub);
-                sinon.assert.calledTwice(datastoreSetStub);
+                sinon.assert.calledThrice(datastoreSetStub);
                 return;
             });
         });
     });
 
     describe('#postAsset', () => {
-        const URI = '/api2/atom/atom_id/asset';
+        const URI = '/api2/atoms/atom_id/assets';
 
         it('should raise an exception if url base is missing', () => {
             return assert.isRejected(atomLib.postAsset(), 'Cannot add assets to media atom: missing url base');
