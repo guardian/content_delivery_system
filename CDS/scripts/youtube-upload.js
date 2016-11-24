@@ -10,8 +10,8 @@
 //<owner_channel> - [OPTIONAL] the channel you are uploading to
 //<owner_account> - [OPTIONAL] The account that the video is uploaded on behalf of. You can ommit the channel and owner_account parameters, but this means you cannot upload videos of accounts with multiple channels. If you specify the channel to upload to, then you must also specify the owner account you are uploading on behalf of.
 
-var youtubeLib = require('../js/youtube/youtube-upload-lib');
-var dataStore = require('../js/Datastore');
+var youtubeLib = require('./js_utils/youtube/youtube-upload-lib');
+var dataStore = require('./js_utils/Datastore');
 
 var connection = new dataStore.Connection("youtube-upload.js");
 

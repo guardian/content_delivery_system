@@ -24,7 +24,7 @@ provisioners:
     script: ../machine-images/packer/resources/pre-cache.sh
     execute_command: "{{ .Vars }} sudo -E bash -x '{{ .Path }}'"
   - type: file
-    source: ../../CDS/js/package.json
+    source: ../../CDS/scripts/js_utils/package.json
     destination: /usr/local/lib/cds_backend
   - type: shell
     execute_command: "chmod +x {{ .Path }}; sudo {{ .Vars }} {{ .Path }}"
