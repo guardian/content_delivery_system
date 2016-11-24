@@ -115,7 +115,7 @@ function makeAssetActive(connection) {
         return response;
       })
       .catch(error => {
-        if (error.response === 'Asset encoding in process') {
+        if (error.status === 400 && error.response === 'Asset encoding in process') {
           return this.setPollingInterval(counter)
           .then(() => {
             counter++;
