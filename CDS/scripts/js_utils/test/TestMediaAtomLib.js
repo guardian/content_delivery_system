@@ -122,7 +122,7 @@ describe('mediaAtomLib', () => {
                         'X-Gu-Tools-Service-Name': 'content_delivery_system'
                     }})
                 .put(URI, {
-                    uri: 'youtube_url'
+                    uri: 'https://www.youtube.com/watch?v=youtube_id'
                 })
                 .reply(200, {
                     ok: 'ok'
@@ -134,6 +134,30 @@ describe('mediaAtomLib', () => {
                 sinon.assert.calledOnce(datastoreStub);
                 sinon.assert.calledOnce(hmacStub);
                 sinon.assert.calledOnce(stringsStub);
+                return;
+            });
+        });
+        it('should allow for customising the asset url base', () => {
+            process.env.url_base = URL_BASE;
+            process.env.atom_id = 'atom_id';
+            process.env.asset_url = 'https://www.customised.com/'
+
+            var reqwest = nock(URL_BASE, {
+                    reqheaders: {
+                        'X-Gu-Tools-HMAC-Date': dateRegex,
+                        'X-Gu-Tools-HMAC-Token': TOKEN,
+                        'X-Gu-Tools-Service-Name': 'content_delivery_system'
+                    }})
+                .put(URI, {
+                    uri: process.env.asset_url + 'youtube_id'
+                })
+                .reply(200, {
+                    ok: 'ok'
+                });
+
+            return atomLib.postAsset()
+            .then(response => {
+                assert.ok(response.ok);
                 return;
             });
         });
