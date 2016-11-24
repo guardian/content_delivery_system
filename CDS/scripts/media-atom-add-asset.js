@@ -15,7 +15,7 @@ var connection = new dataStore.Connection("add-asset.js");
 
 mediaAtomLib.postAsset(connection)
 .then(response => {
-    console.log('+SUCCESS: added an asset to ', response._url.path);
+    console.log('+SUCCESS: added an asset to ', response.id);
     if (process.env.debug) {
         console.log('response returned ', response);
     }

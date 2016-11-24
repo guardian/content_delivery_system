@@ -175,7 +175,7 @@ function postAsset(connection) {
             const data = { uri: youtubeUrl };
             const uri = assetPath.replace(/:id/, atomId);
 
-            return HMACRequest.makeRequest(connection, date, uri, urlBase, 'PUT', data)
+            return HMACRequest.makeRequest(connection, date, uri, urlBase, 'POST', data)
 
         });
     });
