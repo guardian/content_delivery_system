@@ -91,7 +91,7 @@ describe('mediaAtomLib', () => {
                 assert.equal(response.data.description, 'description');
                 sinon.assert.calledOnce(hmacStub);
                 sinon.assert.calledOnce(stringsStub);
-                sinon.assert.calledThrice(datastoreSetStub);
+                sinon.assert.called(datastoreSetStub);
                 return;
             });
         });
