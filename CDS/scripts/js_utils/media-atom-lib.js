@@ -4,8 +4,8 @@ var datastore = require('./Datastore');
 var hmac = require('./hmac');
 
 const urlBase = process.env.url_base;
-const assetPath = '/api2/atom/:id/asset';
-const metadataPath = '/api2/atom/:id'
+const assetPath = '/api2/atoms/:id/assets';
+const metadataPath = '/api2/atoms/:id'
 const youtubePrefix = 'https://www.youtube.com/watch?v='
 
 function checkExistenceAndSubstitute(connection, variables) {
@@ -56,15 +56,19 @@ function fetchMetadata(connection) {
                 }
             })
             .then(response => {
-                const title = response.data.title;
-                const description = response.data.description;
-                const channelId = response.channelId;
+
+                const title = response.title;
+                const description = response.description;
+                const categoryId = response.youtubeCategoryId;
+                const channelId = response.channelId
 
                 return Promise.all([
                   datastore.set(connection, 'meta', 'atom_title', title),
                   datastore.set(connection, 'meta', 'atom_description', description),
-                  datastore.set(connection, 'meta', 'atom_channel_id', channelId)
+                  datastore.set(connection, 'meta', 'atom_channel_id', channelId),
+                  datastore.set(connection, 'meta', 'atom_category', categoryId)
                 ])
+
                 .then(() => {
                     return response;
                 });

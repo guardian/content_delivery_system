@@ -9,27 +9,18 @@ const YOUTUBE_API_VERSION = 'v3';
 
 function getMetadata(connection) {
 
-    if (!process.env.category_id) {
-        return new Promise((fulfill, reject) => {
-            reject(new Error('Cannot upload to youtube: missing a category id'));
-        });
-    }
-
-    return dataStore.substituteStrings(connection, [process.env.category_id, process.env.access])
-    .then((substitutedStrings) => {
-        let category_id, status;
-        [category_id, status] = substitutedStrings;
-
-        return Promise.all([dataStore.get(connection, 'meta', 'atom_title'), dataStore.get(connection, 'meta', 'atom_description')])
+    return dataStore.substituteString(connection, process.env.access)
+    .then(status => {
+        return Promise.all([dataStore.get(connection, 'meta', 'atom_title'), dataStore.get(connection, 'meta', 'atom_description'), dataStore.get(connection, 'meta', 'category_id')])
         .then(results => {
-            let title, description;
-            [title, description] = results.map(result => result.value);
+            let title, description, categoryId
+            [title, description, categoryId] = results.map(result => result.value);
 
             return {
                 snippet: {
                     title: title,
                     description: description,
-                    categoryId: category_id
+                    categoryId: categoryId
                 },
                 status: { privacyStatus: status ? status : 'private'}
             };
