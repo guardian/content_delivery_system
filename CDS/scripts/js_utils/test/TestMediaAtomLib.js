@@ -210,7 +210,7 @@ describe('mediaAtomLib', () => {
                         'X-Gu-Tools-HMAC-Token': TOKEN,
                         'X-Gu-Tools-Service-Name': 'content_delivery_system'
                     }})
-                .put(URI, {
+                .post(URI, {
                     uri: 'https://www.youtube.com/watch?v=youtube_id'
                 })
                 .reply(200, {
@@ -237,7 +237,7 @@ describe('mediaAtomLib', () => {
                         'X-Gu-Tools-HMAC-Token': TOKEN,
                         'X-Gu-Tools-Service-Name': 'content_delivery_system'
                     }})
-                .put(URI, {
+                .post(URI, {
                     uri: process.env.asset_url + 'youtube_id'
                 })
                 .reply(200, {
