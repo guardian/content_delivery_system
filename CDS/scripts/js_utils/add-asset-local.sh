@@ -12,4 +12,4 @@ cd ..
 export "url_base"="";
 export "shared_secret"="";
 export "atom_id"="";
-node ./scripts/add-asset.js
+node ../media-atom-add-asset.js
