@@ -41,50 +41,17 @@ function fetchMetadata(connection) {
 
         const date = (new Date()).toUTCString();
         const uri = metadataPath.replace(/:id/, atomId);
-<<<<<<< b66ffd61044db05f8f54288cf54fb38023845868
         const url = urlBase + uri;
-
-        return hmac.makeHMACToken(connection, date, uri)
-        .then(token => {
-            return reqwest({
-                url: url,
-                method: 'GET',
-                contentType: 'application/json',
-                headers: {
-                    'X-Gu-Tools-HMAC-Date': date,
-                    'X-Gu-Tools-HMAC-Token': token,
-                    'X-Gu-Tools-Service-Name': 'content_delivery_system'
-                }
-            })
-            .then(response => {
-
-                const title = response.title;
-                const description = response.description;
-                const categoryId = response.youtubeCategoryId;
-                const channelId = response.channelId
-
-                return Promise.all([
-                  datastore.set(connection, 'meta', 'atom_title', title),
-                  datastore.set(connection, 'meta', 'atom_description', description),
-                  datastore.set(connection, 'meta', 'atom_channel_id', channelId),
-                  datastore.set(connection, 'meta', 'atom_category', categoryId)
-                ])
-
-                .then(() => {
-                    return response;
-                });
-=======
 
         return HMACRequest.makeRequest(connection, date, uri, urlBase, 'GET')
         .then(response => {
-            const title = response.data.title;
-            const description = response.data.description;
-            const categoryId = response.data.categoryId;
+            const title = response.title;
+            const description = response.description;
+            const categoryId = response.categoryId;
 
             return Promise.all([datastore.set(connection, 'meta', 'atom_title', title), datastore.set(connection, 'meta', 'atom_description', description), datastore.set(connection, 'meta', 'atom_category', categoryId)])
             .then(() => {
                 return response;
->>>>>>> add functions for active asset
             });
         });
     });
