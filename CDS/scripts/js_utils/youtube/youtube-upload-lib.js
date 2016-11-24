@@ -65,37 +65,56 @@ function getYoutubeData(connection) {
     });
 }
 
+function addPosterImage(connection, videoId, youtubeClient, account) {
+  console.log('now adding poster image with arguments ', arguments);
+    return dataStore.get(connection, 'meta', 'poster_image')
+    .then(file => {
+
+        if (!account) {
+          return new Promise((fulfill, reject) => { reject( new Error('could not add a poster image: missing account owner') )});
+        }
+        return  new Promise((fulfill, reject) => {
+          youtubeClient.thumbnails.set({ videoId: videoId, onBehalfOfContentOwner: account, mediaBody: file}, (err, result) => {
+                if (err) reject(err);
+                else fulfill(result);
+            });
+        });
+      });
+      return new Promise(fulfill => {fulfill()});
+}
+
 function uploadToYoutube(connection) {
 
     return youtubeAuth.getAuthClient(connection)
     .then((oauth2) => {
-
-       var youtubeClient = googleapis.youtube({version: YOUTUBE_API_VERSION, auth: oauth2});
-       return this.getYoutubeData(connection)
+        var youtubeClient = googleapis.youtube({version: YOUTUBE_API_VERSION, auth: oauth2});
+        return this.getYoutubeData(connection)
         .then((youtubeData) => {
 
-           return new Promise((fulfill, reject) => {
+            return new Promise((fulfill, reject) => {
                 youtubeClient.videos.insert(youtubeData, (err, result) => {
-                    if (err) reject(err);
-                    if (result) {
-                        fulfill(
-                            dataStore.set(connection, 'meta', 'youtube_id', result.id)
-                            .then(() => {
-                                return result;
-                            })
-                            .catch((err) => {
-                                return result;
-                            })
-                        );
-                     }
-                })
-           });
+                if (err) reject(err);
+                if (result) {
+                    fulfill(addPosterImage(connection, result.id, youtubeClient, youtubeData.onBehalfOfContentOwner)
+                    .then(() => {
+                        return dataStore.set(connection, 'meta', 'youtube_id', result.id)
+                        .then(() => {
+                          return result;
+                        })
+                        .catch((err) => {
+                            return result;
+                        })
+                    })
+                    )
+                }
+            });
         });
+    });
     });
 }
 
 module.exports = {
-    uploadToYoutube: uploadToYoutube,
-    getMetadata: getMetadata,
+  uploadToYoutube: uploadToYoutube,
+  getMetadata: getMetadata,
     getYoutubeData: getYoutubeData,
 };
