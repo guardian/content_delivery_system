@@ -58,7 +58,13 @@ function fetchMetadata(connection) {
             .then(response => {
                 const title = response.data.title;
                 const description = response.data.description;
-                return Promise.all([datastore.set(connection, 'meta', 'atom_title', title), datastore.set(connection, 'meta', 'atom_description', description)])
+                const channelId = response.channelId;
+
+                return Promise.all([
+                  datastore.set(connection, 'meta', 'atom_title', title),
+                  datastore.set(connection, 'meta', 'atom_description', description),
+                  datastore.set(connection, 'meta', 'atom_channel_id', channelId)
+                ])
                 .then(() => {
                     return response;
                 });
@@ -121,4 +127,3 @@ module.exports = {
     postAsset: postAsset,
     fetchMetadata: fetchMetadata
 };
-

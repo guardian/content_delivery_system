@@ -108,4 +108,3 @@ module.exports = {
     getMetadata: getMetadata,
     getYoutubeData: getYoutubeData,
 };
-
