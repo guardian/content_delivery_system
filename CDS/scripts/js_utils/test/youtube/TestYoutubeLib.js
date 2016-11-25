@@ -183,7 +183,6 @@ describe('YoutubeUpload', () => {
 
             saveResultsStub = sinon.stub(dataStore, 'set');
             saveResultsStub.returns(new Promise((fulfill) => {
-              console.log('datastore set stub');
                 fulfill({});
             }));
         });
@@ -197,15 +196,13 @@ describe('YoutubeUpload', () => {
         });
 
 
-        it.only('should upload to youtube', () => {
+        it('should upload to youtube', () => {
 
             return youtubeUpload.uploadToYoutube()
             .then((result) => {
-              console.log('got back result ', result);
                 sinon.assert.calledOnce(authStub);
                 sinon.assert.calledOnce(youtubeStub);
                 sinon.assert.calledOnce(dataStub);
-                //sinon.assert.calledOnce(saveResultsStub);
                 assert.equal(result.id, 'id');
                 return;
             });

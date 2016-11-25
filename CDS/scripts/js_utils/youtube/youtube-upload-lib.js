@@ -66,21 +66,23 @@ function getYoutubeData(connection) {
 }
 
 function addPosterImage(connection, videoId, youtubeClient, account) {
-  console.log('now adding poster image with arguments ', arguments);
     return dataStore.get(connection, 'meta', 'poster_image')
     .then(file => {
 
-        if (!account) {
-          return new Promise((fulfill, reject) => { reject( new Error('could not add a poster image: missing account owner') )});
-        }
-        return  new Promise((fulfill, reject) => {
-          youtubeClient.thumbnails.set({ videoId: videoId, onBehalfOfContentOwner: account, mediaBody: file}, (err, result) => {
-                if (err) reject(err);
-                else fulfill(result);
+        if (file.value) {
+
+          if (!account) {
+            return new Promise((fulfill, reject) => { reject( new Error('could not add a poster image: missing account owner') )});
+          }
+          return  new Promise((fulfill, reject) => {
+            youtubeClient.thumbnails.set({ videoId: videoId, onBehalfOfContentOwner: account, media: {body: fs.createReadStream(file.value)}}, (err, result) => {
+                  if (err) reject(err);
+                  else fulfill(result);
             });
-        });
+          });
+        }
+        return new Promise(fulfill => {fulfill()});
       });
-      return new Promise(fulfill => {fulfill()});
 }
 
 function uploadToYoutube(connection) {
