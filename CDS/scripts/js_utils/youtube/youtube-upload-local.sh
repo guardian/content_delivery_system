@@ -23,4 +23,4 @@ export "owner_account"="";
 export "owner_channel"="";
 export "passphrase"="";
 export "private_key"="";
-node ./scripts/youtube-upload.js
+node ./scripts/media-atom-youtube-upload.js
