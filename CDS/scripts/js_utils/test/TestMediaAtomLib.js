@@ -79,7 +79,8 @@ describe('mediaAtomLib', () => {
                 .get(URI)
                 .reply(200, {
                   title: 'title',
-                  description: 'description'
+                  description: 'description',
+                  tags: ['key','words']
                 });
 
             return atomLib.fetchMetadata()
@@ -88,7 +89,10 @@ describe('mediaAtomLib', () => {
                 assert.equal(response.description, 'description');
                 sinon.assert.calledOnce(hmacStub);
                 sinon.assert.calledOnce(stringsStub);
-                sinon.assert.calledTwice(datastoreSetStub);
+                sinon.assert.calledThrice(datastoreSetStub);
+                const keywordArgs = datastoreSetStub.getCall(2).args;
+                assert.equal(keywordArgs[3], 'key,words');
+
                 return;
             });
         });

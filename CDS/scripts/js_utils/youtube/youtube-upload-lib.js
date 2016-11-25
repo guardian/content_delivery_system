@@ -11,16 +11,17 @@ function getMetadata(connection) {
 
     return dataStore.substituteString(connection, process.env.access)
     .then(status => {
-        return Promise.all([dataStore.get(connection, 'meta', 'atom_title'), dataStore.get(connection, 'meta', 'atom_description'), dataStore.get(connection, 'meta', 'category_id')])
+        return Promise.all([dataStore.get(connection, 'meta', 'atom_title'), dataStore.get(connection, 'meta', 'atom_description'), dataStore.get(connection, 'meta', 'category_id'), dataStore.get(connection, 'meta', 'keywords')])
         .then(results => {
-            let title, description, categoryId
-            [title, description, categoryId] = results.map(result => result.value);
+            let title, description, categoryId, keywords;
+            [title, description, categoryId, keywords] = results.map(result => result.value);
 
             return {
                 snippet: {
                     title: title,
                     description: description,
-                    categoryId: categoryId
+                    categoryId: categoryId,
+                    tags: keywords.split(',')
                 },
                 status: { privacyStatus: status ? status : 'private'}
             };
@@ -66,7 +67,6 @@ function getYoutubeData(connection) {
 }
 
 function addPosterImage(connection, videoId, youtubeClient, account) {
-  console.log('now adding poster image with arguments ', arguments);
     return dataStore.get(connection, 'meta', 'poster_image')
     .then(file => {
 

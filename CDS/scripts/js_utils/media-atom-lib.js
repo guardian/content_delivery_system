@@ -60,6 +60,18 @@ function fetchMetadata(connection) {
                 const title = response.title;
                 const description = response.description;
                 const categoryId = response.youtubeCategoryId;
+                let keywords;
+
+                if (response.tags) {
+                    keywords = response.tags.reduce((tagString, tag, index) => {
+                        if (index !== 0) {
+                            tagString += ',';
+                        }
+                        tagString += tag;
+
+                        return tagString;
+                  }, "");
+                }
 
                 let propertiesToSet = [];
                 if (title) {
@@ -80,6 +92,13 @@ function fetchMetadata(connection) {
                   propertiesToSet.push({
                     name: 'atom_category',
                     value: description
+                  });
+                }
+
+                if (keywords) {
+                  propertiesToSet.push({
+                    name: 'keywords',
+                    value: keywords
                   });
                 }
 
