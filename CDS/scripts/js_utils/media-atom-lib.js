@@ -49,7 +49,12 @@ function fetchMetadata(connection) {
             const description = response.description;
             const categoryId = response.categoryId;
 
-            return Promise.all([datastore.set(connection, 'meta', 'atom_title', title), datastore.set(connection, 'meta', 'atom_description', description), datastore.set(connection, 'meta', 'atom_category', categoryId)])
+            return Promise.all([datastore.setMulti(connection, 'meta', {
+                'atom_title': title,
+                'atom_description': description,
+                'atom_category': categoryId
+              }
+            )])
             .then(() => {
                 return response;
             });

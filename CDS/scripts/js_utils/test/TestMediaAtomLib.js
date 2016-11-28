@@ -143,6 +143,15 @@ describe('mediaAtomLib', () => {
 
     describe('#fetchMetadata', () => {
         const URI = '/api2/atoms/atom_id';
+        let dataStoreMultiStub;
+
+        before(() => {
+          dataStoreMultiStub = sinon.stub(datastore, 'setMulti');
+        });
+
+        after(() => {
+          dataStoreMultiStub.restore();
+        });
 
         it('should raise an exception if url base is missing', () => {
             return assert.isRejected(atomLib.fetchMetadata(), 'Cannot add assets to media atom: missing url base');
@@ -180,7 +189,7 @@ describe('mediaAtomLib', () => {
                 assert.equal(response.data.description, 'description');
                 sinon.assert.calledOnce(hmacStub);
                 sinon.assert.calledOnce(stringsStub);
-                sinon.assert.called(datastoreSetStub);
+                sinon.assert.calledOnce(dataStoreMultiStub);
                 return;
             });
         });
