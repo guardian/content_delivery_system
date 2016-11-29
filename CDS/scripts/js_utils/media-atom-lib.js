@@ -47,6 +47,10 @@ function fetchMetadata(connection) {
         return HMACRequest.makeRequest(connection, date, uri, urlBase, 'GET')
         .then(response => {
 
+          const title = response.title;
+          const description = response.description;
+          const categoryId = response.youtubeCategoryId;
+
           let propertiesToSet = {};
           if (title) {
             propertiesToSet.atom_title = title;
@@ -70,10 +74,10 @@ function fetchMetadata(connection) {
             propertiesToSet.poster_image = bestAsset;
           }
 
-            return Promise.all([datastore.setMulti(connection, 'meta', propertiesToSet])
-            .then(() => {
-                return response;
-            });
+          return datastore.setMulti(connection, 'meta', propertiesToSet)
+          .then(() => {
+              return response;
+          });
         });
     });
 };

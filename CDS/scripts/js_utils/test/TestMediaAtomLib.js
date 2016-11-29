@@ -145,11 +145,11 @@ describe('mediaAtomLib', () => {
         const URI = '/api2/atoms/atom_id';
         let dataStoreMultiStub;
 
-        before(() => {
-          dataStoreMultiStub = sinon.stub(datastore, 'setMulti');
+        beforeEach(() => {
+          dataStoreMultiStub = sinon.stub(datastore, 'setMulti').returns(new Promise(fulfill => {fulfill()}));
         });
 
-        after(() => {
+        afterEach(() => {
           dataStoreMultiStub.restore();
         });
 
@@ -222,9 +222,8 @@ describe('mediaAtomLib', () => {
 
             return atomLib.fetchMetadata()
             .then(response => {
-                sinon.assert.calledOnce(datastoreSetStub);
-                sinon.assert.calledWith(datastoreSetStub, undefined, 'meta', 'poster_image', 'best');
->>>>>>> add poster image url to datastore
+                sinon.assert.calledOnce(dataStoreMultiStub);
+                sinon.assert.calledWith(dataStoreMultiStub, undefined, 'meta', {'poster_image': 'best'});
                 return;
             });
         });
