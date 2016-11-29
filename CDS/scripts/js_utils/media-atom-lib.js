@@ -7,6 +7,7 @@ const assetPath = '/api2/atoms/:id/assets';
 const metadataPath = '/api2/atoms/:id'
 const activeAssetPath = '/api2/atom/:id/asset-active';
 const youtubePrefix = 'https://www.youtube.com/watch?v='
+const MAX_FILE_SIZE = 2000000;
 
 function checkExistenceAndSubstitute(connection, variables) {
     const missingIndex = variables.findIndex(variable => {
@@ -45,19 +46,38 @@ function fetchMetadata(connection) {
 
         return HMACRequest.makeRequest(connection, date, uri, urlBase, 'GET')
         .then(response => {
-            const title = response.title;
-            const description = response.description;
-            const categoryId = response.categoryId;
 
-            return Promise.all([datastore.setMulti(connection, 'meta', {
-                'atom_title': title,
-                'atom_description': description,
-                'atom_category': categoryId
-              }
-            )])
-            .then(() => {
-                return response;
+          const title = response.title;
+          const description = response.description;
+          const categoryId = response.youtubeCategoryId;
+
+          let propertiesToSet = {};
+          if (title) {
+            propertiesToSet.atom_title = title;
+          }
+
+          if (description) {
+            propertiesToSet.atom_description = description;
+          }
+
+          if (categoryId) {
+            propertiesToSet.atom_category = categoryId
+          }
+
+          if (response.posterImage) {
+            const sortedAssets = response.posterImage.assets.sort((asset1, asset2) => {
+              return asset2.size - asset1.size;
             });
+
+            const bestAsset = sortedAssets.find(asset => { return asset.size <= MAX_FILE_SIZE; }).file;
+
+            propertiesToSet.poster_image = bestAsset;
+          }
+
+          return datastore.setMulti(connection, 'meta', propertiesToSet)
+          .then(() => {
+              return response;
+          });
         });
     });
 };
