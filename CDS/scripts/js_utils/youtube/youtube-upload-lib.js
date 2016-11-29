@@ -65,7 +65,7 @@ function getYoutubeData(connection) {
     });
 }
 
-function addPosterImage(connection, videoId, youtubeClient, account) {
+function addPosterImageIfExists(connection, videoId, youtubeClient, account) {
     return dataStore.get(connection, 'meta', 'poster_image')
     .then(file => {
 
@@ -97,7 +97,7 @@ function uploadToYoutube(connection) {
                 youtubeClient.videos.insert(youtubeData, (err, result) => {
                 if (err) reject(err);
                 if (result) {
-                    fulfill(addPosterImage(connection, result.id, youtubeClient, youtubeData.onBehalfOfContentOwner)
+                    fulfill(addPosterImageIfExists(connection, result.id, youtubeClient, youtubeData.onBehalfOfContentOwner)
                     .then(() => {
                         return dataStore.set(connection, 'meta', 'youtube_id', result.id)
                         .then(() => {
