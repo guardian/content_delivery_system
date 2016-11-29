@@ -56,11 +56,19 @@ function fetchMetadata(connection) {
                 }
             })
             .then(response => {
+
                 const title = response.title;
                 const description = response.description;
                 const categoryId = response.youtubeCategoryId;
+                const channelId = response.channelId
 
-                return Promise.all([datastore.set(connection, 'meta', 'atom_title', title), datastore.set(connection, 'meta', 'atom_description', description), datastore.set(connection, 'meta', 'atom_category', categoryId)])
+                return Promise.all([
+                  datastore.set(connection, 'meta', 'atom_title', title),
+                  datastore.set(connection, 'meta', 'atom_description', description),
+                  datastore.set(connection, 'meta', 'atom_channel_id', channelId),
+                  datastore.set(connection, 'meta', 'atom_category', categoryId)
+                ])
+
                 .then(() => {
                     return response;
                 });
@@ -123,4 +131,3 @@ module.exports = {
     postAsset: postAsset,
     fetchMetadata: fetchMetadata
 };
-
