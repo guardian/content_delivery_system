@@ -1,11 +1,11 @@
-var reqwest = require('reqwest');
 var Promise = require('promise');
 var datastore = require('./Datastore');
-var hmac = require('./hmac');
+var HMACRequest = require('./HMACRequest');
 
 const urlBase = process.env.url_base;
 const assetPath = '/api2/atoms/:id/assets';
 const metadataPath = '/api2/atoms/:id'
+const activeAssetPath = '/api2/atom/:id/asset-active';
 const youtubePrefix = 'https://www.youtube.com/watch?v='
 const MAX_FILE_SIZE = 2000000;
 
@@ -44,85 +44,116 @@ function fetchMetadata(connection) {
         const uri = metadataPath.replace(/:id/, atomId);
         const url = urlBase + uri;
 
-        return hmac.makeHMACToken(connection, date, uri)
-        .then(token => {
-            return reqwest({
-                url: url,
-                method: 'GET',
-                contentType: 'application/json',
-                headers: {
-                    'X-Gu-Tools-HMAC-Date': date,
-                    'X-Gu-Tools-HMAC-Token': token,
-                    'X-Gu-Tools-Service-Name': 'content_delivery_system'
-                }
-            })
-            .then(response => {
-                const title = response.title;
-                const description = response.description;
-                const categoryId = response.youtubeCategoryId;
-                let keywords;
+        return HMACRequest.makeRequest(connection, date, uri, urlBase, 'GET')
+        .then(response => {
 
-                if (response.tags) {
-                    keywords = response.tags.reduce((tagString, tag, index) => {
-                        if (index !== 0) {
-                            tagString += ',';
-                        }
-                        tagString += tag;
+          const title = response.title;
+          const description = response.description;
+          const categoryId = response.youtubeCategoryId;
+          let keywords;
 
-                        return tagString;
-                  }, "");
-                }
+          if (response.tags) {
+              keywords = response.tags.reduce((tagString, tag, index) => {
+                  if (index !== 0) {
+                      tagString += ',';
+                  }
+                  tagString += tag;
 
-                let propertiesToSet = [];
-                if (title) {
-                  propertiesToSet.push({
-                    name: 'atom_title',
-                    value: title
-                  });
-                }
+                  return tagString;
+              }, "");
+          }
 
-                if (description) {
-                  propertiesToSet.push({
-                    name: 'atom_description',
-                    value: description
-                  });
-                }
 
-                if (categoryId) {
-                  propertiesToSet.push({
-                    name: 'atom_category',
-                    value: description
-                  });
-                }
+          let propertiesToSet = {};
+          if (title) {
+              propertiesToSet.atom_title = title;
+          }
 
-                if (keywords) {
-                  propertiesToSet.push({
-                    name: 'keywords',
-                    value: keywords
-                  });
-                }
+          if (description) {
+              propertiesToSet.atom_description = description;
+          }
 
-                if (response.posterImage) {
-                  const sortedAssets = response.posterImage.assets.sort((asset1, asset2) => {
-                    return asset2.size - asset1.size;
-                  });
+          if (categoryId) {
+              propertiesToSet.atom_category = categoryId;
+          }
 
-                  const bestAsset = sortedAssets.find(asset => { return asset.size <= MAX_FILE_SIZE; }).file;
+          if (keywords) {
+              propertiesToSet.keywords = keywords;
+          }
 
-                  propertiesToSet.push({
-                    name: 'poster_image',
-                    value: bestAsset
-                  });
-                }
+          if (response.posterImage) {
+              const sortedAssets = response.posterImage.assets.sort((asset1, asset2) => {
+                  return asset2.size - asset1.size;
+              });
 
-                return Promise.all(propertiesToSet.map(property => { datastore.set(connection, 'meta', property.name, property.value)}))
+              const bestAsset = sortedAssets.find(asset => { return asset.size <= MAX_FILE_SIZE; }).file;
 
-                .then(() => { return response });
-            });
+              propertiesToSet.poster_image = bestAsset;
+          }
+
+          return datastore.setMulti(connection, 'meta', propertiesToSet)
+          .then(() => {
+              return response;
+          });
         });
     });
 };
 
+function makeAssetActive(connection) {
+
+  counter = 1;
+
+  const environmentVariables = [{value: process.env.url_base, error: 'Cannot add assets to media atom: missing url base'}, {value: process.env.atom_id, error: 'Cannot add assets to media atom: missing atom id'}];
+
+  let atomId, youtubeId, urlBase;
+
+  return Promise.all([checkExistenceAndSubstitute(connection, environmentVariables), datastore.get(connection, 'meta', 'youtube_id')])
+  .then(results => {
+
+    [urlBase, atomId] = results[0];
+    youtubeId = results[1].value;
+
+    const data = { youtubeId: youtubeId };
+    const uri = activeAssetPath.replace(/:id/, atomId);
+
+    function makeActive() {
+
+      const date = (new Date()).toUTCString();
+      return HMACRequest.makeRequest(connection, date, uri, urlBase, 'POST', data)
+      .then(response => {
+        return response;
+      })
+      .catch(error => {
+        if (error.status === 400 && error.response === 'Asset encoding in process') {
+          return this.setPollingInterval(counter)
+          .then(() => {
+            counter++;
+            return makeActive.bind(this)();
+          });
+        } else {
+          throw new Error(error);
+        }
+      });
+    }
+
+    return makeActive.bind(this)();
+  });
+};
+
+function setPollingInterval(counter) {
+
+    const INTERVAL = 21000;
+    const MAX_TRIES = 100;
+
+    if (counter > MAX_TRIES) {
+      return new Promise((fulfill, reject) => {
+        reject(new Error('Cannot add asset to youtube, video encoding took too long'));
+      });
+    }
+    return new Promise(fulfill => {
+      setTimeout(fulfill, INTERVAL)
+    });
+}
 
 function postAsset(connection) {
 
@@ -152,29 +183,16 @@ function postAsset(connection) {
 
             const data = { uri: youtubeUrl };
             const uri = assetPath.replace(/:id/, atomId);
-            const url = urlBase + uri;
 
-            return hmac.makeHMACToken(connection, date, uri)
-            .then(token => {
+            return HMACRequest.makeRequest(connection, date, uri, urlBase, 'POST', data)
 
-                return reqwest({
-                    url: url,
-                    method: 'PUT',
-                    contentType: 'application/json',
-                    headers: {
-                        'X-Gu-Tools-HMAC-Date': date,
-                        'X-Gu-Tools-HMAC-Token': token,
-                        'X-Gu-Tools-Service-Name': 'content_delivery_system'
-                    },
-                    data: JSON.stringify(data)
-                });
-            });
-        })
+        });
     });
 }
 
 module.exports = {
     postAsset: postAsset,
-    fetchMetadata: fetchMetadata
+    fetchMetadata: fetchMetadata,
+    makeAssetActive: makeAssetActive,
+    setPollingInterval: setPollingInterval
 };
-

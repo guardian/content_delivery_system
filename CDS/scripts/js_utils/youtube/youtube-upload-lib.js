@@ -66,7 +66,7 @@ function getYoutubeData(connection) {
     });
 }
 
-function addPosterImage(connection, videoId, youtubeClient, account) {
+function addPosterImageIfExists(connection, videoId, youtubeClient, account) {
     return dataStore.get(connection, 'meta', 'poster_image')
     .then(file => {
 
@@ -83,7 +83,7 @@ function addPosterImage(connection, videoId, youtubeClient, account) {
           });
         }
         return new Promise(fulfill => {fulfill()});
-      });
+    });
 }
 
 function uploadToYoutube(connection) {
@@ -96,29 +96,28 @@ function uploadToYoutube(connection) {
 
             return new Promise((fulfill, reject) => {
                 youtubeClient.videos.insert(youtubeData, (err, result) => {
-                if (err) reject(err);
-                if (result) {
-                    fulfill(addPosterImage(connection, result.id, youtubeClient, youtubeData.onBehalfOfContentOwner)
-                    .then(() => {
-                        return dataStore.set(connection, 'meta', 'youtube_id', result.id)
+                    if (err) reject(err);
+                    if (result) {
+                        fulfill(addPosterImageIfExists(connection, result.id, youtubeClient, youtubeData.onBehalfOfContentOwner)
                         .then(() => {
-                          return result;
+                            return dataStore.set(connection, 'meta', 'youtube_id', result.id)
+                            .then(() => {
+                              return result;
+                            })
+                            .catch((err) => {
+                                return result;
+                            })
                         })
-                        .catch((err) => {
-                            return result;
-                        })
-                    })
-                    )
-                }
+                        )
+                    }
+                });
             });
         });
-    });
     });
 }
 
 module.exports = {
   uploadToYoutube: uploadToYoutube,
   getMetadata: getMetadata,
-    getYoutubeData: getYoutubeData,
+  getYoutubeData: getYoutubeData,
 };
-
