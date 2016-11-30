@@ -50,28 +50,45 @@ function fetchMetadata(connection) {
           const title = response.title;
           const description = response.description;
           const categoryId = response.youtubeCategoryId;
+          let keywords;
+
+          if (response.tags) {
+              keywords = response.tags.reduce((tagString, tag, index) => {
+                  if (index !== 0) {
+                      tagString += ',';
+                  }
+                  tagString += tag;
+
+                  return tagString;
+              }, "");
+          }
+
 
           let propertiesToSet = {};
           if (title) {
-            propertiesToSet.atom_title = title;
+              propertiesToSet.atom_title = title;
           }
 
           if (description) {
-            propertiesToSet.atom_description = description;
+              propertiesToSet.atom_description = description;
           }
 
           if (categoryId) {
-            propertiesToSet.atom_category = categoryId
+              propertiesToSet.atom_category = categoryId;
+          }
+
+          if (keywords) {
+              propertiesToSet.keywords = keywords;
           }
 
           if (response.posterImage) {
-            const sortedAssets = response.posterImage.assets.sort((asset1, asset2) => {
-              return asset2.size - asset1.size;
-            });
+              const sortedAssets = response.posterImage.assets.sort((asset1, asset2) => {
+                  return asset2.size - asset1.size;
+              });
 
-            const bestAsset = sortedAssets.find(asset => { return asset.size <= MAX_FILE_SIZE; }).file;
+              const bestAsset = sortedAssets.find(asset => { return asset.size <= MAX_FILE_SIZE; }).file;
 
-            propertiesToSet.poster_image = bestAsset;
+              propertiesToSet.poster_image = bestAsset;
           }
 
           return datastore.setMulti(connection, 'meta', propertiesToSet)

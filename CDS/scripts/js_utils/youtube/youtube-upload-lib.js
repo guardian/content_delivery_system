@@ -11,16 +11,17 @@ function getMetadata(connection) {
 
     return dataStore.substituteString(connection, process.env.access)
     .then(status => {
-        return Promise.all([dataStore.get(connection, 'meta', 'atom_title'), dataStore.get(connection, 'meta', 'atom_description'), dataStore.get(connection, 'meta', 'category_id')])
+        return Promise.all([dataStore.get(connection, 'meta', 'atom_title'), dataStore.get(connection, 'meta', 'atom_description'), dataStore.get(connection, 'meta', 'category_id'), dataStore.get(connection, 'meta', 'keywords')])
         .then(results => {
-            let title, description, categoryId
-            [title, description, categoryId] = results.map(result => result.value);
+            let title, description, categoryId, keywords;
+            [title, description, categoryId, keywords] = results.map(result => result.value);
 
             return {
                 snippet: {
                     title: title,
                     description: description,
-                    categoryId: categoryId
+                    categoryId: categoryId,
+                    tags: keywords.split(',')
                 },
                 status: { privacyStatus: status ? status : 'private'}
             };
@@ -82,7 +83,7 @@ function addPosterImageIfExists(connection, videoId, youtubeClient, account) {
           });
         }
         return new Promise(fulfill => {fulfill()});
-      });
+    });
 }
 
 function uploadToYoutube(connection) {
@@ -95,28 +96,28 @@ function uploadToYoutube(connection) {
 
             return new Promise((fulfill, reject) => {
                 youtubeClient.videos.insert(youtubeData, (err, result) => {
-                if (err) reject(err);
-                if (result) {
-                    fulfill(addPosterImageIfExists(connection, result.id, youtubeClient, youtubeData.onBehalfOfContentOwner)
-                    .then(() => {
-                        return dataStore.set(connection, 'meta', 'youtube_id', result.id)
+                    if (err) reject(err);
+                    if (result) {
+                        fulfill(addPosterImageIfExists(connection, result.id, youtubeClient, youtubeData.onBehalfOfContentOwner)
                         .then(() => {
-                          return result;
+                            return dataStore.set(connection, 'meta', 'youtube_id', result.id)
+                            .then(() => {
+                              return result;
+                            })
+                            .catch((err) => {
+                                return result;
+                            })
                         })
-                        .catch((err) => {
-                            return result;
-                        })
-                    })
-                    )
-                }
+                        )
+                    }
+                });
             });
         });
-    });
     });
 }
 
 module.exports = {
   uploadToYoutube: uploadToYoutube,
   getMetadata: getMetadata,
-    getYoutubeData: getYoutubeData,
+  getYoutubeData: getYoutubeData,
 };

@@ -128,8 +128,9 @@ describe('YoutubeUpload', () => {
                 assert.equal(snippet.title, 'atom_title');
                 assert.equal(snippet.description, 'atom_description');
                 assert.equal(snippet.categoryId, 'category_id');
+                assert.equal(snippet.tags, 'keywords');
                 assert.equal(status, 'status');
-                sinon.assert.calledThrice(dataStoreStub);
+                sinon.assert.callCount(dataStoreStub, 4);
                 sinon.assert.calledOnce(stringSubstituteStub);
                 return;
             });
