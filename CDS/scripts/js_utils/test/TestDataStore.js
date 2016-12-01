@@ -56,6 +56,20 @@ describe('Datastore',function(){
             });
         });
 
+        it('should set multiple values to meta', function(done){
+           datastore.setMulti(conn,'meta',
+               {'multiKeyone': 'multiValueOne',
+                'multiKeyTwo': 'multiValueTwo',
+                'multiKeyThree': 'multiValueThree'
+               }
+           ).then(function(value){
+               done();
+           },function(err){
+               done(err);
+           })
+
+        });
+
     });
     describe('#get', function(){
         it('should return the previously set value from meta', function(test_completed) {
