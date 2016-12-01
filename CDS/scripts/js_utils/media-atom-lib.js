@@ -91,7 +91,6 @@ function fetchMetadata(connection) {
               propertiesToSet.poster_image = bestAsset;
           }
 
-          console.log(propertiesToSet);
           return datastore.setMulti(connection, 'meta', propertiesToSet)
           .then(() => {
               return response;

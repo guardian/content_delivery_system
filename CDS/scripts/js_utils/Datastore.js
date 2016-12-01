@@ -82,7 +82,6 @@ function setMulti(conn, type, meta){
             db.serialize(function () {
                 const promises = Object.keys(meta).map(key => new Promise(function(innerFulfill,innerReject)
                     {
-                        console.log(key + " => " + meta[key] + "\n");
                         stmt.run(sourceid, key, meta[key], function (err) {
                             if (err) {
                                 console.error(err);
