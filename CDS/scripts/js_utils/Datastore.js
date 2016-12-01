@@ -89,8 +89,8 @@ function setMulti(conn, type, meta){
                         }
                     });
                 });
-                fulfill();
             });
+            fulfill();
         },function(err){
             reject(err);
         });
