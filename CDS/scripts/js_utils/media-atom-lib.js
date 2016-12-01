@@ -51,19 +51,7 @@ function fetchMetadata(connection) {
           const description = response.description;
           const categoryId = response.youtubeCategoryId;
           const channelId = response.channelId;
-          let keywords;
-
-          if (response.tags) {
-              keywords = response.tags.reduce((tagString, tag, index) => {
-                  if (index !== 0) {
-                      tagString += ',';
-                  }
-                  tagString += tag;
-
-                  return tagString;
-              }, "");
-          }
-
+          const keywords = (response.tags ? response.tags : []).join(',');
 
           let propertiesToSet = {};
           if (title) {
@@ -78,7 +66,7 @@ function fetchMetadata(connection) {
               propertiesToSet.atom_category = categoryId;
           }
 
-          if (keywords) {
+          if (keywords.length > 0) {
               propertiesToSet.keywords = keywords;
           }
 
