@@ -78,20 +78,18 @@ function setMulti(conn, type, meta){
 
     return new Promise(function(fulfill,reject) {
         getSource(type,conn.whoami).then(function(sourceid) {
-            var promises = [];
             db.serialize(function () {
                 Object.keys(meta).forEach(function (key) {
                     //console.log(key + " => " + meta[key]);
-                    var stmt = db.prepare("insert into " + type + " (source_id,key,value) values (?,?,?)");
+                    const stmt = db.prepare("insert into " + type + " (source_id,key,value) values (?,?,?)");
                     stmt.run(sourceid, key, meta[key], function (err) {
                         if (err) {
                             console.error(err);
                             reject(err);
-                        } else {
-                            fulfill();
                         }
                     });
                 });
+                fulfill();
             });
         },function(err){
             reject(err);
