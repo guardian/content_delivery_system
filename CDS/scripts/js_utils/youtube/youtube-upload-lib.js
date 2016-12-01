@@ -11,7 +11,7 @@ function getMetadata(connection) {
 
     return dataStore.substituteString(connection, process.env.access)
     .then(status => {
-        return Promise.all([dataStore.get(connection, 'meta', 'atom_title'), dataStore.get(connection, 'meta', 'atom_description'), dataStore.get(connection, 'meta', 'category_id'), dataStore.get(connection, 'meta', 'keywords')])
+        return Promise.all([dataStore.get(connection, 'meta', 'atom_title'), dataStore.get(connection, 'meta', 'atom_description'), dataStore.get(connection, 'meta', 'atom_category'), dataStore.get(connection, 'meta', 'keywords')])
         .then(results => {
             let title, description, categoryId, keywords;
             [title, description, categoryId, keywords] = results.map(result => result.value);
