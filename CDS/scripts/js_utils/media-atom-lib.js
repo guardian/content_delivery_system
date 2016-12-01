@@ -50,6 +50,7 @@ function fetchMetadata(connection) {
           const title = response.title;
           const description = response.description;
           const categoryId = response.youtubeCategoryId;
+          const channelId = response.channelId;
           let keywords;
 
           if (response.tags) {
@@ -79,6 +80,10 @@ function fetchMetadata(connection) {
 
           if (keywords) {
               propertiesToSet.keywords = keywords;
+          }
+
+          if (channelId) {
+              propertiesToSet.atom_channel_id = channelId;
           }
 
           if (response.posterImage) {
