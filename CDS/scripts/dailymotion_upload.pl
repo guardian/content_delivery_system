@@ -47,7 +47,7 @@ my $outputtags =~ s/\|/, /g;
 
 my @tags=split /\|/,$tagstring;
 
-if ($videocat == 'news') {
+if ($videocat eq 'news') {
 
 	if (grep { $_ eq 'Celebrity' } @tags) {
 		$videocat = 'people';
