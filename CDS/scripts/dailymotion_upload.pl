@@ -46,6 +46,83 @@ my $tagstring = $store->substitute_string($ENV{'video_tags'});
 my $outputtags =~ s/\|/, /g;
 
 my @tags=split /\|/,$tagstring;
+
+if ($videocat == 'news') {
+
+	if (grep { $_ eq 'Celebrity' } @tags) {
+		$videocat = 'people';
+	}
+	
+	if (grep { $_ eq 'Animals' } @tags) {
+		$videocat = 'animals';
+	}
+
+	if (grep { $_ eq 'Television' } @tags) {
+		$videocat = 'travel';
+	}
+	
+	if (grep { $_ eq 'Travel' } @tags) {
+		$videocat = 'travel';
+	}
+	
+	if (grep { $_ eq 'Beauty' } @tags) {
+		$videocat = 'lifestyle';
+	}
+	
+	if (grep { $_ eq 'Fashion' } @tags) {
+		$videocat = 'lifestyle';
+	}
+	
+	if (grep { $_ eq 'Life and style' } @tags) {
+		$videocat = 'lifestyle';
+	}
+	
+	if (grep { $_ eq 'Entertainment' } @tags) {
+		$videocat = 'fun';
+	}
+	
+	if (grep { $_ eq 'Games' } @tags) {
+		$videocat = 'videogames';
+	}
+	
+	if (grep { $_ eq 'Comedy' } @tags) {
+		$videocat = 'fun';
+	}
+
+	if (grep { $_ eq 'Education' } @tags) {
+		$videocat = 'school';
+	}
+
+	if (grep { $_ eq 'Technology' } @tags) {
+		$videocat = 'tech';
+	}	
+
+	if (grep { $_ eq 'Art and design' } @tags) {
+		$videocat = 'creation';
+	}
+		
+	if (grep { $_ eq 'Art' } @tags) {
+		$videocat = 'creation';
+	}
+		
+	if (grep { $_ eq 'Music' } @tags) {
+		$videocat = 'music';
+	}
+	
+	if (grep { $_ eq 'Film' } @tags) {
+		$videocat = 'shortfilms';
+	}
+	
+	if (grep { $_ eq 'Sport' } @tags) {
+		$videocat = 'sport';
+	}	
+	
+	if (grep { $_ eq 'News' } @tags) {
+		$videocat = 'news';
+	}	
+
+}
+
 if(scalar @tags>10){
 	print "-WARNING: More than 10 tags have been specified, so we will only use the first 10.\n";
 	@tags = splice(@tags,0,10);
