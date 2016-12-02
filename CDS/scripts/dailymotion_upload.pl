@@ -33,6 +33,8 @@ my $store=CDS::Datastore->new('dailymotion_upload');
 
 #print "\n".$imagefile."\n";
 
+my $videolanguage = 'en';
+$videolanguage = $store->substitute_string($ENV{'video_language'});
 my $videotitle = $store->substitute_string($ENV{'video_title'});
 my $videodescription = $store->substitute_string($ENV{'video_description'});
 my $videocat = $store->substitute_string($ENV{'video_category'});
@@ -486,6 +488,7 @@ if ($block == 0) {
 			  explicit=>$adult,
 			  thumbnail_url=>$imageurl,
 			  #taken_time=>$videotaken,
+			  language=>$videolanguage,
 			  access_token=>$server->{'access_token'}
 		  ]
 	);
@@ -504,6 +507,7 @@ else {
 			  #mediablocking=>'country/all/media/mobile',
 			  thumbnail_url=>$imageurl,
 			  #taken_time=>$videotaken,
+			  language=>$videolanguage,
 			  access_token=>$server->{'access_token'}
 		  ]
 	);
