@@ -98,7 +98,9 @@ describe('YoutubeUpload', () => {
             process.env.access = 'status';
             dataStoreStub = sinon.stub(dataStore, 'get', (connection, type, key) => {
                 return new Promise(fulfill => {
-                    fulfill({ value: key });
+                    const v = (key=="atom_category" ? "22" : key);
+
+                    fulfill({ key: key, type: type, value: v });
                 });
             });
 
@@ -127,7 +129,8 @@ describe('YoutubeUpload', () => {
 
                 assert.equal(snippet.title, 'atom_title');
                 assert.equal(snippet.description, 'atom_description');
-                assert.equal(snippet.categoryId, 'category_id');
+                assert.equal(snippet.categoryId, 22);   //we're expecting an INTEGER here, even though the value is
+                                                        // passed in as a string in the stub. this is by design.
                 assert.equal(snippet.tags, 'keywords');
                 assert.equal(status, 'status');
                 sinon.assert.callCount(dataStoreStub, 4);

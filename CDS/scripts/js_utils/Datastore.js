@@ -112,14 +112,14 @@ function get(conn,type, key, callback, userdata) { /* callback as function(err, 
     if (type !== "meta" && type !== "media" && type !== "tracks") throw "type must be meta, media or track";
     return new Promise(function (fulfill, reject) {
         getSource(type, conn.whoami).then(function (sourceid) {
+            const stmt = db.prepare("select value from " + type + " where key=?");
             db.serialize(function () {
-                var stmt = db.prepare("select value from " + type + " where key=?");
                 stmt.get(key, function (err, row) {
                     if (err) {
                         console.error(err);
                         reject(err);
                     }
-                    var rtn;
+                    let rtn;
                     if (!row) {
                         rtn = {value: "(value not found)",type: type,key: key};
                     } else {

@@ -11,17 +11,26 @@ function getMetadata(connection) {
 
     return dataStore.substituteString(connection, process.env.access)
     .then(status => {
-        return Promise.all([dataStore.get(connection, 'meta', 'atom_title'), dataStore.get(connection, 'meta', 'atom_description'), dataStore.get(connection, 'meta', 'atom_category'), dataStore.get(connection, 'meta', 'keywords')])
-        .then(results => {
-            let title, description, categoryId, keywords;
-            [title, description, categoryId, keywords] = results.map(result => result.value);
+        return Promise.all([
+            dataStore.get(connection, 'meta', 'atom_title'),
+            dataStore.get(connection, 'meta', 'atom_description'),
+            dataStore.get(connection, 'meta', 'atom_category'),
+            dataStore.get(connection, 'meta', 'keywords')
+        ]).then(results => {
+            console.log(results);
+            const dsMeta = results.reduce((hash,elem)=>{
+                hash[elem['key']]=elem['value'];
+                return hash;
+            }, {});
 
+
+            console.log(dsMeta);
             return {
                 snippet: {
-                    title: title,
-                    description: description,
-                    categoryId: parseInt(categoryId),
-                    tags: keywords.split(',')
+                    title: dsMeta.atom_title,
+                    description: dsMeta.atom_description,
+                    categoryId: parseInt(dsMeta.atom_category),
+                    tags: (dsMeta.keywords ? dsMeta.keywords.split(',') : "")
                 },
                 status: { privacyStatus: status ? status : 'private'}
             };
