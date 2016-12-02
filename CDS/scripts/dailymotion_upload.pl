@@ -14,6 +14,7 @@ $version='dailymotion_upload.pl $Rev: 1393 $';
 # <video_mobile>weather or not to ban mobile access to the video. Currently disabled due to partner status requirement
 # <video_adult>weather or not the video contains adult content
 # <video_holding_image>blah - URL of an image for use with the video
+# <video_language>blah - two letter code representing the language of the video
 # <client_id>blah Dailymotion app client id
 # <client_secret>blah Dailymotion app secret
 # <username>blah Username of Dailymotion account
