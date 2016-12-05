@@ -116,31 +116,23 @@ function addPosterImageIfExists(connection, videoId, youtubeClient, account) {
 }
 
 function uploadToYoutube(connection) {
+    return new Promise((resolve, reject) => {
+        youtubeAuth.getAuthClient(connection).then(authClient => {
+            const ytClient = googleapis.youtube({version: YOUTUBE_API_VERSION, auth: authClient});
 
-    return youtubeAuth.getAuthClient(connection)
-    .then((oauth2) => {
-        var youtubeClient = googleapis.youtube({version: YOUTUBE_API_VERSION, auth: oauth2});
-        return this.getYoutubeData(connection)
-        .then((youtubeData) => {
-            console.log("youtubeData:");
-            console.log(youtubeData);
-            return new Promise((fulfill, reject) => {
-                youtubeClient.videos.insert(youtubeData, (err, result) => {
-                    if (err) reject(err);
-                    if (result) {
-                        console.log("media has been uploaded to youtube. Uploading poster image");
-                        fulfill(addPosterImageIfExists(connection, result.id, youtubeClient, youtubeData.onBehalfOfContentOwner)
-                        .then(() => {
-                            return dataStore.set(connection, 'meta', 'youtube_id', result.id)
-                            .then(() => {
-                              return result;
-                            })
-                            .catch((err) => {
-                                return result;
-                            })
-                        })
-                        )
+            getYoutubeData(connection).then(ytData => {
+                ytClient.videos.insert(ytData, (err, result) => {
+                    if (err) {
+                        reject(err);
                     }
+
+                    addPosterImageIfExists(connection, result.id, ytClient, ytData.onBehalfOfContentOwner)
+                        .then(() => {
+                            dataStore.set(connection, 'meta', 'youtube_id', result.id)
+                                .then(() => resolve(result))
+                                .catch(error => reject(error));
+                        })
+                        .catch(err => reject(err));
                 });
             });
         });
