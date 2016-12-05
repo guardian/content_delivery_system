@@ -1,9 +1,10 @@
-var Promise = require('promise');
-var fs = require('fs');
-var youtubeAuth = require('./youtube-auth.js');
-var googleapis = require('googleapis');
-var OAuth2 = googleapis.auth.OAuth2;
-var dataStore = require('../Datastore');
+const Promise = require('promise');
+const fs = require('fs');
+const youtubeAuth = require('./youtube-auth.js');
+const googleapis = require('googleapis');
+const OAuth2 = googleapis.auth.OAuth2;
+const dataStore = require('../Datastore');
+const https = require('https');
 
 const YOUTUBE_API_VERSION = 'v3';
 
@@ -68,25 +69,49 @@ function getYoutubeData(connection) {
     });
 }
 
-function addPosterImageIfExists(connection, videoId, youtubeClient, account) {
-    return dataStore.get(connection, 'meta', 'poster_image')
-    .then(file => {
+function isSecureUrl(maybeSecure) {
+    return maybeSecure.startsWith('https://');
+}
 
-        if (file.value && file.value!='(value not found)') {
-
-          if (!account) {
-            return new Promise((fulfill, reject) => { reject( new Error('could not add a poster image: missing account owner') )});
-          }
-          return  new Promise((fulfill, reject) => {
-            youtubeClient.thumbnails.set({ videoId: videoId, onBehalfOfContentOwner: account, media: {body: fs.createReadStream(file.value)}}, (err, result) => {
-                  if (err) reject(err);
-                  else fulfill(result);
-            });
-          });
-        } else {
-          console.warn("No poster image present in metadata key poster_image");
+function downloadPosterImage(url, dest) {
+    return new Promise((resolve, reject) => {
+        if (! isSecureUrl(url)) {
+            reject('No https poster image in metadata');
         }
-        return new Promise(fulfill => {fulfill()});
+
+        const file = fs.createWriteStream(dest);
+
+        https.get(url, (response) => {
+            response.pipe(file);
+            file.on('finish', () => file.close(resolve(dest)));
+        }).on('error', (err) => {
+            fs.unlink(file);
+            reject(err);
+        });
+    });
+}
+
+function addPosterImageIfExists(connection, videoId, youtubeClient, account) {
+    return new Promise((resolve, reject) => {
+        if (! account) {
+            reject(new Error('could not add a poster image: missing account owner'));
+        }
+
+        dataStore.get(connection, 'meta', 'poster_image').then(posterImage => {
+            downloadPosterImage(posterImage.value, `/tmp/${videoId}.jpg`).then(filename => {
+                const payload = {
+                    videoId: videoId,
+                    onBehalfOfContentOwner: account,
+                    media: {
+                        body: fs.createReadStream(filename)
+                    }
+                };
+
+                youtubeClient.thumbnails.set(payload, (err, result) => err ? reject(err) : resolve(result));
+            }).catch(err => {
+                reject(err);
+            });
+        });
     });
 }
 
