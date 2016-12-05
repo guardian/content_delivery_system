@@ -92,6 +92,8 @@ describe('YoutubeUpload', () => {
 
     describe('#getMetadata', () => {
 
+        const categoryId = 22;
+
         var dataStoreStub, stringSubstituteStub;
 
         beforeEach(() => {
@@ -101,7 +103,7 @@ describe('YoutubeUpload', () => {
                     fulfill({
                         key: key,
                         type: type,
-                        value: key == 'atom_category' ? 22 : key
+                        value: key == 'atom_category' ? categoryId : key
                     });
                 });
             });
@@ -131,7 +133,7 @@ describe('YoutubeUpload', () => {
 
                 assert.equal(snippet.title, 'atom_title');
                 assert.equal(snippet.description, 'atom_description');
-                assert.equal(snippet.categoryId, 22);
+                assert.equal(snippet.categoryId, categoryId);
                 assert.equal(snippet.tags, 'keywords');
                 assert.equal(status, 'status');
                 sinon.assert.callCount(dataStoreStub, 4);
