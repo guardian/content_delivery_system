@@ -7,7 +7,12 @@ const dataStore = require('../Datastore');
 const https = require('https');
 
 const YOUTUBE_API_VERSION = 'v3';
-const POSTER_IMAGE_DOWNLOAD_DIR = '/tmp';
+
+function getPosterImageDownloadDir() {
+    const defaultPosterImageDir = '/tmp';
+
+    return !! process.env.poster_image_dir && process.env.poster_image_dir || defaultPosterImageDir;
+}
 
 function getMetadata(connection) {
 
@@ -99,7 +104,7 @@ function addPosterImageIfExists(connection, videoId, youtubeClient, account) {
         }
 
         dataStore.get(connection, 'meta', 'poster_image').then(posterImage => {
-            downloadPosterImage(posterImage.value, `${POSTER_IMAGE_DOWNLOAD_DIR}/${videoId}`)
+            downloadPosterImage(posterImage.value, `${getPosterImageDownloadDir()}/${videoId}`)
                 .then(filename => {
                     const payload = {
                         videoId: videoId,
