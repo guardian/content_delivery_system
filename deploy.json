@@ -20,6 +20,11 @@
         "content-delivery-system.uploadArtifacts",
         "content-delivery-system.deploy"
       ]
+    },
+    "artefact-only": {
+      "actions": [
+        "content-delivery-system.uploadArtifacts"
+      ]
     }
   }
 }
