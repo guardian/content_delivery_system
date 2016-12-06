@@ -7,6 +7,7 @@ const dataStore = require('../Datastore');
 const https = require('https');
 
 const YOUTUBE_API_VERSION = 'v3';
+const POSTER_IMAGE_DOWNLOAD_DIR = '/tmp';
 
 function getMetadata(connection) {
 
@@ -98,19 +99,27 @@ function addPosterImageIfExists(connection, videoId, youtubeClient, account) {
         }
 
         dataStore.get(connection, 'meta', 'poster_image').then(posterImage => {
-            downloadPosterImage(posterImage.value, `/tmp/${videoId}.jpg`).then(filename => {
-                const payload = {
-                    videoId: videoId,
-                    onBehalfOfContentOwner: account,
-                    media: {
-                        body: fs.createReadStream(filename)
-                    }
-                };
+            downloadPosterImage(posterImage.value, `${POSTER_IMAGE_DOWNLOAD_DIR}/${videoId}.jpg`)
+                .then(filename => {
+                    const payload = {
+                        videoId: videoId,
+                        onBehalfOfContentOwner: account,
+                        media: {
+                            body: fs.createReadStream(filename)
+                        }
+                    };
 
-                youtubeClient.thumbnails.set(payload, (err, result) => err ? reject(err) : resolve(result));
-            }).catch(err => {
-                reject(err);
-            });
+                    youtubeClient.thumbnails.set(payload, (err, result) => {
+                        fs.unlink(filename);
+
+                        if (err) {
+                            reject(err);
+                        }
+
+                        resolve(result);
+                    });
+                })
+                .catch(err => reject(err));
         });
     });
 }
