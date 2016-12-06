@@ -134,7 +134,7 @@ function uploadToYoutube(connection) {
         youtubeAuth.getAuthClient(connection).then(authClient => {
             const ytClient = googleapis.youtube({version: YOUTUBE_API_VERSION, auth: authClient});
 
-            getYoutubeData(connection).then(ytData => {
+            this.getYoutubeData(connection).then(ytData => {
                 ytClient.videos.insert(ytData, (err, result) => {
                     if (err) {
                         reject(err);
