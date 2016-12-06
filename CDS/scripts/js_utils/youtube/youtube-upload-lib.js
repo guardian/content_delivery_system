@@ -99,7 +99,7 @@ function addPosterImageIfExists(connection, videoId, youtubeClient, account) {
         }
 
         dataStore.get(connection, 'meta', 'poster_image').then(posterImage => {
-            downloadPosterImage(posterImage.value, `${POSTER_IMAGE_DOWNLOAD_DIR}/${videoId}.jpg`)
+            downloadPosterImage(posterImage.value, `${POSTER_IMAGE_DOWNLOAD_DIR}/${videoId}`)
                 .then(filename => {
                     const payload = {
                         videoId: videoId,
