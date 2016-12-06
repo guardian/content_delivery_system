@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 //This method uploads the video specified in the cnf_media_file parameter to youtube.
+//It expects the following datastore keys to be set:
+//  poster_image - URL location of a poster image to upload to Youtube
 //It expects the following arguments:
 //<client_secrets> - path to the client secrets file with client id, client secret and client email
 //<private_key> path to encrypted private key file
@@ -9,7 +11,7 @@
 //<access> - the level of access for the video
 //<owner_channel> - [OPTIONAL] the channel you are uploading to
 //<owner_account> - [OPTIONAL] The account that the video is uploaded on behalf of. You can ommit the channel and owner_account parameters, but this means you cannot upload videos of accounts with multiple channels. If you specify the channel to upload to, then you must also specify the owner account you are uploading on behalf of.
-
+//<poster_image_dir>/path/to/poster/image - [OPTIONAL] - Scratch location to download poster images to, when they come as a URL
 var youtubeLib = require('./js_utils/youtube/youtube-upload-lib');
 var dataStore = require('./js_utils/Datastore');
 

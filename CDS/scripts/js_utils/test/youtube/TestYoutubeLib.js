@@ -92,13 +92,19 @@ describe('YoutubeUpload', () => {
 
     describe('#getMetadata', () => {
 
+        const categoryId = 22;
+
         var dataStoreStub, stringSubstituteStub;
 
         beforeEach(() => {
             process.env.access = 'status';
             dataStoreStub = sinon.stub(dataStore, 'get', (connection, type, key) => {
                 return new Promise(fulfill => {
-                    fulfill({ value: key });
+                    fulfill({
+                        key: key,
+                        type: type,
+                        value: key == 'atom_category' ? categoryId : key
+                    });
                 });
             });
 
@@ -127,7 +133,7 @@ describe('YoutubeUpload', () => {
 
                 assert.equal(snippet.title, 'atom_title');
                 assert.equal(snippet.description, 'atom_description');
-                assert.equal(snippet.categoryId, 'category_id');
+                assert.equal(snippet.categoryId, categoryId);
                 assert.equal(snippet.tags, 'keywords');
                 assert.equal(status, 'status');
                 sinon.assert.callCount(dataStoreStub, 4);
@@ -198,14 +204,12 @@ describe('YoutubeUpload', () => {
 
 
         it('should upload to youtube', () => {
-
-            return youtubeUpload.uploadToYoutube()
-            .then((result) => {
+            youtubeUpload.uploadToYoutube().then((result) => {
                 sinon.assert.calledOnce(authStub);
                 sinon.assert.calledOnce(youtubeStub);
                 sinon.assert.calledOnce(dataStub);
                 assert.equal(result.id, 'id');
-                return;
+                done();
             });
         });
     });
