@@ -92,6 +92,8 @@ describe('YoutubeUpload', () => {
 
     describe('#getMetadata', () => {
 
+        const categoryId = 22;
+
         var dataStoreStub, stringSubstituteStub;
 
         beforeEach(() => {
@@ -201,14 +203,12 @@ describe('YoutubeUpload', () => {
 
 
         it('should upload to youtube', () => {
-
-            return youtubeUpload.uploadToYoutube()
-            .then((result) => {
+            youtubeUpload.uploadToYoutube().then((result) => {
                 sinon.assert.calledOnce(authStub);
                 sinon.assert.calledOnce(youtubeStub);
                 sinon.assert.calledOnce(dataStub);
                 assert.equal(result.id, 'id');
-                return;
+                done();
             });
         });
     });
