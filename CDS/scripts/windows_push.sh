@@ -16,6 +16,8 @@ VERSION="$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 20
 #resolve-order [optional] - order to use for name resolution.  Passed unchecked to -R option.
 #ip-address [optional] - IP address of server in case we can't resolve the server name.
 
+DATASTORE_ACCESS="/usr/local/bin/cds_datastore"
+
 if [ "$host" == "" ]; then
 	echo You must supply a host name to connect to.
 	exit 1
@@ -57,24 +59,26 @@ if [ "$resolve_order" != "" ]; then
         EXTRA_ARGS="$EXTRA_ARGS -R $resolve_order"
 fi
 
+REMOTEPATH=`${DATASTORE_ACCESS} subst "${remote_path}"`
+
 if [ "$cf_media_file" != "" ]; then
 	FILE_ONLY=`echo $cf_media_file | rev | cut -d / -f 1 | rev`
-	UPLOAD_MEDIA="put \"$cf_media_file\" $remote_path/$FILE_ONLY"
+	UPLOAD_MEDIA="put \"$cf_media_file\" $REMOTEPATH/$FILE_ONLY"
 fi
 
 if [ "$cf_meta_file" != "" ]; then
       FILE_ONLY=`echo $cf_meta_file | rev | cut -d / -f 1 | rev`
-	UPLOAD_META="put \"$cf_meta_file\" $remote_path/$FILE_ONLY"
+	UPLOAD_META="put \"$cf_meta_file\" $REMOTEPATH/$FILE_ONLY"
 fi
 
 if [ "$cf_inmeta_file" != "" ]; then	
         FILE_ONLY=`echo $cf_inmeta_file | rev | cut -d / -f 1 | rev`
-	UPLOAD_INMETA="put \"$cf_inmeta_file\" $remote_path/$FILE_ONLY"
+	UPLOAD_INMETA="put \"$cf_inmeta_file\" $REMOTEPATH/$FILE_ONLY"
 fi
 
 if [ "$cf_xml_file" != "" ]; then
         FILE_ONLY=`echo $cf_xml_file | rev | cut -d / -f 1 | rev`	
-	UPLOAD_XML="put \"$cf_xml_file\" $remote_path/$FILE_ONLY"
+	UPLOAD_XML="put \"$cf_xml_file\" $REMOTEPATH/$FILE_ONLY"
 fi
 
 smbclient "//$host/$share" -A "$AUTHFILE" $EXTRA_ARGS << EOF
