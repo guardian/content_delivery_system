@@ -39,6 +39,7 @@ function getMetadata(connection) {
 function getYoutubeData(connection) {
     return this.getMetadata(connection)
     .then((metadata) => {
+        console.log("getYoutubeData: got " + metadata);
         const mediaPath = process.env.cf_media_file;
 
         if (!process.env.cf_media_file) {
@@ -131,22 +132,37 @@ function addPosterImageIfExists(connection, videoId, youtubeClient, account) {
 
 function uploadToYoutube(connection) {
     return new Promise((resolve, reject) => {
+        console.log("DEBUG: getting auth client");
         youtubeAuth.getAuthClient(connection).then(authClient => {
+            console.log("DEBUG: got auth client.  Getting youtube client for version " + YOUTUBE_API_VERSION);
             const ytClient = googleapis.youtube({version: YOUTUBE_API_VERSION, auth: authClient});
 
             this.getYoutubeData(connection).then(ytData => {
+                console.log("DEBUG: got youtube data " + ytData);
+                console.log("Attempting to insert video...");
                 ytClient.videos.insert(ytData, (err, result) => {
                     if (err) {
+                        console.error("ERROR: unable to insert YT video: " + err);
                         reject(err);
                     }
 
+                    console.log("Video added successfully.  Adding poster frame...");
                     addPosterImageIfExists(connection, result.id, ytClient, ytData.onBehalfOfContentOwner)
                         .then(() => {
                             dataStore.set(connection, 'meta', 'youtube_id', result.id)
-                                .then(() => resolve(result))
-                                .catch(error => reject(error));
+                                .then(() => {
+                                    resolve(result);
+                                    console.log("SUCCESS: added poster frame");
+                                })
+                                .catch(error => {
+                                    console.error("ERROR: " + error);
+                                    reject(error)
+                                });
                         })
-                        .catch(err => reject(err));
+                        .catch(err => {
+                            console.error("ERROR: " + error);
+                            reject(err);
+                        });
                 });
             });
         });
