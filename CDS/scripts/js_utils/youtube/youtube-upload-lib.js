@@ -160,11 +160,14 @@ function uploadToYoutube(connection) {
                                 });
                         })
                         .catch(err => {
-                            console.error("ERROR: " + error);
+                            console.error("ERROR: " + err);
                             reject(err);
                         });
                 });
             });
+        }).catch(err=> {
+            console.error("ERROR: " + JSON.stringify(err));
+            reject(err);
         });
     });
 }
