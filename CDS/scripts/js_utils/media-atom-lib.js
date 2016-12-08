@@ -33,7 +33,18 @@ function checkExistenceAndSubstitute(connection, variables) {
 
 function fetchMetadata(connection) {
 
-    const environmentVariables = [{value: process.env.url_base, error: 'Cannot add assets to media atom: missing url base'}, {value: process.env.atom_id, error: 'Cannot add assets to media atom: missing atom id'}];
+    const environmentVariables = [
+        {value: process.env.url_base, error: 'Cannot add assets to media atom: missing url base'},
+        {value: process.env.atom_id, error: 'Cannot add assets to media atom: missing atom id'}
+    ];
+
+    /*YouTube upload will fail if these are not set with a not-very-helpful "Unauthorized".  So, we warn about them
+    here.
+     */
+    const expectedFields = [
+        'categoryId',
+        'channelId'
+    ];
 
     let urlBase, atomId;
     return checkExistenceAndSubstitute(connection, environmentVariables)
@@ -64,6 +75,17 @@ function fetchMetadata(connection) {
               }, "");
           }
 
+          for(const fieldName of expectedFields){
+              if(! response.hasOwnProperty(fieldName)){
+                  const str = "Missing " + fieldName + " in Media Atom data";
+                  if(process.env.abort_if_missing) {
+                      throw str;
+                      return;
+                  } else {
+                      console.error("ERROR: " + str);
+                  }
+              }
+          }
 
           let propertiesToSet = {};
           if (title) {
@@ -102,7 +124,7 @@ function fetchMetadata(connection) {
           });
         });
     });
-};
+}
 
 function makeAssetActive(connection) {
 
