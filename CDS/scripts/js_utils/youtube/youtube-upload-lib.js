@@ -24,23 +24,23 @@ function getMetadata(connection) {
             dataStore.get(connection, 'meta', 'atom_category'),
             dataStore.get(connection, 'meta', 'keywords')
         ]).then(results => {
-            console.log(results);
             const dsMeta = results.reduce((hash,elem)=>{
                 hash[elem['key']]=elem['value'];
                 return hash;
             }, {});
 
-
-            console.log(dsMeta);
-            return {
+            const rtn = {
                 snippet: {
                     title: dsMeta.atom_title,
                     description: dsMeta.atom_description,
-                    categoryId: parseInt(dsMeta.atom_category),
-                    tags: (dsMeta.keywords ? dsMeta.keywords.split(',') : "")
+                    categoryId: parseInt(dsMeta.atom_category)
                 },
                 status: { privacyStatus: status ? status : 'private'}
             };
+            if(dsMeta.keywords){
+                rtn.snippet.tags = dsMeta.keywords.split(',');
+            }
+            return rtn;
         });
     });
 }
