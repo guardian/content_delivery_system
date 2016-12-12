@@ -13,6 +13,24 @@ checkout:
     - sudo -i /home/ubuntu/content_delivery_system/CDS/install.sh -y
     - cd CDS/scripts/js_utils; npm install
 
+dependencies:
+  cache_directories:
+    - /usr/local/lib/perl/5.18.2
+    - /usr/local/share/perl/5.18.2
+    - /usr/lib/perl5
+    - /usr/share/perl5
+    - /usr/lib/perl/5.18
+    - /usr/share/perl/5.18
+    - /usr/local/lib/site_perl
+    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/site_ruby/2.2.0
+    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/site_ruby/2.2.0/x86_64-linux
+    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/site_ruby
+    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/vendor_ruby/2.2.0
+    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/vendor_ruby/2.2.0/x86_64-linux
+    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/vendor_ruby
+    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/2.2.0
+    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/2.2.0/x86_64-linux
+
 test:
   override:
     - bash ./tests/runtests.sh
