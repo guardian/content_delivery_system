@@ -74,7 +74,11 @@ function getSource(type,myname){
 }
 
 function setMulti(conn, type, meta){
-    if(type!=="meta" && type!=="media" && type!=="tracks") throw "type must be meta, media or track";
+    const validTypes = ['meta', 'media', 'track'];
+
+    if (! validTypes.includes(type)) {
+        throw `type must be one of ${validTypes.join(' ')}`;
+    }
 
     return new Promise(function(fulfill,reject) {
         getSource(type,conn.whoami).then(function(sourceid) {
@@ -109,7 +113,12 @@ function set(conn, type, key, value) {
 }
 
 function get(conn,type, key, callback, userdata) { /* callback as function(err, value) */
-    if (type !== "meta" && type !== "media" && type !== "tracks") throw "type must be meta, media or track";
+    const validTypes = ['meta', 'media', 'track'];
+
+    if (! validTypes.includes(type)) {
+        throw `type must be one of ${validTypes.join(' ')}`;
+    }
+
     return new Promise(function (fulfill, reject) {
         getSource(type, conn.whoami).then(function (sourceid) {
             db.serialize(function () {
