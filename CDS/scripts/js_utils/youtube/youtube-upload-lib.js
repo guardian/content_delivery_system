@@ -150,8 +150,8 @@ function uploadToYoutube(connection) {
                             .then(() => {
                                 dataStore.set(connection, 'meta', 'youtube_id', result.id)
                                     .then(() => {
-                                        resolve(result);
                                         console.log("SUCCESS: added poster frame");
+                                        resolve(result);
                                     })
                                     .catch(error => {
                                         console.error("ERROR: " + error);
