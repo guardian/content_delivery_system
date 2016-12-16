@@ -97,7 +97,7 @@ describe('mediaAtomLib', () => {
           'X-Gu-Tools-HMAC-Token': TOKEN,
           'X-Gu-Tools-Service-Name': 'content_delivery_system'
         })
-        .post(URI, {
+        .put(URI, {
           youtubeId: 'youtube_id'})
           .reply(200)
 
@@ -122,10 +122,10 @@ describe('mediaAtomLib', () => {
           'X-Gu-Tools-HMAC-Token': TOKEN,
           'X-Gu-Tools-Service-Name': 'content_delivery_system'
         })
-        .post(URI, {
+        .put(URI, {
           youtubeId: 'youtube_id'})
           .reply(400, 'Asset encoding in process')
-        .post(URI, {
+        .put(URI, {
           youtubeId: 'youtube_id'})
           .reply(200)
 
