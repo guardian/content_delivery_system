@@ -4,25 +4,23 @@ const PropertiesReader = require('properties-reader');
 
 class Config {
     constructor (configDirectory = '/etc/cds_backend/conf.d', namespaceChar = '_') {
-        const self = this;
+        this.configDirectory = configDirectory;
+        this.namespaceChar = namespaceChar;
 
-        self.configDirectory = configDirectory;
-        self.namespaceChar = namespaceChar;
-
-        const baseConfig = self._getEnvironmentConfig();
+        const baseConfig = this._getEnvironmentConfig();
 
         try {
-            self.config = fs.readdirSync(self.configDirectory)
+            this.config = fs.readdirSync(this.configDirectory)
                 .filter(f => f.endsWith('.conf'))
                 .reduce((properties, fileName) => {
-                    const filePath = path.join(self.configDirectory, fileName);
+                    const filePath = path.join(this.configDirectory, fileName);
                     const props = PropertiesReader(filePath).getAllProperties();
-                    return Object.assign({}, properties, self._namespaceConfig(props, 'config'));
+                    return Object.assign({}, properties, this._namespaceConfig(props, 'config'));
                 }, baseConfig);
         }
         catch (e) {
-            // cannot read files in `self.configDirectory`
-            self.config = baseConfig;
+            // cannot read files in `this.configDirectory`
+            this.config = baseConfig;
         }
     }
 
@@ -47,17 +45,14 @@ class Config {
     }
 
     _namespaceConfig (config, namespace) {
-        const self = this;
         return Object.keys(config).reduce((result, key) => {
-            result[`${namespace}${self.namespaceChar}${key}`] = config[key];
+            result[`${namespace}${this.namespaceChar}${key}`] = config[key];
             return result;
         }, {});
     }
 
     withDateConfig (date = new Date()) {
-        const self = this;
-
-        return Object.assign({}, self.config, {
+        return Object.assign({}, this.config, {
             'year': date.getFullYear(),
             'month': date.getMonth() + 1,
             'day': date.getDate(),
