@@ -2,9 +2,7 @@ const sqlite3 = require('sqlite3');
 
 class DatabaseInit {
     constructor (datastoreLocation = ':memory:') {
-        const self = this;
-
-        self.db = new sqlite3.Database(datastoreLocation);
+        this.db = new sqlite3.Database(datastoreLocation);
 
         const createSql = [
             `CREATE TABLE system (
@@ -43,14 +41,14 @@ class DatabaseInit {
         const insertSql = `INSERT INTO system (schema_version, cds_version) VALUES (1.0, 3.0);`;
 
         return new Promise((resolve, reject) => {
-            self.db.serialize(() => {
-                self.db.parallelize(() => createSql.forEach(sql => self.db.run(sql)));
+            this.db.serialize(() => {
+                this.db.parallelize(() => createSql.forEach(sql => this.db.run(sql)));
 
-                self.db.run(insertSql, (err) => {
+                this.db.run(insertSql, (err) => {
                     if (err) {
                         reject(err);
                     } else {
-                        resolve(self.db);
+                        resolve(this.db);
                     }
                 });
             });

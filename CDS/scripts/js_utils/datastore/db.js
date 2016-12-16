@@ -2,13 +2,11 @@ const sqlite3 = require('sqlite3');
 
 class Database {
     constructor (whoami, datastoreLocation = ':memory:') {
-        const self = this;
+        this.db = new sqlite3.Database(datastoreLocation);
 
-        self.db = new sqlite3.Database(datastoreLocation);
+        this.whoami = whoami;
 
-        self.whoami = whoami;
-
-        self.recordTypes = [ 'meta', 'media', 'tracks' ];
+        this.recordTypes = [ 'meta', 'media', 'tracks' ];
     }
 
     close () {
@@ -16,21 +14,19 @@ class Database {
     }
 
     getOne (type, key) {
-        const self = this;
-
-        if (! self.recordTypes.includes(type)) {
-            throw `type must be ${self.recordTypes.join(', ')}`;
+        if (! this.recordTypes.includes(type)) {
+            throw `type must be ${this.recordTypes.join(', ')}`;
         }
 
         return new Promise((resolve, reject) => {
-            self._getOrCreateSource(type).then(() => {
-                self.db.serialize(() => {
+            this._getOrCreateSource(type).then(() => {
+                this.db.serialize(() => {
                     const sql = `
                         SELECT  value 
                         FROM    ${type} 
                         WHERE   key = ?;`;
 
-                    self.db.prepare(sql).get(key, (err, row) => {
+                    this.db.prepare(sql).get(key, (err, row) => {
                         if (err) {
                             reject(err);
                         }
@@ -51,14 +47,12 @@ class Database {
     }
 
     setMany (type, meta) {
-        const self = this;
-
-        if (! self.recordTypes.includes(type)) {
-            throw `type must be ${self.recordTypes.join(', ')}`;
+        if (! this.recordTypes.includes(type)) {
+            throw `type must be ${this.recordTypes.join(', ')}`;
         }
 
         return new Promise((resolve, reject) => {
-            self._getOrCreateSource(type).then(sourceId => {
+            this._getOrCreateSource(type).then(sourceId => {
                 const sql = `
                     INSERT INTO ${type} 
                     (source_id, key, value) 
@@ -66,7 +60,7 @@ class Database {
 
                 const promises = Object.keys(meta).map(key => new Promise((resolve, reject) => {
                     const values = [sourceId, key, meta[key]];
-                    self.db.prepare(sql).run(values, (err) => ! err ? resolve() : reject(err));
+                    this.db.prepare(sql).run(values, (err) => ! err ? resolve() : reject(err));
                 }));
 
                 Promise.all(promises)
@@ -77,13 +71,11 @@ class Database {
     }
 
     _getOrCreateSource (type) {
-        const self = this;
-
         return new Promise((resolve, reject) => {
-            self._getSource(type)
+            this._getSource(type)
                 .then(id => resolve(id))
                 .catch(() => {
-                    self._createSource(type)
+                    this._createSource(type)
                         .then(newId => resolve(newId))
                         .catch(err => reject(err));
                 });
@@ -91,24 +83,20 @@ class Database {
     }
 
     _getSource (type) {
-        const self = this;
-
         const sql = `
             SELECT  id 
             FROM    sources 
             WHERE   type = ? 
             AND     provider_method = ?;`;
 
-        const values = [type, self.whoami];
+        const values = [type, this.whoami];
 
         return new Promise((resolve, reject) => {
-            self.db.prepare(sql).get(values, (err, row) => row ? resolve(row.id) : reject(err));
+            this.db.prepare(sql).get(values, (err, row) => row ? resolve(row.id) : reject(err));
         });
     }
 
     _createSource (type) {
-        const self = this;
-
         const sql = `
             INSERT INTO sources (
                 type, 
@@ -117,10 +105,12 @@ class Database {
             ) 
             VALUES (?, ?, ?);`;
 
-        const values = [type, self.whoami, Math.floor(Date.now())];
+        const values = [type, this.whoami, Math.floor(Date.now())];
 
         return new Promise((resolve, reject) => {
-            self.db.prepare(sql).run(values, function(err) {
+            // callback is not an arrow function as need this to be old school
+            // https://github.com/mapbox/node-sqlite3/wiki/API#databaserunsql-param--callback
+            this.db.prepare(sql).run(values, function(err) {
                 return ! err ? resolve(this.lastID) : reject(err);
             });
         });
