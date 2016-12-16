@@ -10,7 +10,7 @@
 var mediaAtomLib = require('./js_utils/media-atom-lib');
 var dataStore = require('./js_utils/Datastore');
 
-var connection = new dataStore.Connection("activate-asset.js");
+var connection = new dataStore.Connection("media-atom-activate-asset.js");
 
 mediaAtomLib.makeAssetActive(connection)
 .then(response => {
