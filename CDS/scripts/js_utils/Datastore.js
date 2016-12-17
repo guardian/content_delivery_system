@@ -119,7 +119,11 @@ function get(conn,type, key, callback, userdata) { /* callback as function(err, 
                         console.error(err);
                         reject(err);
                     }
-                    const rtn = row ? {value: row.value,type: type,key: key} : {value: "(value not found)",type: type,key: key};
+                    const rtn = {
+                        value: row ? row.value : '(value not found)',
+                        type: type,
+                        key: key
+                    };
 
                     if(callback){
                         fulfill(callback(rtn.value, rtn.type, rtn.key, userdata));

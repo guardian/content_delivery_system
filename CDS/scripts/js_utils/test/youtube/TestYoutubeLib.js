@@ -92,7 +92,7 @@ describe('YoutubeUpload', () => {
 
     describe('#getMetadata', () => {
 
-        const categoryId = 22;
+        const testCategoryId = 22;
 
         var dataStoreStub, stringSubstituteStub;
 
@@ -100,7 +100,7 @@ describe('YoutubeUpload', () => {
             process.env.access = 'status';
             dataStoreStub = sinon.stub(dataStore, 'get', (connection, type, key) => {
                 return new Promise(fulfill => {
-                    const v = (key=="atom_category" ? "22" : key);
+                    const v = (key=="atom_category" ? testCategoryId.toString() : key);
 
                     fulfill({ key: key, type: type, value: v });
                 });
@@ -131,7 +131,7 @@ describe('YoutubeUpload', () => {
 
                 assert.equal(snippet.title, 'atom_title');
                 assert.equal(snippet.description, 'atom_description');
-                assert.equal(snippet.categoryId, 22);   //we're expecting an INTEGER here, even though the value is
+                assert.equal(snippet.categoryId, testCategoryId);   //we're expecting an INTEGER here, even though the value is
                                                         // passed in as a string in the stub. this is by design.
                 assert.equal(snippet.tags, 'keywords');
                 assert.equal(status, 'status');
