@@ -31,7 +31,7 @@ class Database {
                             reject(err);
                         }
 
-                        const value = row && row.value || 'value not found';
+                        const value = row && row.value;
                         const response = { value: value, type: type, key: key };
 
                         resolve(response);
