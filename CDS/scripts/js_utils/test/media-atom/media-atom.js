@@ -25,9 +25,6 @@ describe('MediaAtom', () => {
         safeRemoveFile(dbPath);
         new DatabaseInit(dbPath).then(function () {
             process.env.shared_secret = 'CanYouKeepASecret';
-
-
-
             process.env.url_base = URL_BASE;
             process.env.atom_id = ATOM_ID;
 
@@ -42,6 +39,9 @@ describe('MediaAtom', () => {
     });
 
     afterEach(function (done) {
+        delete process.env.shared_secret;
+        delete process.env.url_base;
+        delete process.env.atom_id;
         safeRemoveFile(dbPath);
         done();
     });
