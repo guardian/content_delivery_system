@@ -53,7 +53,7 @@ class MediaAtom {
                 }
 
                 if (response.tags) {
-                    atomMetadata.atom_keywords = response.tags;
+                    atomMetadata.atom_keywords = response.tags.join(',');
                 }
 
                 if (response.posterImage) {

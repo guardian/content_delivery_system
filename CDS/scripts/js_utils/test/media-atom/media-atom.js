@@ -78,7 +78,8 @@ describe('MediaAtom', () => {
         nock(URL_BASE).get(atomApi).reply(200, {
             title: 'foo',
             channelId: 'ChannelOne',
-            youtubeCategoryId: '1'
+            youtubeCategoryId: '1',
+            tags: ['tag', 'team']
         });
 
         const mediaAtom = new MediaAtom(database, configObj, hmacRequest);
@@ -87,12 +88,14 @@ describe('MediaAtom', () => {
            Promise.all([
                database.getOne('meta', 'atom_channelId'),
                database.getOne('meta', 'atom_title'),
-               database.getOne('meta', 'atom_ytCategory')
+               database.getOne('meta', 'atom_ytCategory'),
+               database.getOne('meta', 'atom_keywords')
            ]).then(actual => {
               const expected = [
                   { type: 'meta', key: 'atom_channelId', value: 'ChannelOne' },
                   { type: 'meta', key: 'atom_title', value: 'foo' },
-                  { type: 'meta', key: 'atom_ytCategory', value: '1' }
+                  { type: 'meta', key: 'atom_ytCategory', value: '1' },
+                  { type: 'meta', key: 'atom_keywords', value: 'tag,team' }
               ];
 
               assert.deepEqual(actual, expected);
