@@ -124,7 +124,7 @@ function makeAssetActive(connection) {
     function makeActive() {
 
       const date = (new Date()).toUTCString();
-      return HMACRequest.makeRequest(connection, date, uri, urlBase, 'POST', data)
+      return HMACRequest.makeRequest(connection, date, uri, urlBase, 'PUT', data)
       .then(response => {
         return response;
       })
@@ -136,7 +136,7 @@ function makeAssetActive(connection) {
             return makeActive.bind(this)();
           });
         } else {
-          throw new Error(error);
+          throw new Error(error.response);
         }
       });
     }
