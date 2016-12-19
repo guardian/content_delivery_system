@@ -119,10 +119,13 @@ function addPosterImageIfExists(connection, videoId, youtubeClient, account) {
                         fs.unlink(filename);
 
                         if (err) {
+                            console.log(payload);
+                            console.log("ERROR: Unable to set poster image onto video: " + err);
                             reject(err);
+                        } else {
+                            console.log("+SUCCESS: Added poster image onto video");
+                            resolve(result);
                         }
-
-                        resolve(result);
                     });
                 })
                 .catch(err => reject(err));
@@ -150,16 +153,15 @@ function uploadToYoutube(connection) {
                             .then(() => {
                                 dataStore.set(connection, 'meta', 'youtube_id', result.id)
                                     .then(() => {
-                                        console.log("SUCCESS: added poster frame");
                                         resolve(result);
                                     })
                                     .catch(error => {
-                                        console.error("ERROR: " + error);
+                                        console.error("-ERROR: " + error);   //this shows an error returned by the datastore when attemting to set
                                         reject(error)
                                     });
                             })
                             .catch(err => {
-                                console.error("ERROR: " + err);
+                                console.error("-ERROR: " + err);
                                 reject(err);
                             });
                     }
