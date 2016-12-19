@@ -77,13 +77,7 @@ function fetchMetadata(connection) {
 
           for(const fieldName of expectedFields){
               if(! response.hasOwnProperty(fieldName)){
-                  const str = "Missing " + fieldName + " in Media Atom data";
-                  if(process.env.abort_if_missing) {
-                      throw str;
-                      return;
-                  } else {
-                      console.error("ERROR: " + str);
-                  }
+                  throw "Missing " + fieldName + " in Media Atom data";
               }
           }
 
