@@ -7,21 +7,23 @@ const Database = require('../../datastore/db');
 const dbPath = path.join(__dirname, '../data/test.db');
 
 function safeRemoveFile(path) {
-    fs.exists(path, (exists) => {
-        if (exists) {
-            fs.unlink(path);
+    return new Promise(resolve => {
+        if (! fs.existsSync(path)) {
+            resolve();
         }
-    })
+        fs.unlink(path, () => resolve());
+    });
 }
 
 describe('DataStore database', () => {
     beforeEach((done) => {
-        safeRemoveFile(dbPath);
-        new DatabaseInit(dbPath).then(() => done());
+        safeRemoveFile(dbPath).then(() => {
+            new DatabaseInit(dbPath).then(() => done());
+        });
     });
 
-    afterEach(() => {
-        safeRemoveFile(dbPath);
+    afterEach((done) => {
+        safeRemoveFile(dbPath).then(() => done());
     });
 
     it('should return an `undefined` value when no data exists', (done) => {

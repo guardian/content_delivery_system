@@ -1,19 +1,15 @@
+const MediaAtomModel = require('./model/media-atom-model');
+
 class MediaAtom {
-    constructor (database, configObj, hmacRequest, apiPollDuration = 5 * 60 * 1000, apiPollInterval = 60 * 1000) {
-        const requiredConfig = ['url_base', 'atom_id'];
+    constructor (cdsModel, configObj, hmacRequest, apiPollDuration = 5 * 60 * 1000, apiPollInterval = 60 * 1000) {
+        if (! Object.keys(configObj.config).includes('media_atom_url_base')) {
+            throw `Invalid Config. Missing media_atom_url_base`;
+        }
 
-        requiredConfig.forEach(c => {
-            if (! Object.keys(configObj.config).includes(c)) {
-                throw `Invalid Config. Missing ${c}`;
-            }
-        });
-
-        this.database = database;
+        this.cdsModel = cdsModel;
         this.configObj = configObj;
         this.hmacRequest = hmacRequest;
-
-        this.atomId = this.configObj.config.atom_id;
-        this.atomApiDomain = this.configObj.config.url_base;
+        this.atomApiDomain = this.configObj.config.media_atom_url_base;
 
         this.atomApiPaths = {
             asset: `/api2/atoms/:id/assets`,
@@ -21,52 +17,34 @@ class MediaAtom {
             activateAsset: '/api2/atom/:id/asset-active'
         };
 
-        this.maxPosterImageFileSize = 2 * 1000 * 1000; // 2MB
         this.apiPollDuration = apiPollDuration;
         this.apiPollInterval = apiPollInterval;
     }
 
-    _getUrl (path) {
-        return `${this.atomApiDomain}${path}`.replace(/:id/, this.atomId);
+    _getUrl (path, atomId) {
+        return `${this.atomApiDomain}${path}`.replace(/:id/, atomId);
     }
 
-    fetchMetadata () {
-        const url = this._getUrl(this.atomApiPaths.metadata);
-        const requiredMetadataFromAtom = [ 'channelId', 'title', 'youtubeCategoryId' ];
-
+    fetchAndSaveMetadata () {
         return new Promise ((resolve, reject) => {
-            this.hmacRequest.get(url).then(response => {
-                requiredMetadataFromAtom.forEach(i => {
-                    if (! Object.keys(response).includes(i)) {
-                        reject(`Incomplete metadata from media atom. Missing ${i}`);
-                    }
+            this.cdsModel.getData().then(cdsModel => {
+                if (! cdsModel.atomId) {
+                    reject('Failed to get atomId from database');
+                }
+
+                const url = this._getUrl(this.atomApiPaths.metadata, cdsModel.atomId);
+
+                this.hmacRequest.get(url).then(response => {
+                    const model = new MediaAtomModel(response);
+
+                    model.validate().then(atomModel => {
+                        this.cdsModel.saveAtomModel(atomModel).then(() => {
+                            resolve(response);
+                        });
+                    }).catch(missingFields => {
+                        reject(`Invalid response from Atom API. Missing ${missingFields.join(',')}`);
+                    });
                 });
-
-                const atomMetadata = {
-                    atom_channelId: response.channelId,
-                    atom_title: response.title,
-                    atom_ytCategory: response.youtubeCategoryId
-                };
-
-                if (response.description) {
-                    atomMetadata.atom_description = response.description;
-                }
-
-                if (response.tags) {
-                    atomMetadata.atom_keywords = response.tags.join(',');
-                }
-
-                if (response.posterImage) {
-                    const posterCandidates = response.posterImage.assets
-                        .sort((p1, p2) => { return p2.size - p1.size; })
-                        .filter(p => p.size < this.maxPosterImageFileSize);
-
-                    if (posterCandidates.length > 0) {
-                        atomMetadata.atom_posterImage = posterCandidates[0].file;
-                    }
-                }
-
-                this.database.setMany('meta', atomMetadata).then(() => resolve(response));
             });
         });
     }
@@ -95,14 +73,13 @@ class MediaAtom {
         const timeoutMessage = 'Cannot add asset to youtube, video encoding took too long';
 
         return new Promise((resolve, reject) => {
-            this.database.getOne('meta', 'atom_youtubeId').then(res => {
-
-                if (! res.value) {
-                    reject('Failed to get atom_youtubeId from database');
+            this.cdsModel.getData().then(cdsModel => {
+                if (!cdsModel.youtubeId) {
+                    reject('Failed to get youtubeId from database');
                 }
 
-                const data = { youtubeId: res.value };
-                const url = this._getUrl(this.atomApiPaths.activateAsset);
+                const data = { youtubeId: cdsModel.youtubeId };
+                const url = this._getUrl(this.atomApiPaths.activateAsset, cdsModel.atomId);
 
                 this._httpPoll(url, data, timeoutMessage)
                     .then(response => resolve(response))
@@ -112,13 +89,13 @@ class MediaAtom {
     }
 
     addAsset () {
-        return this.database.getOne('meta', 'atom_youtubeId').then(res => {
-            if (! res.value) {
-                reject('Failed to get atom_youtubeId from database');
-            }
+        return this.cdsModel.getData().then(cdsModel => {
+           if (! cdsModel.youtubeId) {
+               reject('Failed to get youtubeId from database');
+           }
 
-            const data = { uri: `https://www.youtube.com/watch?v=${res.value}` };
-            const url = this._getUrl(this.atomApiPaths.asset);
+            const data = { uri: `https://www.youtube.com/watch?v=${cdsModel.youtubeId}` };
+            const url = this._getUrl(this.atomApiPaths.asset, cdsModel.atomId);
 
             return this.hmacRequest.post(url, data);
         });
