@@ -39,6 +39,7 @@ function getMetadata(connection) {
 function getYoutubeData(connection) {
     return this.getMetadata(connection)
     .then((metadata) => {
+        console.log("getYoutubeData: got " + JSON.stringify(metadata));
         const mediaPath = process.env.cf_media_file;
 
         if (!process.env.cf_media_file) {
@@ -118,10 +119,13 @@ function addPosterImageIfExists(connection, videoId, youtubeClient, account) {
                         fs.unlink(filename);
 
                         if (err) {
+                            console.log(payload);
+                            console.log("ERROR: Unable to set poster image onto video: " + err);
                             reject(err);
+                        } else {
+                            console.log("+SUCCESS: Added poster image onto video");
+                            resolve(result);
                         }
-
-                        resolve(result);
                     });
                 })
                 .catch(err => reject(err));
@@ -131,24 +135,41 @@ function addPosterImageIfExists(connection, videoId, youtubeClient, account) {
 
 function uploadToYoutube(connection) {
     return new Promise((resolve, reject) => {
+        console.log("DEBUG: getting auth client");
         youtubeAuth.getAuthClient(connection).then(authClient => {
+            console.log("DEBUG: got auth client.  Getting youtube client for version " + YOUTUBE_API_VERSION);
             const ytClient = googleapis.youtube({version: YOUTUBE_API_VERSION, auth: authClient});
 
             this.getYoutubeData(connection).then(ytData => {
+                console.log("DEBUG: got youtube data " + JSON.stringify(ytData));
+                console.log("Attempting to insert video...");
                 ytClient.videos.insert(ytData, (err, result) => {
                     if (err) {
+                        console.error("ERROR: unable to insert YT video: " + err);
                         reject(err);
+                    } else {
+                        console.log("Video added successfully.  Adding poster frame...");
+                        addPosterImageIfExists(connection, result.id, ytClient, ytData.onBehalfOfContentOwner)
+                            .then(() => {
+                                dataStore.set(connection, 'meta', 'youtube_id', result.id)
+                                    .then(() => {
+                                        resolve(result);
+                                    })
+                                    .catch(error => {
+                                        console.error("-ERROR: " + error);   //this shows an error returned by the datastore when attemting to set
+                                        reject(error)
+                                    });
+                            })
+                            .catch(err => {
+                                console.error("-ERROR: " + err);
+                                reject(err);
+                            });
                     }
-
-                    addPosterImageIfExists(connection, result.id, ytClient, ytData.onBehalfOfContentOwner)
-                        .then(() => {
-                            dataStore.set(connection, 'meta', 'youtube_id', result.id)
-                                .then(() => resolve(result))
-                                .catch(error => reject(error));
-                        })
-                        .catch(err => reject(err));
                 });
             });
+        }).catch(err=> {
+            console.error("ERROR: " + JSON.stringify(err));
+            reject(err);
         });
     });
 }

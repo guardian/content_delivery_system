@@ -17,6 +17,8 @@ var dataStore = require('./js_utils/Datastore');
 
 var connection = new dataStore.Connection("youtube-upload.js");
 
+console.log("Attempting to upload to youtube...");
+
 youtubeLib.uploadToYoutube(connection)
 .then(response => {
     console.log('+SUCCESS: Video with title ', response.snippet.title, 'was uploaded to Youtube succesfully with id ', response.id);
