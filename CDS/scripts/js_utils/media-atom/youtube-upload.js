@@ -1,9 +1,7 @@
 const fs = require('fs');
-const path = require('path');
-const https = require('https');
 
-class YoutubeUpload {
-    constructor (cdsModelData, database, configObj, youtubeAuthedClient) {
+class YoutubeVideoUpload {
+    constructor (cdsModel, configObj, youtubeAuthedClient) {
         const requiredConfig = ['cf_media_file', 'owner_account'];
 
         requiredConfig.forEach(c => {
@@ -12,28 +10,26 @@ class YoutubeUpload {
             }
         });
 
-        this.cdsModelData = cdsModelData;
-        this.database = database;
+        this.cdsModel = cdsModel;
         this.configObj = configObj;
         this.youtubeAuthedClient = youtubeAuthedClient;
         this.mediaFilepath = this.configObj.config.cf_media_file;
         this.contentOwner = this.configObj.config.owner_account;
-        this.posterImageDownloadDir = this.configObj.config.poster_image_dir || '/tmp';
     }
 
     upload () {
         return new Promise((resolve, reject) => {
-            this._uploadVideo().then(result => {
-                this._setPosterImageIfExists(result.id)
-                    .then(resolve(result))
+            this.cdsModel.getData().then(cdsModelData => {
+                this._uploadVideo(cdsModelData)
+                    .then(result => resolve(result))
                     .catch(e => reject(e));
-            }).catch(e => reject(e));
+            });
         });
     }
 
-    _uploadVideo () {
+    _uploadVideo (cdsModelData) {
         return new Promise((resolve, reject) => {
-            const snippetStatus = this._getSnippetStatus();
+            const snippetStatus = this._getSnippetStatus(cdsModelData);
 
             const ytData = {
                 part: 'snippet,status',
@@ -43,7 +39,7 @@ class YoutubeUpload {
                     body: fs.createReadStream(this.mediaFilepath)
                 },
                 onBehalfOfContentOwner: this.contentOwner,
-                onBehalfOfContentOwnerChannel: this.cdsModelData.channelId
+                onBehalfOfContentOwnerChannel: cdsModelData.channelId
             };
 
             this.youtubeAuthedClient.videos.insert(ytData, (err, result) => {
@@ -51,7 +47,7 @@ class YoutubeUpload {
                     reject(err);
                 }
                 else {
-                    this.database.setOne('meta', 'atom_youtubeId', result.id).then(() => {
+                    this.cdsModel.saveYoutubeId(result.id).then(() => {
                         resolve(result);
                     });
                 }
@@ -59,65 +55,23 @@ class YoutubeUpload {
         });
     }
 
-    _setPosterImageIfExists (videoId) {
-       const posterImageUrl = this.cdsModelData.posterImage;
-
-       this._downloadPosterImage(posterImageUrl, path.join(this.posterImageDownloadDir, videoId)).then(filename => {
-           const payload = {
-               videoId: videoId,
-               onBehalfOfContentOwner: this.contentOwner,
-               media: {
-                   body: fs.createReadStream(filename)
-               }
-           };
-
-           this.youtubeAuthedClient.thumbnails.set(payload, (err, result) => {
-               fs.unlink(filename);
-
-               if (err) {
-                   reject(err);
-               }
-
-               resolve(result);
-           });
-        }).catch(e => reject(e));
-    }
-
-    _downloadPosterImage (url, dest) {
-        return new Promise((resolve, reject) => {
-            if (! url.startsWith('https://')) {
-                reject('No https poster image in metadata');
-            }
-
-            const file = fs.createWriteStream(dest);
-
-            https.get(url, (response) => {
-                response.pipe(file);
-                file.on('finish', () => file.close(resolve(dest)));
-            }).on('error', (err) => {
-                fs.unlink(file);
-                reject(err);
-            });
-        })
-    }
-
-    _getSnippetStatus () {
+    _getSnippetStatus (cdsModelData) {
         const ytData = {
             snippet: {
-                title: this.cdsModelData.title,
-                categoryId: this.cdsModelData.category
+                title: cdsModelData.title,
+                categoryId: cdsModelData.category
             },
             status: {
-                privacyStatus: this.cdsModelData.privacyStatus.toLowerCase()
+                privacyStatus: cdsModelData.privacyStatus.toLowerCase()
             }
         };
 
-        if (this.cdsModelData.tags) {
-            ytData.snippet.tags = this.cdsModelData.tags;
+        if (cdsModelData.tags) {
+            ytData.snippet.tags = cdsModelData.tags;
         }
 
         return ytData;
     }
 }
 
-module.exports = YoutubeUpload;
+module.exports = YoutubeVideoUpload;

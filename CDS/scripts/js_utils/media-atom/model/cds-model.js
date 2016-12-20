@@ -32,6 +32,10 @@ class CdsModel {
         });
     }
 
+    saveYoutubeId (youtubeId) {
+        return this.database.setOne('meta', 'atom_youtubeId', youtubeId);
+    }
+
     saveAtomModel (mediaAtomModel) {
         const metadata = {
             atom_channelId: mediaAtomModel.channelId,

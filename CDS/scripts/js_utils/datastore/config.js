@@ -32,6 +32,10 @@ class Config {
             if (process.env.OSTYPE) {
                 conf.ostype = process.env.OSTYPE;
             }
+
+            if (process.env.cf_media_file) {
+                conf.cf_media_file = process.env.cf_media_file;
+            }
         }
 
         return conf;
