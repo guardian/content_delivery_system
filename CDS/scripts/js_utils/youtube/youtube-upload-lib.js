@@ -39,7 +39,7 @@ function getMetadata(connection) {
 function getYoutubeData(connection) {
     return this.getMetadata(connection)
     .then((metadata) => {
-        console.log("getYoutubeData: got " + metadata);
+        console.log("getYoutubeData: got " + JSON.stringify(metadata));
         const mediaPath = process.env.cf_media_file;
 
         if (!process.env.cf_media_file) {
