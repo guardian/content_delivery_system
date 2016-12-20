@@ -146,6 +146,7 @@ describe('mediaAtomLib', () => {
         let dataStoreMultiStub;
 
         beforeEach(() => {
+            process.env.abort_if_missing = 'true'
           dataStoreMultiStub = sinon.stub(datastore, 'setMulti').returns(new Promise(fulfill => {fulfill()}));
         });
 
@@ -164,11 +165,51 @@ describe('mediaAtomLib', () => {
             return assert.isRejected(atomLib.fetchMetadata(), 'Cannot add assets to media atom: missing atom id');
         });
 
+        it('should error if channel id is missing from media atom maker', () => {
+            process.env.url_base = URL_BASE;
+            process.env.atom_id = 'atom_id';
+
+            const scope = nock(URL_BASE, {
+                reqheaders: {
+                    'X-Gu-Tools-HMAC-Date': dateRegex,
+                    'X-Gu-Tools-HMAC-Token': TOKEN,
+                    'X-Gu-Tools-Service-Name': 'content_delivery_system'
+                }})
+                .get(URI)
+                .reply(200, {
+                    title: 'title',
+                    description: 'description',
+                    categoryId: 22,
+                    tags: ['key','words']
+                });
+            assert.isRejected(atomLib.fetchMetadata(), "Missing channelId in media atom data");
+        });
+
+        it('should error if category id is missing from media atom maker', () => {
+            process.env.url_base = URL_BASE;
+            process.env.atom_id = 'atom_id';
+
+            const scope = nock(URL_BASE, {
+                reqheaders: {
+                    'X-Gu-Tools-HMAC-Date': dateRegex,
+                    'X-Gu-Tools-HMAC-Token': TOKEN,
+                    'X-Gu-Tools-Service-Name': 'content_delivery_system'
+                }})
+                .get(URI)
+                .reply(200, {
+                    title: 'title',
+                    description: 'description',
+                    channelId: "abcdefg",
+                    tags: ['key','words']
+                });
+            assert.isRejected(atomLib.fetchMetadata(), "Missing categoryId in media atom data");
+        });
+
         it('should fetch atom from media atom maker', () => {
             process.env.url_base = URL_BASE;
             process.env.atom_id = 'atom_id';
 
-            var scope = nock(URL_BASE, {
+            const scope = nock(URL_BASE, {
                     reqheaders: {
                         'X-Gu-Tools-HMAC-Date': dateRegex,
                         'X-Gu-Tools-HMAC-Token': TOKEN,
@@ -178,6 +219,8 @@ describe('mediaAtomLib', () => {
                 .reply(200, {
                   title: 'title',
                   description: 'description',
+                    categoryId: 22,
+                    channelId: 'abcdefg',
                   tags: ['key','words']
                 });
 
@@ -190,8 +233,6 @@ describe('mediaAtomLib', () => {
                 sinon.assert.calledOnce(dataStoreMultiStub);
                 const keywordArgs = dataStoreMultiStub.getCall(0).args;
                 assert.equal(keywordArgs[2].keywords, 'key,words');
-
-                return;
             });
         });
         it('should pick the biggest possible image', () => {
@@ -206,6 +247,8 @@ describe('mediaAtomLib', () => {
                     }})
                 .get(URI)
                 .reply(200, {
+                    categoryId: 22,
+                    channelId: "abcdefg",
                   posterImage: {
                     assets: [
                       {
@@ -227,7 +270,7 @@ describe('mediaAtomLib', () => {
             return atomLib.fetchMetadata()
             .then(response => {
                 sinon.assert.calledOnce(dataStoreMultiStub);
-                sinon.assert.calledWith(dataStoreMultiStub, undefined, 'meta', {'poster_image': 'best'});
+                sinon.assert.calledWith(dataStoreMultiStub, undefined, 'meta', {atom_channel_id: "abcdefg", 'poster_image': 'best'});
                 return;
             });
         });
