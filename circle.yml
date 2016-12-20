@@ -15,6 +15,9 @@ checkout:
 
 dependencies:
   cache_directories:
+    - "~/.sbt"
+    - "~/.ivy2"
+    - "CDS/scripts/js_utils/node_modules"
     - /usr/local/lib/perl/5.18.2
     - /usr/local/share/perl/5.18.2
     - /usr/lib/perl5
