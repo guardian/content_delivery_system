@@ -14,11 +14,11 @@ class Database {
     }
 
     getOne (type, key) {
-        if (! this.recordTypes.includes(type)) {
-            throw `type must be ${this.recordTypes.join(', ')}`;
-        }
-
         return new Promise((resolve, reject) => {
+            if (! this.recordTypes.includes(type)) {
+                reject(`type must be ${this.recordTypes.join(', ')}`);
+            }
+
             this._getOrCreateSource(type).then(() => {
                 this.db.serialize(() => {
                     const sql = `
@@ -47,11 +47,11 @@ class Database {
     }
 
     setMany (type, meta) {
-        if (! this.recordTypes.includes(type)) {
-            throw `type must be ${this.recordTypes.join(', ')}`;
-        }
-
         return new Promise((resolve, reject) => {
+            if (! this.recordTypes.includes(type)) {
+                reject(`type must be ${this.recordTypes.join(', ')}`);
+            }
+
             this._getOrCreateSource(type).then(sourceId => {
                 const sql = `
                     INSERT INTO ${type} 

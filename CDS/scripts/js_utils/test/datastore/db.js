@@ -64,14 +64,10 @@ describe('DataStore database', () => {
         new DatabaseInit(dbPath).then(() => {
             const db = new Database('test', dbPath);
 
-            // couldn't get assert.throws to work
-            try {
-                db.getOne('foo', 'bar');
-            }
-            catch (e) {
+            db.getOne('foo', 'bar').catch(e => {
                 assert.equal(e, 'type must be meta, media, tracks');
                 done();
-            }
+            });
         });
     })
 });
