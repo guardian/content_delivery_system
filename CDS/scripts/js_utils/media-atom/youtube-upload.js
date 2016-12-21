@@ -1,5 +1,7 @@
 const fs = require('fs');
 
+const Logger = require('../logger');
+
 class YoutubeVideoUpload {
     constructor (cdsModel, configObj, youtubeAuthedClient) {
         const requiredConfig = ['cf_media_file', 'owner_account'];
@@ -42,12 +44,14 @@ class YoutubeVideoUpload {
                 onBehalfOfContentOwnerChannel: cdsModelData.channelId
             };
 
+            Logger.info(`uploading video to youtube channel ${cdsModelData.channelId}`);
             this.youtubeAuthedClient.videos.insert(ytData, (err, result) => {
                 if (err) {
                     reject(err);
                 }
                 else {
                     this.cdsModel.saveYoutubeId(result.id).then(() => {
+                        Logger.info(`video uploaded ${result.id}`);
                         resolve(result);
                     });
                 }

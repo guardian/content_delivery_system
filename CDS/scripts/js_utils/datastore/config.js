@@ -2,6 +2,8 @@ const path = require('path');
 const fs = require('fs');
 const PropertiesReader = require('properties-reader');
 
+const Logger = require('../logger');
+
 class Config {
     constructor (configDirectory = '/etc/cds_backend/conf.d') {
         this.configDirectory = configDirectory;
@@ -12,6 +14,7 @@ class Config {
             .filter(f => f.endsWith('.conf'))
             .reduce((properties, fileName) => {
                 const filePath = path.join(this.configDirectory, fileName);
+                Logger.info(`reading config from ${filePath}`);
                 const props = PropertiesReader(filePath).getAllProperties();
                 return Object.assign({}, properties, props);
             }, baseConfig);
@@ -35,6 +38,10 @@ class Config {
 
             if (process.env.cf_media_file) {
                 conf.cf_media_file = process.env.cf_media_file;
+            }
+
+            if (process.env.cf_datastore_location) {
+                conf.cf_datastore_location = process.env.cf_datastore_location;
             }
         }
 

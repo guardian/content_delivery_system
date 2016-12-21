@@ -1,8 +1,12 @@
 const sqlite3 = require('sqlite3');
 
+const Logger = require('../logger');
+
 class DatabaseInit {
     constructor (datastoreLocation = ':memory:') {
         this.db = new sqlite3.Database(datastoreLocation);
+
+        Logger.info(`initialising database to ${datastoreLocation}`);
 
         const createSql = [
             `CREATE TABLE system (
@@ -43,11 +47,12 @@ class DatabaseInit {
         return new Promise((resolve, reject) => {
             this.db.serialize(() => {
                 this.db.parallelize(() => createSql.forEach(sql => this.db.run(sql)));
-
+                Logger.info('tables created');
                 this.db.run(insertSql, (err) => {
                     if (err) {
                         reject(err);
                     } else {
+                        Logger.info('system table updated');
                         resolve(this.db);
                     }
                 });

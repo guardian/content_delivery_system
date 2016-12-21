@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
+const Logger = require('../logger');
+
 class YoutubePosterUpload {
     constructor (cdsModel, configObj, youtubeAuthedClient) {
         if (! Object.keys(configObj.config).includes('owner_account')) {
@@ -35,13 +37,14 @@ class YoutubePosterUpload {
                         }
                     };
 
+                    Logger.info(`setting poster image to ${cdsModelData.youtubeId}`);
                     this.youtubeAuthedClient.thumbnails.set(payload, (err, result) => {
                         fs.unlink(filename);
 
                         if (err) {
                             reject(err);
                         }
-
+                        Logger.info(`successfully set poster image to ${cdsModelData.youtubeId}`);
                         resolve(result);
                     });
                 }).catch(e => reject(e));
@@ -58,6 +61,7 @@ class YoutubePosterUpload {
             const file = fs.createWriteStream(dest);
 
             https.get(url, (response) => {
+                Logger.info(`downloading poster image ${url} to ${dest}`);
                 response.pipe(file);
                 file.on('finish', () => file.close(resolve(dest)));
             }).on('error', (err) => {

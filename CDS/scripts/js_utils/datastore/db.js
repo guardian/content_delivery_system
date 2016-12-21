@@ -1,5 +1,7 @@
 const sqlite3 = require('sqlite3');
 
+const Logger = require('../logger');
+
 class Database {
     constructor (whoami, datastoreLocation = ':memory:') {
         this.db = new sqlite3.Database(datastoreLocation);
@@ -64,7 +66,7 @@ class Database {
                 }));
 
                 Promise.all(promises)
-                    .then(values => resolve())
+                    .then(values => resolve(values))
                     .catch(err => reject(err));
             });
         });
@@ -111,7 +113,12 @@ class Database {
             // callback is not an arrow function as need this to be old school
             // https://github.com/mapbox/node-sqlite3/wiki/API#databaserunsql-param--callback
             this.db.prepare(sql).run(values, function(err) {
-                return ! err ? resolve(this.lastID) : reject(err);
+                if (! err) {
+                    Logger.info(`inserted new source with ID ${this.lastID}`);
+                    resolve(this.lastID);
+                } else {
+                    reject(err);
+                }
             });
         });
     }
