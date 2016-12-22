@@ -2,18 +2,10 @@ const crypto = require('crypto');
 const reqwest = require('reqwest');
 
 class HMACRequest {
-    constructor (configObj) {
-        const requiredConfig = ['shared_secret'];
+    constructor (config) {
+        this.config = config;
 
-        requiredConfig.forEach(c => {
-            if (! Object.keys(configObj.config).includes(c)) {
-                throw `Invalid Config. Missing ${c}`;
-            }
-        });
-
-        this.configObj = configObj;
-
-        this.sharedSecret = this.configObj.config.shared_secret;
+        this.sharedSecret = this.config.atomSecret;
     }
 
     _getToken (url, date) {

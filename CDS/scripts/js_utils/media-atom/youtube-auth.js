@@ -8,14 +8,6 @@ const YT = googleapis.youtube;
 
 class YoutubeAuth {
     constructor (configObj) {
-        const requiredConfig = ['client_secrets', 'private_key', 'passphrase'];
-
-        requiredConfig.forEach(c => {
-            if (! Object.keys(configObj.config).includes(c)) {
-                throw `Invalid Config. Missing ${c}`;
-            }
-        });
-
         this.configObj = configObj;
 
         this.privateKey = this.configObj.config.private_key;

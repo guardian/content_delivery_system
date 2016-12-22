@@ -1,10 +1,14 @@
 class Logger {
     static info (message) {
-        console.info(`INFO - ${message}`);
+        if (process.env.STAGE !== 'test') {
+            console.info(`INFO - ${message}`);
+        }
     }
 
     static error (message) {
-        console.error(`ERROR - ${message}`);
+        if (process.env.STAGE !== 'test') {
+            console.error(`ERROR - ${message}`);
+        }
     }
 }
 

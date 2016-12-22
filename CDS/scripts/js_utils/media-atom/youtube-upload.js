@@ -4,14 +4,6 @@ const Logger = require('../logger');
 
 class YoutubeVideoUpload {
     constructor (cdsModel, configObj, youtubeAuthedClient) {
-        const requiredConfig = ['cf_media_file', 'owner_account'];
-
-        requiredConfig.forEach(c => {
-            if (! Object.keys(configObj.config).includes(c)) {
-                throw `Invalid Config. Missing ${c}`;
-            }
-        });
-
         this.cdsModel = cdsModel;
         this.configObj = configObj;
         this.youtubeAuthedClient = youtubeAuthedClient;

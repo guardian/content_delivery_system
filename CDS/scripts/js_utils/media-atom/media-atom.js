@@ -2,15 +2,10 @@ const Logger = require('../logger');
 const MediaAtomModel = require('./model/media-atom-model');
 
 class MediaAtom {
-    constructor (cdsModel, configObj, hmacRequest, apiPollDuration = 5 * 60 * 1000, apiPollInterval = 60 * 1000) {
-        if (! Object.keys(configObj.config).includes('media_atom_url_base')) {
-            throw `Invalid Config. Missing media_atom_url_base`;
-        }
-
+    constructor (cdsModel, config, hmacRequest, apiPollDuration = 5 * 60 * 1000, apiPollInterval = 60 * 1000) {
         this.cdsModel = cdsModel;
-        this.configObj = configObj;
+        this.config = config;
         this.hmacRequest = hmacRequest;
-        this.atomApiDomain = this.configObj.config.media_atom_url_base;
 
         this.atomApiPaths = {
             asset: `/api2/atoms/:id/assets`,
@@ -23,7 +18,7 @@ class MediaAtom {
     }
 
     _getUrl (path, atomId) {
-        return `${this.atomApiDomain}${path}`.replace(/:id/, atomId);
+        return `${this.config.atomUrl}${path}`.replace(/:id/, atomId);
     }
 
     fetchAndSaveMetadata () {
@@ -78,7 +73,7 @@ class MediaAtom {
 
         return new Promise((resolve, reject) => {
             this.cdsModel.getData().then(cdsModel => {
-                if (!cdsModel.youtubeId) {
+                if (! cdsModel.youtubeId) {
                     reject('Failed to get youtubeId from database');
                 }
 

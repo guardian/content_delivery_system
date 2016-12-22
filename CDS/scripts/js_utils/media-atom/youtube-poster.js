@@ -6,10 +6,6 @@ const Logger = require('../logger');
 
 class YoutubePosterUpload {
     constructor (cdsModel, configObj, youtubeAuthedClient) {
-        if (! Object.keys(configObj.config).includes('owner_account')) {
-            throw `Invalid Config. Missing owner_account`;
-        }
-
         this.cdsModel = cdsModel;
         this.configObj = configObj;
         this.youtubeAuthedClient = youtubeAuthedClient;

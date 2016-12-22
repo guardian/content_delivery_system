@@ -58,6 +58,66 @@ class Config {
             'sec': date.getSeconds()
         });
     }
+
+    validate (extraRequirements = []) {
+        const requiredConfig = [
+            // sqlite database location
+            'cf_datastore_location',
+
+            // Youtube config values
+            'owner_account',
+            'client_secrets',
+            'private_key',
+            'passphrase',
+
+            // Media Atom config values
+            'media_atom_url_base',
+            'media_atom_shared_secret'
+        ].concat(extraRequirements);
+
+        return new Promise((resolve, reject) => {
+            const missingItems = requiredConfig.reduce((missing, item) => {
+                if (! Object.keys(this.config).includes(item)) {
+                    missing.push(item);
+                }
+                return missing;
+            }, []);
+
+            if (missingItems.length === 0) {
+                resolve(this);
+            } else {
+                reject(missingItems);
+            }
+        });
+    }
+
+    get datastoreLocation () {
+        return this.config.cf_datastore_location;
+    }
+
+    get ownerAccount () {
+        return this.config.owner_account;
+    }
+
+    get clientSecrets () {
+        return this.config.client_secrets;
+    }
+
+    get privateKey () {
+        return this.config.private_key;
+    }
+
+    get passphrase () {
+        return this.config.passphrase;
+    }
+
+    get atomUrl () {
+        return this.config.media_atom_url_base;
+    }
+
+    get atomSecret () {
+        return this.config.media_atom_shared_secret;
+    }
 }
 
 module.exports = Config;
