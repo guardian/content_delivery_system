@@ -20,7 +20,8 @@ describe('DataStore Config', () => {
                 private_key: 'private.pem',
                 passphrase: 'DontTellAnyone',
                 media_atom_url_base: 'https://no.where',
-                media_atom_shared_secret: 'CanYouKeepASecret'
+                media_atom_shared_secret: 'CanYouKeepASecret',
+                media_atom_poster_dir: '/tmp'
             };
 
             const actual = config.config;
@@ -48,6 +49,7 @@ describe('DataStore Config', () => {
                 passphrase: 'DontTellAnyone',
                 media_atom_url_base: 'https://no.where',
                 media_atom_shared_secret: 'CanYouKeepASecret',
+                media_atom_poster_dir: '/tmp',
                 year: 2016,
                 month: 1,
                 day: 1,
@@ -70,7 +72,8 @@ describe('DataStore Config', () => {
                 'client_secrets',
                 'private_key',
                 'passphrase',
-                'media_atom_shared_secret'
+                'media_atom_shared_secret',
+                'media_atom_poster_dir'
             ];
 
            assert.deepEqual(actual, expected);

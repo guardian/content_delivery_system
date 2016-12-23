@@ -72,7 +72,8 @@ class Config {
 
             // Media Atom config values
             'media_atom_url_base',
-            'media_atom_shared_secret'
+            'media_atom_shared_secret',
+            'media_atom_poster_dir'
         ].concat(extraRequirements);
 
         return new Promise((resolve, reject) => {
@@ -117,6 +118,14 @@ class Config {
 
     get atomSecret () {
         return this.config.media_atom_shared_secret;
+    }
+
+    get posterImageDownloadDir () {
+        return this.config.media_atom_poster_dir;
+    }
+
+    get cfMediaFile () {
+        return this.config.cf_media_file;
     }
 }
 

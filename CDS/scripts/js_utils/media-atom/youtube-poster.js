@@ -5,12 +5,11 @@ const https = require('https');
 const Logger = require('../logger');
 
 class YoutubePosterUpload {
-    constructor (cdsModel, configObj, youtubeAuthedClient) {
+    constructor (cdsModel, config, youtubeAuthedClient) {
         this.cdsModel = cdsModel;
-        this.configObj = configObj;
+        this.config = config;
         this.youtubeAuthedClient = youtubeAuthedClient;
-        this.contentOwner = this.configObj.config.owner_account;
-        this.posterImageDownloadDir = this.configObj.config.poster_image_dir || '/tmp';
+        this.contentOwner = this.config.ownerAccount;
     }
 
     upload () {
@@ -22,7 +21,7 @@ class YoutubePosterUpload {
                     }
                 });
 
-                const posterPath = path.join(this.posterImageDownloadDir, cdsModelData.youtubeId);
+                const posterPath = path.join(this.config.posterImageDownloadDir, cdsModelData.youtubeId);
 
                 this._downloadPosterImage(cdsModelData.posterImage, posterPath).then(filename => {
                     const payload = {

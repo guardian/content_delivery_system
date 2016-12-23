@@ -7,12 +7,12 @@ const JWT = googleapis.auth.JWT;
 const YT = googleapis.youtube;
 
 class YoutubeAuth {
-    constructor (configObj) {
-        this.configObj = configObj;
+    constructor (config) {
+        this.config = config;
 
-        this.privateKey = this.configObj.config.private_key;
-        this.passphrase = this.configObj.config.passphrase;
-        this.clientSecretsFilepath = this.configObj.config.client_secrets;
+        this.privateKey = this.config.privateKey;
+        this.passphrase = this.config.passphrase;
+        this.clientSecretsFilepath = this.config.clientSecrets;
 
         this.youtubeApiVersion = 3;
     }

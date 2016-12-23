@@ -3,12 +3,12 @@ const fs = require('fs');
 const Logger = require('../logger');
 
 class YoutubeVideoUpload {
-    constructor (cdsModel, configObj, youtubeAuthedClient) {
+    constructor (cdsModel, config, youtubeAuthedClient) {
         this.cdsModel = cdsModel;
-        this.configObj = configObj;
+        this.config = config;
         this.youtubeAuthedClient = youtubeAuthedClient;
-        this.mediaFilepath = this.configObj.config.cf_media_file;
-        this.contentOwner = this.configObj.config.owner_account;
+        this.mediaFilepath = this.config.cfMediaFile;
+        this.contentOwner = this.config.ownerAccount;
     }
 
     upload () {
