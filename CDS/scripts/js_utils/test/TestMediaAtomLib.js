@@ -5,7 +5,6 @@ var sinon = require('sinon');
 
 chai.use(chaiAsPromised);
 
-process.env.cf_datastore_location = "location";
 var datastore = require('../Datastore');
 var atomLib = require('../media-atom-lib');
 var hmac = require('../hmac');
@@ -19,7 +18,8 @@ describe('mediaAtomLib', () => {
     const TOKEN = 'token';
     const dateRegex = /^[A-Z][a-z]{2}\,\s\d{2}\s[A-Z][a-z]{2}\s\d{4}\s\d{2}:\d{2}:\d{2}\sGMT$/i;
 
-    beforeEach(() => {
+    beforeEach((done) => {
+        process.env.cf_datastore_location = "location";
 
         datastoreSetStub = sinon.stub(datastore, 'set');
 
@@ -40,15 +40,20 @@ describe('mediaAtomLib', () => {
                 fulfill(TOKEN);
             })
         );
+
+        done();
     });
 
-    afterEach(() => {
+    afterEach((done) => {
         hmacStub.restore();
         datastoreStub.restore();
         stringsStub.restore();
         datastoreSetStub.restore();
         delete process.env.url_base;
         delete process.env.atom_id;
+        delete process.env.cf_datastore_location;
+
+        done();
     });
 
     describe('#makeAssetActive', () => {

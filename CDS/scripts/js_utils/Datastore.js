@@ -146,7 +146,7 @@ function substituteString(conn,str){
             }
 
             //This replaces all occurances of matchText (by splitting) then replaces then with the value (by joining)
-            const sanitisedReplacement = replacementValue ? replacementValue : "undefined";
+            const sanitisedReplacement = (replacementValue || replacementValue === 0) ? replacementValue : "undefined";
             return string.split(matchText).join(sanitisedReplacement);
         }
 
