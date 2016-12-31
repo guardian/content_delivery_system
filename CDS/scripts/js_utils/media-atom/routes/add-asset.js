@@ -1,14 +1,17 @@
-const Config = require('./js_utils/datastore/config');
-const Database = require('./js_utils/datastore/db');
-const CdsModel = require('./js_utils/media-atom/model/cds-model');
-const HmacRequest = require('./js_utils/media-atom/hmac');
-const MediaAtom = require('./js_utils/media-atom/media-atom');
-const Logger = require('./js_utils/logger');
+const Config = require('../../datastore/config');
+const Database = require('../../datastore/db');
+const CdsModel = require('../model/cds-model');
+const HmacRequest = require('../hmac');
+const MediaAtom = require('../media-atom');
+const Logger = require('../../logger');
+
+const path = require('path');
+const scriptName = path.basename(__filename, '.js');
 
 const config = new Config({configDirectory: '/etc/cds_backend/conf.d'});
 
 config.validate().then(() => {
-    const database = new Database({whoami: 'media-atom-add-asset-es6', datastoreLocation: config.datastoreLocation});
+    const database = new Database({whoami: scriptName, datastoreLocation: config.datastoreLocation});
     const cdsModel = new CdsModel({database: database});
     const hmacRequest = new HmacRequest({config: config});
 

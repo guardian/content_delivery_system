@@ -1,15 +1,18 @@
-const Config = require('./js_utils/datastore/config');
-const Database = require('./js_utils/datastore/db');
-const CdsModel = require('./js_utils/media-atom/model/cds-model');
-const YoutubeAuth = require('./js_utils/media-atom/youtube-auth');
-const YoutubeVideoUpload = require('./js_utils/media-atom/youtube-upload');
-const YoutubePosterUpload = require('./js_utils/media-atom/youtube-poster');
-const Logger = require('./js_utils/logger');
+const Config = require('../../datastore/config');
+const Database = require('../../datastore/db');
+const CdsModel = require('../model/cds-model');
+const YoutubeAuth = require('../youtube-auth');
+const YoutubeVideoUpload = require('../youtube-upload');
+const YoutubePosterUpload = require('../youtube-poster');
+const Logger = require('../../logger');
+
+const path = require('path');
+const scriptName = path.basename(__filename, '.js');
 
 const config = new Config({configDirectory: '/etc/cds_backend/conf.d'});
 
 config.validate(['cf_media_file']).then(() => {
-    const database = new Database({whoami: 'media-atom-youtube-upload-es6', datastoreLocation: config.datastoreLocation});
+    const database = new Database({whoami: scriptName, datastoreLocation: config.datastoreLocation});
 
     const cdsModel = new CdsModel({database: database});
 
