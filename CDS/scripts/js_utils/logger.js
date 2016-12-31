@@ -1,13 +1,15 @@
+const chalk = require('chalk');
+
 class Logger {
     static info (message) {
         if (process.env.STAGE !== 'test') {
-            console.info(`INFO - ${message}`);
+            console.info(chalk.yellow(`INFO - ${message}`));
         }
     }
 
     static error (message) {
         if (process.env.STAGE !== 'test') {
-            console.error(`ERROR - ${message}`);
+            console.error(chalk.red(`ERROR - ${message}`));
         }
     }
 }
