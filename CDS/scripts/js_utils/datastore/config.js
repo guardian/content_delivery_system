@@ -13,7 +13,7 @@ class Config {
         this.config = fs.readdirSync(this.configDirectory)
             .filter(f => f.endsWith('.conf'))
             .reduce((properties, fileName) => {
-                const filePath = path.join(this.configDirectory, fileName);
+                const filePath = fs.realpathSync(path.join(this.configDirectory, fileName));
                 Logger.info(`reading config from ${filePath}`);
                 const props = PropertiesReader(filePath).getAllProperties();
                 return Object.assign({}, properties, props);
