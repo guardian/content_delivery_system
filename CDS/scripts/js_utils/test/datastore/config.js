@@ -7,7 +7,7 @@ const badDataDir = path.join(__dirname, '../data/bad');
 
 describe('DataStore Config', () => {
     it('should read config files from disk', (done) => {
-        const config = new Config(goodDataDir);
+        const config = new Config({configDirectory: goodDataDir});
 
         config.validate().then(() => {
             const expected = {
@@ -31,7 +31,7 @@ describe('DataStore Config', () => {
     });
 
     it('should add extra properties when .withDateConfig is called', (done) => {
-        const config = new Config(goodDataDir);
+        const config = new Config({configDirectory: goodDataDir});
 
         const date = new Date("2016-01-01 00:00:00");
 
@@ -64,7 +64,7 @@ describe('DataStore Config', () => {
     });
 
     it('should fail to validate when there are missing config keys', (done) => {
-        const config = new Config(badDataDir);
+        const config = new Config({configDirectory: badDataDir});
 
         config.validate().catch(actual => {
             const expected = [

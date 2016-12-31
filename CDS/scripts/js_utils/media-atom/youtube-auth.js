@@ -7,7 +7,7 @@ const JWT = googleapis.auth.JWT;
 const YT = googleapis.youtube;
 
 class YoutubeAuth {
-    constructor (config) {
+    constructor ({config}) {
         this.config = config;
 
         this.privateKey = this.config.privateKey;

@@ -2,7 +2,7 @@ const Logger = require('../logger');
 const MediaAtomModel = require('./model/media-atom-model');
 
 class MediaAtom {
-    constructor (cdsModel, config, hmacRequest, apiPollDuration = 5 * 60 * 1000, apiPollInterval = 60 * 1000) {
+    constructor ({cdsModel, config, hmacRequest, apiPollDuration = 5 * 60 * 1000, apiPollInterval = 60 * 1000}) {
         this.cdsModel = cdsModel;
         this.config = config;
         this.hmacRequest = hmacRequest;
@@ -31,7 +31,7 @@ class MediaAtom {
                 const url = this._getUrl(this.atomApiPaths.metadata, cdsModel.atomId);
 
                 this.hmacRequest.get(url).then(response => {
-                    const model = new MediaAtomModel(response);
+                    const model = new MediaAtomModel({apiResponse: response});
 
                     model.validate().then(atomModel => {
                         this.cdsModel.saveAtomModel(atomModel).then(() => {

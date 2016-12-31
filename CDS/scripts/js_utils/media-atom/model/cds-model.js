@@ -1,5 +1,5 @@
 class CdsModel {
-    constructor (database) {
+    constructor ({database}) {
         this.database = database;
     }
 

@@ -18,7 +18,7 @@ function safeRemoveFile(path) {
 describe('DataStore database', () => {
     beforeEach((done) => {
         safeRemoveFile(dbPath).then(() => {
-            new DatabaseInit(dbPath).then(() => done());
+            new DatabaseInit({datastoreLocation: dbPath}).then(() => done());
         });
     });
 
@@ -27,7 +27,7 @@ describe('DataStore database', () => {
     });
 
     it('should return `undefined` when no data exists', (done) => {
-        const db = new Database('test', dbPath);
+        const db = new Database({whoami: 'test', datastoreLocation: dbPath});
 
         db.getOne('meta', 'name').then(actual => {
 
@@ -43,7 +43,7 @@ describe('DataStore database', () => {
     });
 
     it('should be able to insert a meta record', (done) => {
-        const db = new Database('test', dbPath);
+        const db = new Database({whoami: 'test', datastoreLocation: dbPath});
 
         db.setOne('meta', 'name', 'MrTest').then(() => {
             db.getOne('meta', 'name').then(actual => {
@@ -59,7 +59,7 @@ describe('DataStore database', () => {
     });
 
     it('should be able to insert multiple records', (done) => {
-       const db = new Database('test', dbPath);
+        const db = new Database({whoami: 'test', datastoreLocation: dbPath});
 
        db.setMany('meta', {name: 'foo', age: 'bar'}).then(() => {
            Promise.all([db.getOne('meta', 'name'), db.getOne('meta', 'age')]).then(actual => {
@@ -75,7 +75,7 @@ describe('DataStore database', () => {
     });
 
     it('should throw an exception when an unexpected type is used', (done) => {
-        const db = new Database('test', dbPath);
+        const db = new Database({whoami: 'test', datastoreLocation: dbPath});
 
         db.getOne('foo', 'bar').catch(e => {
             assert.equal(e, 'type must be meta, media, tracks');

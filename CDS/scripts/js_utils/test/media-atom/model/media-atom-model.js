@@ -46,7 +46,7 @@ describe('MediaAtomModel', () => {
     });
 
     it('should fail to validate when required fields are missing', function (done) {
-        const model = new MediaAtomModel(this.badApiResponse);
+        const model = new MediaAtomModel({apiResponse: this.badApiResponse});
 
         model.validate().then(e => console.log(e)).catch(actual => {
             const expected = ['title', 'youtubeCategoryId'];
@@ -57,7 +57,7 @@ describe('MediaAtomModel', () => {
     });
 
     it('should return the best poster image under 2MB', function (done) {
-        const model = new MediaAtomModel(this.goodApiResponse);
+        const model = new MediaAtomModel({apiResponse: this.goodApiResponse});
 
         const actual = model.posterImage;
         const expected = 'https://media.guim.co.uk/4d7c1db00237690e268015c5fd09502c66cdfd34/0_64_3488_1962/3488.jpg';

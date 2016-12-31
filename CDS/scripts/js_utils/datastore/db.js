@@ -3,7 +3,7 @@ const sqlite3 = require('sqlite3');
 const Logger = require('../logger');
 
 class Database {
-    constructor (whoami, datastoreLocation = ':memory:') {
+    constructor ({whoami, datastoreLocation = ':memory:'}) {
         this.db = new sqlite3.Database(datastoreLocation);
 
         this.whoami = whoami;

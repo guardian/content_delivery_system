@@ -3,7 +3,7 @@ const fs = require('fs');
 const Logger = require('../logger');
 
 class YoutubeVideoUpload {
-    constructor (cdsModel, config, youtubeAuthedClient) {
+    constructor ({cdsModel, config, youtubeAuthedClient}) {
         this.cdsModel = cdsModel;
         this.config = config;
         this.youtubeAuthedClient = youtubeAuthedClient;

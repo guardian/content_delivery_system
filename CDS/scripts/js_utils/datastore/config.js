@@ -5,7 +5,7 @@ const PropertiesReader = require('properties-reader');
 const Logger = require('../logger');
 
 class Config {
-    constructor (configDirectory = '/etc/cds_backend/conf.d') {
+    constructor ({configDirectory = '/etc/cds_backend/conf.d'}) {
         this.configDirectory = configDirectory;
 
         const baseConfig = this._getBaseConfig();

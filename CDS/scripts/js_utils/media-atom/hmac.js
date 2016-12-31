@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const reqwest = require('reqwest');
 
 class HMACRequest {
-    constructor (config) {
+    constructor ({config}) {
         this.config = config;
 
         this.sharedSecret = this.config.atomSecret;

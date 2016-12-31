@@ -28,15 +28,15 @@ const ATOM_ID = '123';
 describe('MediaAtom', () => {
     beforeEach(function (done) {
         safeRemoveFile(dbPath).then(() => {
-            new DatabaseInit(dbPath).then(function () {
-                this.config = new Config(dataDir);
+            new DatabaseInit({datastoreLocation: dbPath}).then(function () {
+                this.config = new Config({configDirectory: dataDir});
 
-                this.hmacRequest = new HMACRequest(this.config);
-                this.database = new Database('test', dbPath);
+                this.hmacRequest = new HMACRequest({config: this.config});
+                this.database = new Database({whoami: 'test', datastoreLocation: dbPath});
 
                 // seed database with an atomId
                 this.database.setOne('meta', 'gnm_master_mediaatom_atomid', ATOM_ID).then(() => {
-                    this.cdsModel = new CdsModel(database);
+                    this.cdsModel = new CdsModel({database: database});
                     done();
                 });
             });
@@ -55,7 +55,7 @@ describe('MediaAtom', () => {
             channelId: 'ChannelOne'
         });
 
-        const mediaAtom = new MediaAtom(cdsModel, config, hmacRequest);
+        const mediaAtom = new MediaAtom({cdsModel: cdsModel, config: config, hmacRequest: hmacRequest});
 
         mediaAtom.fetchAndSaveMetadata().catch(actual => {
             assert.ok(actual === 'Invalid response from Atom API. Missing youtubeCategoryId');
@@ -73,7 +73,7 @@ describe('MediaAtom', () => {
             tags: ['tag', 'team']
         });
 
-        const mediaAtom = new MediaAtom(cdsModel, config, hmacRequest);
+        const mediaAtom = new MediaAtom({cdsModel: cdsModel, config: config, hmacRequest: hmacRequest});
 
         mediaAtom.fetchAndSaveMetadata().then(() => {
            Promise.all([
@@ -132,7 +132,7 @@ describe('MediaAtom', () => {
             }
         });
 
-        const mediaAtom = new MediaAtom(cdsModel, config, hmacRequest);
+        const mediaAtom = new MediaAtom({cdsModel: cdsModel, config: config, hmacRequest: hmacRequest});
 
         mediaAtom.fetchAndSaveMetadata().then(() => {
             database.getOne('meta', 'atom_posterImage').then(actual => {
@@ -156,7 +156,7 @@ describe('MediaAtom', () => {
         const pollDuration = 500; // ms
         const pollInterval = 100; // ms
 
-        const mediaAtom = new MediaAtom(cdsModel, config, hmacRequest, pollDuration, pollInterval);
+        const mediaAtom = new MediaAtom({cdsModel: cdsModel, config: config, hmacRequest: hmacRequest, apiPollDuration: pollDuration, apiPollInterval: pollInterval});
 
         database.setOne('meta', 'atom_youtubeId', 'VideoOne').then(() => {
             mediaAtom.activateAsset().catch(e => {
@@ -177,7 +177,7 @@ describe('MediaAtom', () => {
             .put(atomApi).delay(50).reply(400)
             .put(atomApi).reply(200, 'asset-activated');
 
-        const mediaAtom = new MediaAtom(cdsModel, config, hmacRequest, pollDuration, pollInterval);
+        const mediaAtom = new MediaAtom({cdsModel: cdsModel, config: config, hmacRequest: hmacRequest, apiPollDuration: pollDuration, apiPollInterval: pollInterval});
 
         database.setOne('meta', 'atom_youtubeId', 'VideoOne').then(() => {
             mediaAtom.activateAsset().then(actual => {
@@ -190,7 +190,7 @@ describe('MediaAtom', () => {
     });
 
     it('should fail to activate an asset if no atom_youtubeId has not been set in the database', function (done) {
-        const mediaAtom = new MediaAtom(cdsModel, config, hmacRequest);
+        const mediaAtom = new MediaAtom({cdsModel: cdsModel, config: config, hmacRequest: hmacRequest});
         mediaAtom.activateAsset().catch(actual => {
             assert.ok(actual === 'Failed to get youtubeId from database');
             done();

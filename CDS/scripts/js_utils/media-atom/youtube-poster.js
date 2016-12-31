@@ -5,7 +5,7 @@ const https = require('https');
 const Logger = require('../logger');
 
 class YoutubePosterUpload {
-    constructor (cdsModel, config, youtubeAuthedClient) {
+    constructor ({cdsModel, config, youtubeAuthedClient}) {
         this.cdsModel = cdsModel;
         this.config = config;
         this.youtubeAuthedClient = youtubeAuthedClient;
