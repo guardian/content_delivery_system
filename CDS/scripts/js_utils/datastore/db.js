@@ -62,7 +62,17 @@ class Database {
 
                 const promises = Object.keys(meta).map(key => new Promise((resolve, reject) => {
                     const values = [sourceId, key, meta[key]];
-                    this.db.prepare(sql).run(values, (err) => ! err ? resolve() : reject(err));
+
+                    // callback is not an arrow function as need `this` to be old school to access `lastID`
+                    // https://github.com/mapbox/node-sqlite3/wiki/API#databaserunsql-param--callback
+                    this.db.prepare(sql).run(values, function (err) {
+                        if (! err) {
+                            Logger.info(`inserted new ${type}. key: ${key}, value: ${meta[key]}. ID ${this.lastID}`);
+                            resolve(this.lastID);
+                        } else {
+                            reject(err);
+                        }
+                    });
                 }));
 
                 Promise.all(promises)
@@ -110,7 +120,7 @@ class Database {
         const values = [type, this.whoami, Math.floor(Date.now())];
 
         return new Promise((resolve, reject) => {
-            // callback is not an arrow function as need this to be old school
+            // callback is not an arrow function as need `this` to be old school to access `lastID`
             // https://github.com/mapbox/node-sqlite3/wiki/API#databaserunsql-param--callback
             this.db.prepare(sql).run(values, function(err) {
                 if (! err) {

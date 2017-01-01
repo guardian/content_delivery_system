@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const Config = require('../../datastore/config');
 const Database = require('../../datastore/db');
 const CdsModel = require('../model/cds-model');

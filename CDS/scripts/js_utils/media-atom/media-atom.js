@@ -41,6 +41,9 @@ class MediaAtom {
                     }).catch(missingFields => {
                         reject(`Invalid response from Atom API. Missing ${missingFields.join(',')}`);
                     });
+                }).catch(error => {
+                    Logger.error(`Failed to ${error._method} ${url}. HTTP status: ${error.status}`);
+                    reject(error);
                 });
             });
         });
@@ -103,7 +106,10 @@ class MediaAtom {
                 this.hmacRequest.post(url, data).then(response => {
                     Logger.info(`added asset ${data.uri} to atom ${cdsModel.atomId}`);
                     resolve(response);
-                }).catch(e => reject(e));
+                }).catch(error => {
+                    Logger.error(`Failed to ${error._method} ${url}. HTTP status: ${error.status}`);
+                    reject(error);
+                });
             });
         });
     }
