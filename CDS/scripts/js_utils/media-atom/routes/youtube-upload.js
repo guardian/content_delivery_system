@@ -20,14 +20,19 @@ config.validate(['cf_media_file']).then(() => {
 
     const ytAuth = new YoutubeAuth({config: config});
 
-    ytAuth.getAuthedYoutubeClient().then(client => {
-        const videoUpload = new YoutubeVideoUpload({cdsModel: cdsModel, config: config, youtubeAuthedClient: client});
+    ytAuth.validate().then(() => {
+        ytAuth.getAuthedYoutubeClient().then(client => {
+            const videoUpload = new YoutubeVideoUpload({cdsModel: cdsModel, config: config, youtubeAuthedClient: client});
 
-        videoUpload.upload().then(() => {
-            const posterUpload = new YoutubePosterUpload({cdsModel: cdsModel, config: config, youtubeAuthedClient: client});
+            videoUpload.upload().then(() => {
+                const posterUpload = new YoutubePosterUpload({cdsModel: cdsModel, config: config, youtubeAuthedClient: client});
 
-            posterUpload.upload().then(() => {
-                process.exit();
+                posterUpload.upload().then(() => {
+                    process.exit();
+                }).catch(e => {
+                    Logger.error(e);
+                    process.exit(1);
+                });
             }).catch(e => {
                 Logger.error(e);
                 process.exit(1);
