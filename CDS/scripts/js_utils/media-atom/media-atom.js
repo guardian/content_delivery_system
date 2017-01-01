@@ -57,12 +57,13 @@ class MediaAtom {
         function checkCondition (resolve, reject) {
             self.hmacRequest.put(url, data)
                 .then(response => resolve(response))
-                .catch(() => {
+                .catch((error) => {
                     if (Number(new Date()) < endTime) {
-                        Logger.info(`video hasn't finished encoding. Retrying.`);
+                        Logger.info(`Failed to ${error._method} ${url}. HTTP status: ${error.status}`);
+                        Logger.info(`Video hasn't finished encoding. Retrying in ${self.apiPollInterval / 1000} seconds.`);
                         setTimeout(checkCondition, self.apiPollInterval, resolve, reject);
                     } else {
-                        Logger.info(`we've waited for ${self.apiPollDuration / 1000} seconds and youtube hasn't encoded the video yet.`);
+                        Logger.info(`We've waited for ${self.apiPollDuration / 1000} seconds and youtube hasn't encoded the video yet.`);
                         reject(timeoutMessage);
                     }
                 });

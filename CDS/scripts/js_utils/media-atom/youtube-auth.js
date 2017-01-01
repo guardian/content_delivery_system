@@ -14,7 +14,7 @@ class YoutubeAuth {
         this.passphrase = this.config.passphrase;
         this.clientSecretsFilepath = this.config.clientSecrets;
 
-        this.youtubeApiVersion = 3;
+        this.youtubeApiVersion = 'v3';
     }
 
     _ensureCanReadPrivateKey () {
@@ -66,7 +66,7 @@ class YoutubeAuth {
                 const credentials = res.filter(Boolean)[0];
 
                 const oauth2 = new OAuth2(credentials.client_id, credentials.client_secret);
-                const jwt = JWT(credentials.web.client_email, this.clientSecretsFilepath, null, scopes);
+                const jwt = new JWT(credentials.web.client_email, this.privateKey, null, scopes);
 
                 jwt.authorize((err, result) => {
                     if (err) {

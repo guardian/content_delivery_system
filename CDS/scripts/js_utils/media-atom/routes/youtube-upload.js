@@ -20,7 +20,7 @@ config.validate(['cf_media_file']).then(() => {
 
     const ytAuth = new YoutubeAuth({config: config});
 
-    ytAuth.getAuthedYoutubeClient(client => {
+    ytAuth.getAuthedYoutubeClient().then(client => {
         const videoUpload = new YoutubeVideoUpload({cdsModel: cdsModel, config: config, youtubeAuthedClient: client});
 
         videoUpload.upload().then(() => {
