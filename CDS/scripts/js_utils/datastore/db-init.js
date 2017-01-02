@@ -42,7 +42,7 @@ class DatabaseInit {
             );`
         ];
 
-        const insertSql = `INSERT INTO system (schema_version, cds_version) VALUES (1.0, 3.0);`;
+        const insertSql = 'INSERT INTO system (schema_version, cds_version) VALUES (1.0, 3.0);';
 
         return new Promise((resolve, reject) => {
             this.db.serialize(() => {

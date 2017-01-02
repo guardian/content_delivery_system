@@ -33,7 +33,7 @@ describe('DataStore Config', () => {
     it('should add extra properties when .withDateConfig is called', (done) => {
         const config = new Config({configDirectory: goodDataDir});
 
-        const date = new Date("2016-01-01 00:00:00");
+        const date = new Date('2016-01-01 00:00:00');
 
         config.validate().then(() => {
             const actual = config.withDateConfig(date);
@@ -76,8 +76,8 @@ describe('DataStore Config', () => {
                 'media_atom_poster_dir'
             ];
 
-           assert.deepEqual(actual, expected);
-           done();
+            assert.deepEqual(actual, expected);
+            done();
         });
     });
 });

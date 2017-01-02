@@ -63,7 +63,7 @@ class YoutubePosterUpload {
                 fs.unlink(file);
                 reject(err);
             });
-        })
+        });
     }
 }
 

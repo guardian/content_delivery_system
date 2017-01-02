@@ -17,12 +17,16 @@
     "xhr2": "^0.1.3"
   },
   "scripts": {
-    "test": "STAGE=test mocha test/**/*.js test/*.js"
+    "test": "npm run lint && npm run mocha-test",
+    "lint": "eslint ./ && jshint ./",
+    "mocha-test": "STAGE=test mocha test/**/*.js test/*.js"
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "eslint": "^3.12.2",
+    "jshint": "^2.9.4",
+    "nock": "^9.0.2",
     "sinon": "^1.17.6",
-    "sinon-chai": "^2.8.0",
-    "nock": "^9.0.2"
+    "sinon-chai": "^2.8.0"
   }
 }
