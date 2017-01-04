@@ -9,24 +9,9 @@ describe('DataStore Config', () => {
         const c = new Config(dataDir);
 
         const expected = {
-            config_username: 'foo',
-            config_password: 'bar',
-            config_something_else: 'baz'
-        };
-
-        const actual = c.config;
-
-        assert.deepEqual(actual, expected);
-        done();
-    });
-
-    it('should read obey the custom namespace char', (done) => {
-        const c = new Config(dataDir, ':');
-
-        const expected = {
-            'config:username': 'foo',
-            'config:password': 'bar',
-            'config:something_else': 'baz'
+            username: 'foo',
+            password: 'bar',
+            something_else: 'baz'
         };
 
         const actual = c.config;
@@ -43,9 +28,9 @@ describe('DataStore Config', () => {
         const actual = c.withDateConfig(date);
 
         const expected = {
-            config_username: 'foo',
-            config_password: 'bar',
-            config_something_else: 'baz',
+            username: 'foo',
+            password: 'bar',
+            something_else: 'baz',
             year: 2016,
             month: 1,
             day: 1,

@@ -3,28 +3,21 @@ const fs = require('fs');
 const PropertiesReader = require('properties-reader');
 
 class Config {
-    constructor (configDirectory = '/etc/cds_backend/conf.d', namespaceChar = '_') {
+    constructor (configDirectory = '/etc/cds_backend/conf.d') {
         this.configDirectory = configDirectory;
-        this.namespaceChar = namespaceChar;
 
-        const baseConfig = this._getEnvironmentConfig();
+        const baseConfig = this._getBaseConfig();
 
-        try {
-            this.config = fs.readdirSync(this.configDirectory)
-                .filter(f => f.endsWith('.conf'))
-                .reduce((properties, fileName) => {
-                    const filePath = path.join(this.configDirectory, fileName);
-                    const props = PropertiesReader(filePath).getAllProperties();
-                    return Object.assign({}, properties, this._namespaceConfig(props, 'config'));
-                }, baseConfig);
-        }
-        catch (e) {
-            // cannot read files in `this.configDirectory`
-            this.config = baseConfig;
-        }
+        this.config = fs.readdirSync(this.configDirectory)
+            .filter(f => f.endsWith('.conf'))
+            .reduce((properties, fileName) => {
+                const filePath = path.join(this.configDirectory, fileName);
+                const props = PropertiesReader(filePath).getAllProperties();
+                return Object.assign({}, properties, props);
+            }, baseConfig);
     }
 
-    _getEnvironmentConfig () {
+    _getBaseConfig () {
         const conf = {};
 
         if (process && process.env) {
@@ -42,13 +35,6 @@ class Config {
         }
 
         return conf;
-    }
-
-    _namespaceConfig (config, namespace) {
-        return Object.keys(config).reduce((result, key) => {
-            result[`${namespace}${this.namespaceChar}${key}`] = config[key];
-            return result;
-        }, {});
     }
 
     withDateConfig (date = new Date()) {
