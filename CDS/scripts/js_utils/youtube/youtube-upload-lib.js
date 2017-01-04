@@ -101,7 +101,7 @@ function downloadPosterImage(url, dest) {
             response.pipe(file);
             file.on('finish', () => file.close(resolve(dest)));
         }).on('error', (err) => {
-            fs.unlink(file);
+            fs.unlink(dest);
             reject(err);
         });
     });

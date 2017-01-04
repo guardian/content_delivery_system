@@ -1,5 +1,5 @@
 class CdsModel {
-    constructor (database) {
+    constructor ({database}) {
         this.database = database;
     }
 
@@ -30,6 +30,10 @@ class CdsModel {
                youtubeId: youtubeId
            };
         });
+    }
+
+    saveYoutubeId (youtubeId) {
+        return this.database.setOne('meta', 'atom_youtubeId', youtubeId);
     }
 
     saveAtomModel (mediaAtomModel) {

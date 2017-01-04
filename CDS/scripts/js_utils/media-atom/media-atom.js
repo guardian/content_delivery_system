@@ -1,15 +1,11 @@
+const Logger = require('../logger');
 const MediaAtomModel = require('./model/media-atom-model');
 
 class MediaAtom {
-    constructor (cdsModel, configObj, hmacRequest, apiPollDuration = 5 * 60 * 1000, apiPollInterval = 60 * 1000) {
-        if (! Object.keys(configObj.config).includes('media_atom_url_base')) {
-            throw `Invalid Config. Missing media_atom_url_base`;
-        }
-
+    constructor ({cdsModel, config, hmacRequest, apiPollDuration = 5 * 60 * 1000, apiPollInterval = 60 * 1000}) {
         this.cdsModel = cdsModel;
-        this.configObj = configObj;
+        this.config = config;
         this.hmacRequest = hmacRequest;
-        this.atomApiDomain = this.configObj.config.media_atom_url_base;
 
         this.atomApiPaths = {
             asset: `/api2/atoms/:id/assets`,
@@ -22,7 +18,7 @@ class MediaAtom {
     }
 
     _getUrl (path, atomId) {
-        return `${this.atomApiDomain}${path}`.replace(/:id/, atomId);
+        return `${this.config.atomUrl}${path}`.replace(/:id/, atomId);
     }
 
     fetchAndSaveMetadata () {
@@ -35,15 +31,19 @@ class MediaAtom {
                 const url = this._getUrl(this.atomApiPaths.metadata, cdsModel.atomId);
 
                 this.hmacRequest.get(url).then(response => {
-                    const model = new MediaAtomModel(response);
+                    const model = new MediaAtomModel({apiResponse: response});
 
                     model.validate().then(atomModel => {
                         this.cdsModel.saveAtomModel(atomModel).then(() => {
+                            Logger.info('saved atom to database');
                             resolve(response);
                         });
                     }).catch(missingFields => {
                         reject(`Invalid response from Atom API. Missing ${missingFields.join(',')}`);
                     });
+                }).catch(error => {
+                    Logger.error(`Failed to ${error._method} ${url}. HTTP status: ${error.status}`);
+                    reject(error);
                 });
             });
         });
@@ -57,10 +57,13 @@ class MediaAtom {
         function checkCondition (resolve, reject) {
             self.hmacRequest.put(url, data)
                 .then(response => resolve(response))
-                .catch(() => {
+                .catch((error) => {
                     if (Number(new Date()) < endTime) {
+                        Logger.info(`Failed to ${error._method} ${url}. HTTP status: ${error.status}`);
+                        Logger.info(`Video hasn't finished encoding. Retrying in ${self.apiPollInterval / 1000} seconds.`);
                         setTimeout(checkCondition, self.apiPollInterval, resolve, reject);
                     } else {
+                        Logger.info(`We've waited for ${self.apiPollDuration / 1000} seconds and youtube hasn't encoded the video yet.`);
                         reject(timeoutMessage);
                     }
                 });
@@ -70,11 +73,11 @@ class MediaAtom {
     }
 
     activateAsset () {
-        const timeoutMessage = 'Cannot add asset to youtube, video encoding took too long';
+        const timeoutMessage = 'Cannot activate youtube asset, video encoding took too long';
 
         return new Promise((resolve, reject) => {
             this.cdsModel.getData().then(cdsModel => {
-                if (!cdsModel.youtubeId) {
+                if (! cdsModel.youtubeId) {
                     reject('Failed to get youtubeId from database');
                 }
 
@@ -82,22 +85,33 @@ class MediaAtom {
                 const url = this._getUrl(this.atomApiPaths.activateAsset, cdsModel.atomId);
 
                 this._httpPoll(url, data, timeoutMessage)
-                    .then(response => resolve(response))
+                    .then(response => {
+                        Logger.info('activated asset');
+                        resolve(response);
+                    })
                     .catch(e => reject(e));
             });
         });
     }
 
     addAsset () {
-        return this.cdsModel.getData().then(cdsModel => {
-           if (! cdsModel.youtubeId) {
-               reject('Failed to get youtubeId from database');
-           }
+        return new Promise((resolve, reject) => {
+            this.cdsModel.getData().then(cdsModel => {
+               if (! cdsModel.youtubeId) {
+                   reject('Failed to get youtubeId from database');
+               }
 
-            const data = { uri: `https://www.youtube.com/watch?v=${cdsModel.youtubeId}` };
-            const url = this._getUrl(this.atomApiPaths.asset, cdsModel.atomId);
+                const data = { uri: `https://www.youtube.com/watch?v=${cdsModel.youtubeId}` };
+                const url = this._getUrl(this.atomApiPaths.asset, cdsModel.atomId);
 
-            return this.hmacRequest.post(url, data);
+                this.hmacRequest.post(url, data).then(response => {
+                    Logger.info(`added asset ${data.uri} to atom ${cdsModel.atomId}`);
+                    resolve(response);
+                }).catch(error => {
+                    Logger.error(`Failed to ${error._method} ${url}. HTTP status: ${error.status}`);
+                    reject(error);
+                });
+            });
         });
     }
 }

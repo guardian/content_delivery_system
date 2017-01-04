@@ -17,11 +17,11 @@ function safeRemoveFile(path) {
     });
 }
 
-// TODO these are unit tests. Are they needed? Or are the itegration tests enough?
+// TODO these are unit tests. Are they needed? Or are the integration tests enough?
 describe('CdsModel', () => {
     beforeEach((done) => {
         safeRemoveFile(dbPath).then(() => {
-            new DatabaseInit(dbPath).then(() => done());
+            new DatabaseInit({datastoreLocation: dbPath}).then(() => done());
         });
     });
 
@@ -32,10 +32,10 @@ describe('CdsModel', () => {
     it('should return an object that always has an atomId', function (done) {
         // this state would occur before `MediaAtom.fetchMetadata` has run.
 
-        const db = new Database('test', dbPath);
+        const db = new Database({whoami: 'test', datastoreLocation: dbPath});
 
         db.setOne('meta', 'gnm_master_mediaatom_atomid', 'AtomOne').then(() => {
-            const cdsModel = new CdsModel(db);
+            const cdsModel = new CdsModel({database: db});
 
             cdsModel.getData().then(actual => {
                 const expected = {

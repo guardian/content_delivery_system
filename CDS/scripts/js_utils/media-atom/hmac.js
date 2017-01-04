@@ -1,36 +1,28 @@
 const crypto = require('crypto');
 const reqwest = require('reqwest');
+const url = require('url');
 
 class HMACRequest {
-    constructor (configObj) {
-        const requiredConfig = ['shared_secret'];
-
-        requiredConfig.forEach(c => {
-            if (! Object.keys(configObj.config).includes(c)) {
-                throw `Invalid Config. Missing ${c}`;
-            }
-        });
-
-        this.configObj = configObj;
-
-        this.sharedSecret = this.configObj.config.shared_secret;
+    constructor ({config}) {
+        this.config = config;
     }
 
-    _getToken (url, date) {
-        const hmac = crypto.createHmac('sha256', this.sharedSecret);
-        const content = [date, url].join('\n');
+    _getToken (remoteUrl, date) {
+        const urlPath = url.parse(remoteUrl).pathname;
+        const content = [date, urlPath].join('\n');
 
+        const hmac = crypto.createHmac('sha256', this.config.atomSecret);
         hmac.update(content, 'utf-8');
 
         return `HMAC ${hmac.digest('base64')}`;
     }
 
-    _request (url, method, data = {}) {
+    _request (remoteUrl, method, data = {}) {
         const date = new Date().toUTCString();
-        const token = this._getToken(url, date);
+        const token = this._getToken(remoteUrl, date);
 
         const requestBody = {
-            url: url,
+            url: remoteUrl,
             method: method,
             contentType: 'application/json',
             headers: {
@@ -47,16 +39,16 @@ class HMACRequest {
         return reqwest(requestBody);
     }
 
-    get (url) {
-        return this._request(url, 'GET');
+    get (remoteUrl) {
+        return this._request(remoteUrl, 'GET');
     }
 
-    post (url, data) {
-        return this._request(url, 'POST', data);
+    post (remoteUrl, data) {
+        return this._request(remoteUrl, 'POST', data);
     }
 
-    put (url, data) {
-        return this._request(url, 'PUT', data);
+    put (remoteUrl, data) {
+        return this._request(remoteUrl, 'PUT', data);
     }
 }
 

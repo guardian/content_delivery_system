@@ -1,5 +1,5 @@
 class MediaAtomModel {
-    constructor (apiResponse) {
+    constructor ({apiResponse}) {
         this._data = apiResponse;
 
         this.requiredFieldsFromAtom = ['channelId', 'title', 'youtubeCategoryId'];
