@@ -47,7 +47,7 @@ class YoutubeVideoUpload {
                         resolve(result);
                     });
                 }
-           });
+            });
         });
     }
 

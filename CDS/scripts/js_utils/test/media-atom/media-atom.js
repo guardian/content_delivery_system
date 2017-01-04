@@ -27,6 +27,8 @@ const ATOM_ID = '123';
 
 describe('MediaAtom', () => {
     beforeEach(function (done) {
+        // make eslint happy - we add these to the closure scope of the test for re-use in individual tests
+        /*global config cdsModel hmacRequest database*/
         safeRemoveFile(dbPath).then(() => {
             new DatabaseInit({datastoreLocation: dbPath}).then(function () {
                 this.config = new Config({configDirectory: dataDir});
@@ -60,7 +62,7 @@ describe('MediaAtom', () => {
         mediaAtom.fetchAndSaveMetadata().catch(actual => {
             assert.ok(actual === 'Invalid response from Atom API. Missing youtubeCategoryId');
             done();
-        })
+        });
     });
 
     it('should fetch metadata from media atom and save it', function (done) {
@@ -76,22 +78,22 @@ describe('MediaAtom', () => {
         const mediaAtom = new MediaAtom({cdsModel: cdsModel, config: config, hmacRequest: hmacRequest});
 
         mediaAtom.fetchAndSaveMetadata().then(() => {
-           Promise.all([
-               database.getOne('meta', 'atom_channelId'),
-               database.getOne('meta', 'atom_title'),
-               database.getOne('meta', 'atom_ytCategory'),
-               database.getOne('meta', 'atom_tags')
-           ]).then(actual => {
-              const expected = [
-                  { type: 'meta', key: 'atom_channelId', value: 'ChannelOne' },
-                  { type: 'meta', key: 'atom_title', value: 'foo' },
-                  { type: 'meta', key: 'atom_ytCategory', value: '1' },
-                  { type: 'meta', key: 'atom_tags', value: 'tag,team' }
-              ];
+            Promise.all([
+                database.getOne('meta', 'atom_channelId'),
+                database.getOne('meta', 'atom_title'),
+                database.getOne('meta', 'atom_ytCategory'),
+                database.getOne('meta', 'atom_tags')
+            ]).then(actual => {
+                const expected = [
+                    { type: 'meta', key: 'atom_channelId', value: 'ChannelOne' },
+                    { type: 'meta', key: 'atom_title', value: 'foo' },
+                    { type: 'meta', key: 'atom_ytCategory', value: '1' },
+                    { type: 'meta', key: 'atom_tags', value: 'tag,team' }
+                ];
 
-              assert.deepEqual(actual, expected);
-              done();
-           });
+                assert.deepEqual(actual, expected);
+                done();
+            });
         }).catch(e => new Error(e));
     });
 
@@ -104,28 +106,28 @@ describe('MediaAtom', () => {
             youtubeCategoryId: '1',
             posterImage: {
                 assets: [{
-                    mimeType: "image/jpeg",
-                    file: "https://media.guim.co.uk/4d7c1db00237690e268015c5fd09502c66cdfd34/0_64_3488_1962/140.jpg",
+                    mimeType: 'image/jpeg',
+                    file: 'https://media.guim.co.uk/4d7c1db00237690e268015c5fd09502c66cdfd34/0_64_3488_1962/140.jpg',
                     dimensions: { height: 79, width: 140 },
                     size: 7324
                 }, {
-                    mimeType: "image/jpeg",
-                    file: "https://media.guim.co.uk/4d7c1db00237690e268015c5fd09502c66cdfd34/0_64_3488_1962/2000.jpg",
+                    mimeType: 'image/jpeg',
+                    file: 'https://media.guim.co.uk/4d7c1db00237690e268015c5fd09502c66cdfd34/0_64_3488_1962/2000.jpg',
                     dimensions: { height: 1125, width: 2000 },
                     size: 218024
                 }, {
-                    mimeType: "image/jpeg",
-                    file: "https://media.guim.co.uk/4d7c1db00237690e268015c5fd09502c66cdfd34/0_64_3488_1962/500.jpg",
+                    mimeType: 'image/jpeg',
+                    file: 'https://media.guim.co.uk/4d7c1db00237690e268015c5fd09502c66cdfd34/0_64_3488_1962/500.jpg',
                     dimensions: { height: 281, width: 500 },
                     size: 32557
                 }, {
-                    mimeType: "image/jpeg",
-                    file: "https://media.guim.co.uk/4d7c1db00237690e268015c5fd09502c66cdfd34/0_64_3488_1962/3488.jpg",
+                    mimeType: 'image/jpeg',
+                    file: 'https://media.guim.co.uk/4d7c1db00237690e268015c5fd09502c66cdfd34/0_64_3488_1962/3488.jpg',
                     dimensions: { height: 1962, width: 3488 },
                     size: 460127
                 }, {
-                    mimeType: "image/jpeg",
-                    file: "https://media.guim.co.uk/4d7c1db00237690e268015c5fd09502c66cdfd34/0_64_3488_1962/1000.jpg",
+                    mimeType: 'image/jpeg',
+                    file: 'https://media.guim.co.uk/4d7c1db00237690e268015c5fd09502c66cdfd34/0_64_3488_1962/1000.jpg',
                     dimensions: { height: 563, width: 1000 },
                     size: 85022
                 }]
@@ -144,7 +146,7 @@ describe('MediaAtom', () => {
 
                 assert.deepEqual(actual, expected);
                 done();
-            }).catch(e => console.log(e));
+            }).catch(e => done(new Error(e)));
         });
     });
 

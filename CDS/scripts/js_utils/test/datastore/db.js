@@ -39,7 +39,7 @@ describe('DataStore database', () => {
 
             assert.deepEqual(actual, expected);
             done();
-        }).catch(e => console.log(e));
+        }).catch(e => done(new Error(e)));
     });
 
     it('should be able to insert a meta record', (done) => {
@@ -61,17 +61,17 @@ describe('DataStore database', () => {
     it('should be able to insert multiple records', (done) => {
         const db = new Database({whoami: 'test', datastoreLocation: dbPath});
 
-       db.setMany('meta', {name: 'foo', age: 'bar'}).then(() => {
-           Promise.all([db.getOne('meta', 'name'), db.getOne('meta', 'age')]).then(actual => {
-              const expected = [
-                  { type: 'meta', key: 'name', value: 'foo' },
-                  { type: 'meta', key: 'age', value: 'bar' }
-              ];
+        db.setMany('meta', {name: 'foo', age: 'bar'}).then(() => {
+            Promise.all([db.getOne('meta', 'name'), db.getOne('meta', 'age')]).then(actual => {
+                const expected = [
+                    { type: 'meta', key: 'name', value: 'foo' },
+                    { type: 'meta', key: 'age', value: 'bar' }
+                ];
 
-              assert.deepEqual(actual, expected);
-              done();
-           }).catch(e => console.log(e));
-       });
+                assert.deepEqual(actual, expected);
+                done();
+            }).catch(e => done(new Error(e)));
+        });
     });
 
     it('should throw an exception when an unexpected type is used', (done) => {
@@ -81,5 +81,5 @@ describe('DataStore database', () => {
             assert.equal(e, 'type must be meta, media, tracks');
             done();
         });
-    })
+    });
 });

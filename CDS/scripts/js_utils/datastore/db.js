@@ -45,7 +45,7 @@ class Database {
     }
 
     setOne (type, key, value) {
-        return this.setMany(type, {[key]: value})
+        return this.setMany(type, {[key]: value});
     }
 
     setMany (type, meta) {

@@ -8,7 +8,7 @@ class MediaAtom {
         this.hmacRequest = hmacRequest;
 
         this.atomApiPaths = {
-            asset: `/api2/atoms/:id/assets`,
+            asset: '/api2/atoms/:id/assets',
             metadata: '/api2/atoms/:id',
             activateAsset: '/api2/atom/:id/asset-active'
         };
@@ -97,9 +97,9 @@ class MediaAtom {
     addAsset () {
         return new Promise((resolve, reject) => {
             this.cdsModel.getData().then(cdsModel => {
-               if (! cdsModel.youtubeId) {
-                   reject('Failed to get youtubeId from database');
-               }
+                if (! cdsModel.youtubeId) {
+                    reject('Failed to get youtubeId from database');
+                }
 
                 const data = { uri: `https://www.youtube.com/watch?v=${cdsModel.youtubeId}` };
                 const url = this._getUrl(this.atomApiPaths.asset, cdsModel.atomId);

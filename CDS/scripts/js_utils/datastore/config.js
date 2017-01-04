@@ -15,7 +15,7 @@ class Config {
             .reduce((properties, fileName) => {
                 const filePath = fs.realpathSync(path.join(this.configDirectory, fileName));
                 Logger.info(`reading config from ${filePath}`);
-                const props = PropertiesReader(filePath).getAllProperties();
+                const props = new PropertiesReader(filePath).getAllProperties();
                 return Object.assign({}, properties, props);
             }, baseConfig);
     }

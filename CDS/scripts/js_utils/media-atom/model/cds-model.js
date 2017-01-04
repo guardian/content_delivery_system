@@ -16,19 +16,19 @@ class CdsModel {
             this.database.getOne('meta', 'atom_youtubeId')
 
         ]).then(data => {
-           const [atomId, plutoId, channelId, title, category, privacyStatus, tags, posterImage, youtubeId] = data.map(d => d.value);
+            const [atomId, plutoId, channelId, title, category, privacyStatus, tags, posterImage, youtubeId] = data.map(d => d.value);
 
-           return  {
-               atomId: atomId,
-               plutoId: plutoId,
-               channelId: channelId,
-               title: title,
-               category: category,
-               privacyStatus: privacyStatus,
-               tags: tags,
-               posterImage: posterImage,
-               youtubeId: youtubeId
-           };
+            return  {
+                atomId: atomId,
+                plutoId: plutoId,
+                channelId: channelId,
+                title: title,
+                category: category,
+                privacyStatus: privacyStatus,
+                tags: tags,
+                posterImage: posterImage,
+                youtubeId: youtubeId
+            };
         });
     }
 
