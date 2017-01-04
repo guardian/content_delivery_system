@@ -7,21 +7,23 @@ const Database = require('../../datastore/db');
 const dbPath = path.join(__dirname, '../data/test.db');
 
 function safeRemoveFile(path) {
-    fs.exists(path, (exists) => {
-        if (exists) {
-            fs.unlink(path);
+    return new Promise(resolve => {
+        if (! fs.existsSync(path)) {
+            resolve();
         }
-    })
+        fs.unlink(path, () => resolve());
+    });
 }
 
 describe('DataStore database', () => {
     beforeEach((done) => {
-        safeRemoveFile(dbPath);
-        new DatabaseInit(dbPath).then(() => done());
+        safeRemoveFile(dbPath).then(() => {
+            new DatabaseInit(dbPath).then(() => done());
+        });
     });
 
-    afterEach(() => {
-        safeRemoveFile(dbPath);
+    afterEach((done) => {
+        safeRemoveFile(dbPath).then(() => done());
     });
 
     it('should return `undefined` when no data exists', (done) => {
@@ -40,7 +42,7 @@ describe('DataStore database', () => {
         }).catch(e => console.log(e));
     });
 
-    it('should be able to insert a media record', (done) => {
+    it('should be able to insert a meta record', (done) => {
         const db = new Database('test', dbPath);
 
         db.setOne('meta', 'name', 'MrTest').then(() => {
@@ -54,6 +56,22 @@ describe('DataStore database', () => {
                 done();
             });
         });
+    });
+
+    it('should be able to insert multiple records', (done) => {
+       const db = new Database('test', dbPath);
+
+       db.setMany('meta', {name: 'foo', age: 'bar'}).then(() => {
+           Promise.all([db.getOne('meta', 'name'), db.getOne('meta', 'age')]).then(actual => {
+              const expected = [
+                  { type: 'meta', key: 'name', value: 'foo' },
+                  { type: 'meta', key: 'age', value: 'bar' }
+              ];
+
+              assert.deepEqual(actual, expected);
+              done();
+           }).catch(e => console.log(e));
+       });
     });
 
     it('should throw an exception when an unexpected type is used', (done) => {

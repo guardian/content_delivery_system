@@ -11,7 +11,9 @@ describe('DataStore Config', () => {
         const expected = {
             username: 'foo',
             password: 'bar',
-            something_else: 'baz'
+            something_else: 'baz',
+            shared_secret: 'CanYouKeepASecret',
+            media_atom_url_base: 'https://no.where'
         };
 
         const actual = c.config;
@@ -31,6 +33,8 @@ describe('DataStore Config', () => {
             username: 'foo',
             password: 'bar',
             something_else: 'baz',
+            shared_secret: 'CanYouKeepASecret',
+            media_atom_url_base: 'https://no.where',
             year: 2016,
             month: 1,
             day: 1,
