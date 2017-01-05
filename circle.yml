@@ -12,6 +12,7 @@ checkout:
     - sudo -E ./circle_setup_rvm.sh
     - sudo -i /home/ubuntu/content_delivery_system/CDS/install.sh -y
     - cd CDS/scripts/js_utils; npm install
+    - gem install webrick aws-sdk-v1 json rspec trollop
 
 dependencies:
   cache_directories:
@@ -37,10 +38,12 @@ dependencies:
 test:
   override:
     - bash ./tests/runtests.sh
+    - cd CDS/cdsresponder; rspec -P test/*Spec.rb
     - cd CDS/scripts/js_utils; npm test
 
 deployment:
   riffraff_upload:
     branch: /.*/
     commands:
+      - cd CDS/cdsresponder; gem build cdsresponder.gemspec
       - sbt riffRaffUpload

@@ -45,10 +45,13 @@ class CDSResponder
     @routename=routename
     @cdsarg=arg
     @notification_arn=notification
-    matchdata=arn.match(/^arn:aws:sqs:([^:]*):([^:]*):([^:]*)/)
+
+    matchdata=arn.match(/^arn:aws:sqs:([^:]*):([^:]*):([^:]*)$/)
+    raise ArgumentError,"Queue ARN is not valid" unless(matchdata)
     @region=matchdata[1]
     @acct=matchdata[2]
     @name=matchdata[3]
+
     @url="https://sqs.#{@region}.amazonaws.com/#{@acct}/#{@name}"
     @sqs=AWS::SQS::new(:region => 'eu-west-1')
     @q=@sqs.queues[@url]
@@ -59,6 +62,7 @@ class CDSResponder
 
     if notification!=nil
       @sns=AWS::SNS.new(:region => 'eu-west-1')
+      raise StandardError, "Unable to contact SNS service" unless(@sns)
       @notification_topic=@sns.topics[notification]
     end
 
