@@ -12,6 +12,7 @@ const parser = new ArgumentParser();
 
 parser.addArgument('--atom-id', {dest: 'atomId'});
 parser.addArgument('--youtube-id', {dest: 'youtubeId'});
+parser.addArgument('--pluto-id', {dest: 'plutoId'});
 
 const args = parser.parseArgs();
 
@@ -31,6 +32,10 @@ config.validate().then(() => {
 
         if (args.youtubeId) {
             promises.push(database.setOne('meta', 'atom_youtubeId', args.youtubeId));
+        }
+
+        if (args.plutoId) {
+            promises.push(database.setOne('meta', 'itemId', args.plutoId));
         }
 
         Promise.all(promises).then(() => {
