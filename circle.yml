@@ -10,15 +10,18 @@ checkout:
   post:
     - chmod a+x ./circle_setup_rvm.sh
     - sudo -E ./circle_setup_rvm.sh
-    - sudo -i /home/ubuntu/content_delivery_system/CDS/install.sh -y
-    - cd CDS/scripts/js_utils; npm install
-    - gem install webrick aws-sdk-v1 json rspec trollop
 
 dependencies:
+  override:
+    #json is a listed dependency of aws-sdk
+    - gem install webrick aws-sdk-v1 rspec trollop
+    - sudo -i /home/ubuntu/content_delivery_system/CDS/install.sh -y
+    - cd CDS/scripts/js_utils; npm install
+
   cache_directories:
     - "~/.sbt"
     - "~/.ivy2"
-    - "CDS/scripts/js_utils/node_modules"
+    - CDS/scripts/js_utils/node_modules
     - /usr/local/lib/perl/5.18.2
     - /usr/local/share/perl/5.18.2
     - /usr/lib/perl5
@@ -26,14 +29,7 @@ dependencies:
     - /usr/lib/perl/5.18
     - /usr/share/perl/5.18
     - /usr/local/lib/site_perl
-    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/site_ruby/2.2.0
-    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/site_ruby/2.2.0/x86_64-linux
-    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/site_ruby
-    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/vendor_ruby/2.2.0
-    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/vendor_ruby/2.2.0/x86_64-linux
-    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/vendor_ruby
-    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/2.2.0
-    - /opt/circleci/ruby/ruby-2.2.4/lib/ruby/2.2.0/x86_64-linux
+    - /opt/circleci/.rvm/gems/ruby-2.2.5
 
 test:
   override:
