@@ -10,12 +10,12 @@ checkout:
   post:
     - chmod a+x ./circle_setup_rvm.sh
     - sudo -E ./circle_setup_rvm.sh
-    - curl -L https://install.perlbrew.pl | sudo bash
-    - echo "source ~/perl5/perlbrew/etc/bashrc" >> ~/.bash_profile
-    - source ~/perl5/perlbrew/etc/bashrc
-    - perlbrew init
-    - perlbrew install perl-5.16.0
-    - perlbrew switch perl-5.16.0
+#    - curl -L https://install.perlbrew.pl | sudo bash
+#    - echo "source ~/perl5/perlbrew/etc/bashrc" >> ~/.bash_profile
+#    - source ~/perl5/perlbrew/etc/bashrc
+#    - perlbrew init
+#    - perlbrew install perl-5.16.0
+#    - perlbrew switch perl-5.16.0
 
 dependencies:
   override:
