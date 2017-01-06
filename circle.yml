@@ -18,18 +18,18 @@ dependencies:
     - sudo -i /home/ubuntu/content_delivery_system/CDS/install.sh -y
     - cd CDS/scripts/js_utils; npm install
 
-  cache_directories:
-    - "~/.sbt"
-    - "~/.ivy2"
-    - CDS/scripts/js_utils/node_modules
-    - /usr/local/lib/perl/5.18.2
-    - /usr/local/share/perl/5.18.2
-    - /usr/lib/perl5
-    - /usr/share/perl5
-    - /usr/lib/perl/5.18
-    - /usr/share/perl/5.18
-    - /usr/local/lib/site_perl
-    - /opt/circleci/.rvm/gems/ruby-2.2.5
+#  cache_directories:
+#    - "~/.sbt"
+#    - "~/.ivy2"
+#    - CDS/scripts/js_utils/node_modules
+#    - /usr/local/lib/perl/5.18.2
+#    - /usr/local/share/perl/5.18.2
+#    - /usr/lib/perl5
+#    - /usr/share/perl5
+#    - /usr/lib/perl/5.18
+#    - /usr/share/perl/5.18
+#    - /usr/local/lib/site_perl
+#    - /opt/circleci/.rvm/gems/ruby-2.2.5
 
 test:
   override:
