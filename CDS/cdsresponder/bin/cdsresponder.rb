@@ -3,7 +3,7 @@
 require 'raven'
 require 'logger'
 require 'ConfigFile'
-require 'FinishedNoticiation'
+require 'FinishedNotification'
 require 'Network'
 require 'CDSResponder'
 require 'trollop'
