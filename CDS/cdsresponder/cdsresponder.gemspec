@@ -19,5 +19,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'json', '~> 1.4', '>=1.4.0'
   s.add_runtime_dependency 'certifi', '~> 2016.9', '>=2016.09.26'
   s.add_runtime_dependency 'webrick', '~> 1.3', '>=1.3.0'
+  s.add_runtime_dependency 'sentry-raven', '~> 2.3', '>=2.3.0'
   s.license       = 'GPL-3.0'
 end

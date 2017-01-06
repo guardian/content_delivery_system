@@ -26,7 +26,7 @@ dependencies:
 
   cache_directories:
     - "~/.sbt"
-#    - "~/.ivy2"
+    - "~/.ivy2"
     - CDS/scripts/js_utils/node_modules
     - "~/perl5"
 #    - /usr/local/lib/perl/5.18.2
@@ -36,7 +36,7 @@ dependencies:
 #    - /usr/lib/perl/5.18
 #    - /usr/share/perl/5.18
 #    - /usr/local/lib/site_perl
-#    - /opt/circleci/.rvm/gems/ruby-2.2.5
+    - /opt/circleci/.rvm/gems/ruby-2.2.5
 
 test:
   override:

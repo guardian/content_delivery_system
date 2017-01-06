@@ -1,4 +1,5 @@
 require 'aws-sdk-v1'
+require 'logger'
 
 #This class represents the queue responder itself
 #When you initialise an instance of this class, you tell it which queue to listen to and which route to execute, etc.,
@@ -8,7 +9,11 @@ require 'aws-sdk-v1'
 #To wait for the termination of the listener, call the #join method.  To forcibly kill the thread without waiting for
 #termination, call the #kill method.
 
-def startup_responders()
+def startup_responders(logger: nil)
+  if logger==nil
+    logger = Logger.new(STDOUT)
+  end
+
   ddb=AWS::DynamoDB.new(:region => $options[:region])
 
   table=ddb.tables[$cfg.var['configuration-table']]

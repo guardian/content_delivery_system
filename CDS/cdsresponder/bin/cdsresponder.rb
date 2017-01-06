@@ -26,12 +26,19 @@ def clean_shutdown(responders,server,timeout)
 end
 
 ### START MAIN
-logger = Logger.new(STDOUT)
+
 #Process any commandline options
 $options = Trollop::options do
   opt :configfile, "Path to the configuration file", :type=>:string, :default=>"/etc/cdsresponder.conf"
   opt :region, "AWS region to work in", :type=>:string, :default=>"eu-west-1"
   opt :port, "Port to bind to for healthcheck and monitoring", :type=>:integer, :default=>8000
+  opt :logfile, "Log file to output to", :type=>:string
+end
+
+if $options.logfile==nil
+  logger = Logger.new(STDOUT)
+else
+  logger = Logger.new($options[:logfile])
 end
 
 #Read in the configuration file.  cfg is declared as a global variable ($ prefix)
@@ -53,8 +60,8 @@ Raven.capture do
     logger.info("Loaded config:")
     logger.info($cfg)
 
-    startup_responders
-    startup_networkreceiver
+    startup_responders(logger: logger)
+    server = startup_networkreceiver($options[:port])
 
     #exit on ctrl-c or term
     trap 'INT' do clean_shutdown(responders,server,60) end
