@@ -10,7 +10,8 @@ class MediaAtom {
         this.atomApiPaths = {
             asset: '/api2/atoms/:id/assets',
             metadata: '/api2/atoms/:id',
-            activateAsset: '/api2/atom/:id/asset-active'
+            activateAsset: '/api2/atom/:id/asset-active',
+            updateMetadata: '/api/atom/:id/update-metadata'
         };
 
         this.apiPollDuration = apiPollDuration;
@@ -106,6 +107,27 @@ class MediaAtom {
 
                 this.hmacRequest.post(url, data).then(response => {
                     Logger.info(`added asset ${data.uri} to atom ${cdsModel.atomId}`);
+                    resolve(response);
+                }).catch(error => {
+                    Logger.error(`Failed to ${error._method} ${url}. HTTP status: ${error.status}`);
+                    reject(error);
+                });
+            });
+        });
+    }
+
+    setPlutoId () {
+        return new Promise((resolve, reject) => {
+            this.cdsModel.getData().then(cdsModel => {
+                if (! cdsModel.plutoId) {
+                    reject('Failed to get plutoId (itemId) from database');
+                }
+
+                const data = { plutoId: cdsModel.plutoId };
+                const url = this._getUrl(this.atomApiPaths.updateMetadata, cdsModel.atomId);
+
+                this.hmacRequest.put(url, data).then(response => {
+                    Logger.info(`Added plutoId ${cdsModel.plutoId} to atom ${cdsModel.atomId}`);
                     resolve(response);
                 }).catch(error => {
                     Logger.error(`Failed to ${error._method} ${url}. HTTP status: ${error.status}`);
