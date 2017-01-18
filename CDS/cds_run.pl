@@ -624,6 +624,7 @@ sub find_filename {
 # 0=>run successful
 # 1=>run failed for some reason (script flagged an error or did not exist - logged)
 # 2=>one of the file arguments requested in take-files did not exist, so the script didn't run.
+# 3=>rerun the route.
 sub executeMethod{
 	my ($methodData,%args) = @_;
 	my $systemArguments;
