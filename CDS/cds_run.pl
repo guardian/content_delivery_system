@@ -694,6 +694,11 @@ sub executeMethod{
 					print STDOUT "-ERROR: an error occurred with '$methodName' script.\n";
 					logOutput("-ERROR: an error occurred with '$methodName' script.\n",'method'=>'CDS');	
 					$returnCode = 3;
+					$pid = fork();
+					if( $pid == 0 ){
+					   exec("cds_run.pl");
+					   exit 0;
+					}
 				}
 				elsif($exitCode > 0)
 				{
