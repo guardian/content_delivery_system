@@ -689,7 +689,13 @@ sub executeMethod{
 				print "child died on signal " . ($ret & 0xff) . "\n";
 				print "child exit code was "  . $exitCode   . "\n";
 
-				if($exitCode > 0)
+				if($exitCode == 3)
+				{
+					print STDOUT "-ERROR: an error occurred with '$methodName' script.\n";
+					logOutput("-ERROR: an error occurred with '$methodName' script.\n",'method'=>'CDS');	
+					$returnCode = 3;
+				}
+				elsif($exitCode > 0)
 				{
 					print STDOUT "-ERROR: an error occurred with '$methodName' script.\n";
 					logOutput("-ERROR: an error occurred with '$methodName' script.\n",'method'=>'CDS');	
@@ -718,6 +724,8 @@ sub executeMethod{
 			$status="error";
 		} elsif($returnCode==2){
 			$status="nonfatal";
+		} elsif($returnCode==3){
+			$status="reruning";
 		}
 		$externalLogger->update_status(id=>$loggingID,current_operation=>'',last_operation=>$methodName,last_error=>$methodData->{'lastError'},last_operation_status=>$status);
 	}
