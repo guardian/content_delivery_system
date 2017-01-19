@@ -691,7 +691,7 @@ sub executeMethod{
 				print "back quotes returned " . ($ret)        . "\n";
 				print "child died on signal " . ($ret & 0xff) . "\n";
 				print "child exit code was "  . $exitCode   . "\n";
-
+				
 				if($exitCode == 3)
 				{
 					print STDOUT "-ERROR: an error occurred with '$methodName' script.\n";
@@ -704,17 +704,45 @@ sub executeMethod{
 					{
 						$reruncommand = $reruncommand . " --input-media " . $inputMedia;
 					}
-					if ($inputMedia ne "")
+					if ($inputMeta ne "")
 					{
 						$reruncommand = $reruncommand . " --input-meta " . $inputMeta;
 					}
-					if ($inputMedia ne "")
+					if ($inputInMeta ne "")
 					{
 						$reruncommand = $reruncommand . " --input-inmeta " . $inputInMeta;
 					}
-					if ($inputMedia ne "")
+					if ($inputXML ne "")
 					{
 						$reruncommand = $reruncommand . " --input-xml " . $inputXML;
+					}
+					if ($keepDatastore ne "")
+					{
+						$reruncommand = $reruncommand . " --keep-datastore " . $keepDatastore;
+					}
+					if ($loggingID ne "")
+					{
+						$reruncommand = $reruncommand . " --logging-id " . $loggingID;
+					}
+					if ($logDB ne "")
+					{
+						$reruncommand = $reruncommand . " --logging-db " . $logDB;
+					}
+					if ($dbHost ne "")
+					{
+						$reruncommand = $reruncommand . " --db-host " . $dbHost;
+					}
+					if ($dbUser ne "")
+					{
+						$reruncommand = $reruncommand . " --db-login " . $dbUser;
+					}
+					if ($dbPass ne "")
+					{
+						$reruncommand = $reruncommand . " --db-pass " . $dbPass;
+					}
+					if ($dbDriver ne "")
+					{
+						$reruncommand = $reruncommand . " --db-driver " . $dbDriver;
 					}
 					$runCount = $runCount + 1;
 					$reruncommand = $reruncommand . " --run-count " . $runCount;
