@@ -727,6 +727,10 @@ sub executeMethod{
 						   exit 0;
 						}
 					}
+					else
+					{
+						$returnCode = 1;
+					}
 				}
 				elsif($exitCode > 0)
 				{
