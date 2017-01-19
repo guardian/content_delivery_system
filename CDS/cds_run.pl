@@ -694,10 +694,29 @@ sub executeMethod{
 					print STDOUT "-ERROR: an error occurred with '$methodName' script.\n";
 					logOutput("-ERROR: an error occurred with '$methodName' script.\n",'method'=>'CDS');	
 					$returnCode = 3;
+					my $reruncommand;
+					$reruncommand = "cds_run.pl";
+					$reruncommand = $reruncommand . " --route " . $routeFileName;
+					if ($inputMedia ne "")
+					{
+						$reruncommand = $reruncommand . " --input-media " . $inputMedia;
+					}
+					if ($inputMedia ne "")
+					{
+						$reruncommand = $reruncommand . " --input-meta " . $inputMeta;
+					}
+					if ($inputMedia ne "")
+					{
+						$reruncommand = $reruncommand . " --input-inmeta " . $inputInMeta;
+					}
+					if ($inputMedia ne "")
+					{
+						$reruncommand = $reruncommand . " --input-xml " . $inputXML;
+					}
 					my $pid;
 					$pid = fork();
 					if( $pid == 0 ){
-					   exec("cds_run.pl");
+					   exec($reruncommand);
 					   exit 0;
 					}
 				}
