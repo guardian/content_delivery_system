@@ -87,6 +87,8 @@ my $dbUser;
 my $dbPass;
 my $dbDriver;
 
+my $runCount = 1;
+
 my $debugLevel = 2;
 
 # there is an issue with not being able to set environment variables in child processes.  The work around is store
@@ -128,6 +130,7 @@ my $configData=readConfigFile();
 		    "db-login=s" =>\$dbUser,
 		    "db-pass=s" =>\$dbPass,
 		    "db-driver=s" =>\$dbDriver,
+			"run-count=s" =>\$runCount,
 	            "route=s" => \$routeFileName ); 
 
 $dbHost=$configData->{'db-host'} unless($dbHost);
@@ -713,11 +716,16 @@ sub executeMethod{
 					{
 						$reruncommand = $reruncommand . " --input-xml " . $inputXML;
 					}
-					my $pid;
-					$pid = fork();
-					if( $pid == 0 ){
-					   exec($reruncommand);
-					   exit 0;
+					$runCount = $runCount + 1;
+					$reruncommand = $reruncommand . " --run-count " . $runCount;
+					if ($runCount < 65)
+					{
+						my $pid;
+						$pid = fork();
+						if( $pid == 0 ){
+						   exec($reruncommand);
+						   exit 0;
+						}
 					}
 				}
 				elsif($exitCode > 0)
