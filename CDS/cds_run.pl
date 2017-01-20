@@ -140,8 +140,12 @@ $logDB=$configData->{'logging-db'} unless($logDB);
 $dbUser=$configData->{'db-login'} unless($dbUser);
 $dbPass=$configData->{'db-pass'} unless($dbPass);
 $dbDriver=$configData->{'db-driver'} unless($dbDriver);
-$rerunMax=$configData->{'max-retries'};
-$rerunDelay=$configData->{'retry-delay'};
+if (defined $configData->{'max-retries'}) {
+	$rerunMax=$configData->{'max-retries'};
+}
+if (defined $configData->{'retry-delay'}) {
+	$rerunDelay=$configData->{'retry-delay'};
+}
 
 # Do we need to use an external logging module?
 if($logDB){
