@@ -28,6 +28,9 @@ sub start_element {
 		if (defined $el->{'Attributes'}->{'{}max_retries'}->{'Value'}){
 			$self->{'route'}->{'max_retries'}=$el->{'Attributes'}->{'{}max_retries'}->{'Value'};
 		}
+		if (defined $el->{'Attributes'}->{'{}retry_delay'}->{'Value'}){
+			$self->{'route'}->{'retry_delay'}=$el->{'Attributes'}->{'{}retry_delay'}->{'Value'};
+		}
 	}
 
 #	print "in start_element: \$el=\n";

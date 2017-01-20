@@ -232,6 +232,11 @@ else
 			$rerunMax = $routes_parser->{'Handler'}->{'route'}->{'max_retries'};
 		}	
 		
+		if(defined $routes_parser->{'Handler'}->{'route'}->{'retry_delay'})
+		{
+			$rerunDelay = $routes_parser->{'Handler'}->{'route'}->{'retry_delay'};
+		}	
+	
 		# TO DO: there should be some validation done on the parser contents.
 	
 		@inputMethods = @{$routes_parser->{'Handler'}->{'methods'}->{'input'}} if(defined $routes_parser->{'Handler'}->{'methods'}->{'input'});	
