@@ -727,25 +727,40 @@ sub executeMethod{
 							$reruncommand = $reruncommand . " --logging-id " . $loggingID;
 						}
 					}
-					if ($logDB ne "")
+					if (defined $logDB)
 					{
-						$reruncommand = $reruncommand . " --logging-db " . $logDB;
+						if ($logDB ne "")
+						{
+							$reruncommand = $reruncommand . " --logging-db " . $logDB;
+						}
 					}
-					if ($dbHost ne "")
+					if (defined $dbHost)
 					{
-						$reruncommand = $reruncommand . " --db-host " . $dbHost;
+						if ($dbHost ne "")
+						{
+							$reruncommand = $reruncommand . " --db-host " . $dbHost;
+						}
 					}
-					if ($dbUser ne "")
+					if (defined $dbUser)
 					{
-						$reruncommand = $reruncommand . " --db-login " . $dbUser;
+						if ($dbUser ne "")
+						{
+							$reruncommand = $reruncommand . " --db-login " . $dbUser;
+						}
 					}
-					if ($dbPass ne "")
+					if (defined $dbPass)
 					{
-						$reruncommand = $reruncommand . " --db-pass " . $dbPass;
+						if ($dbPass ne "")
+						{
+							$reruncommand = $reruncommand . " --db-pass " . $dbPass;
+						}
 					}
-					if ($dbDriver ne "")
+					if (defined $dbDriver)
 					{
-						$reruncommand = $reruncommand . " --db-driver " . $dbDriver;
+						if ($dbDriver ne "")
+						{
+							$reruncommand = $reruncommand . " --db-driver " . $dbDriver;
+						}
 					}
 					$runCount = $runCount + 1;
 					$reruncommand = $reruncommand . " --run-count " . $runCount;
