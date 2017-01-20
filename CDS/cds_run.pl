@@ -720,9 +720,11 @@ sub executeMethod{
 					{
 						$reruncommand = $reruncommand . " --keep-datastore " . $keepDatastore;
 					}
-					if ($loggingID ne "")
-					{
-						$reruncommand = $reruncommand . " --logging-id " . $loggingID;
+					if (defined $loggingID)
+						if ($loggingID ne "")
+						{
+							$reruncommand = $reruncommand . " --logging-id " . $loggingID;
+						}
 					}
 					if ($logDB ne "")
 					{
