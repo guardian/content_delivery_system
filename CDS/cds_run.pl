@@ -88,6 +88,8 @@ my $dbPass;
 my $dbDriver;
 
 my $runCount = 1;
+my $rerunMax = 64;
+my $rerunDelay = 8;
 
 my $debugLevel = 2;
 
@@ -138,6 +140,8 @@ $logDB=$configData->{'logging-db'} unless($logDB);
 $dbUser=$configData->{'db-login'} unless($dbUser);
 $dbPass=$configData->{'db-pass'} unless($dbPass);
 $dbDriver=$configData->{'db-driver'} unless($dbDriver);
+$rerunMax=$configData->{'max-retries'};
+$rerunDelay=$configData->{'retry-delay'};
 
 # Do we need to use an external logging module?
 if($logDB){
@@ -764,12 +768,12 @@ sub executeMethod{
 					}
 					$runCount = $runCount + 1;
 					$reruncommand = $reruncommand . " --run-count " . $runCount;
-					if ($runCount < 65)
+					if ($runCount < ($rerunMax + 1))
 					{
 						my $pid;
 						$pid = fork();
 						if( $pid == 0 ){
-							sleep(8);
+							sleep($rerunDelay);
 							exec($reruncommand);
 							exit 0;
 						}
