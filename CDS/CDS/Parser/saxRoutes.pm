@@ -14,6 +14,13 @@ my $debugLevel = 0;
 sub start_document {
 	my ( $self, $doc ) = @_;
 	#  print "Document Dumper($doc)";
+	if($doc->{'LocalName'}=~/([\w\d]*)-route/){
+		#print "Got $1 method\n" if $debugLevel > 0;
+		#$self->{'current_method_type'}=$1;
+		$self->{'route'}->{'max_retries'}=$doc->{'Attributes'}->{'{}max_retries'}->{'Value'};
+	} #elsif(defined $self->{'current_method_type'}){
+		#$self->{'current_attribute'}=$el->{'LocalName'};
+	#}
 
 }
 
