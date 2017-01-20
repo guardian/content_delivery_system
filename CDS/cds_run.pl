@@ -222,15 +222,15 @@ else
 		}
 		print "DBEUG: get data from parser\n" if $debugLevel > 0;	
 		
-		if(defined $routes_parser->{'Handler'}->{'route'}->{'max_retries'})
-		{
-			print $routes_parser->{'Handler'}->{'route'}->{'max_retries'};
-		}		
-		
 		if($debugLevel > 0)
 		{
 			print Dumper($routes_parser->{'Handler'});
 		}
+		
+		if(defined $routes_parser->{'Handler'}->{'route'}->{'max_retries'})
+		{
+			$rerunMax = $routes_parser->{'Handler'}->{'route'}->{'max_retries'};
+		}	
 		
 		# TO DO: there should be some validation done on the parser contents.
 	
