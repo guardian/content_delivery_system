@@ -24,7 +24,7 @@ sub end_document {
 sub start_element {
 	my ( $self, $el ) = @_;
 
-	if($el->{'LocalName'}=~/([\w\d]*)-route/){
+	if($el->{'LocalName'} eq "route"){
 		$self->{'route'}->{'max-retries'}=$el->{'Attributes'}->{'{}max-retries'}->{'Value'};
 	}
 
