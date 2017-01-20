@@ -25,7 +25,7 @@ sub start_element {
 	my ( $self, $el ) = @_;
 
 	if($el->{'LocalName'} eq "route"){
-		$self->{'route'}->{'max-retries'}=$el->{'Attributes'}->{'{}max-retries'}->{'Value'};
+		$self->{'route'}->{'max_retries'}=$el->{'Attributes'}->{'{}max_retries'}->{'Value'};
 	}
 
 #	print "in start_element: \$el=\n";
