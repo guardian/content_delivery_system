@@ -751,8 +751,9 @@ sub executeMethod{
 						my $pid;
 						$pid = fork();
 						if( $pid == 0 ){
-						   exec($reruncommand);
-						   exit 0;
+							sleep(8);
+							exec($reruncommand);
+							exit 0;
 						}
 					}
 					else
