@@ -734,7 +734,7 @@ sub executeMethod{
 					{
 						$reruncommand = $reruncommand . " --input-xml " . $inputXML;
 					}
-					if ($keepDatastore ne "")
+					if ($keepDatastore != 0)
 					{
 						$reruncommand = $reruncommand . " --keep-datastore " . $keepDatastore;
 					}
