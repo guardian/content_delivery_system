@@ -10,7 +10,8 @@ require 5.008008;
 use strict;
 use warnings;
 
-
+use Clone 'clone';
+use Carp;
 use XML::SAX;
 use Getopt::Long;
 use File::Path;
@@ -269,8 +270,7 @@ else
 
 	my $returncode;
 	do {
-		$returncode = runRoute($externalLogger, \@inputMethods, \@processMethods, \@outputMethods, \@failMethods,
-			\@successMethods);
+		$returncode = runRoute($externalLogger, clone(\@inputMethods), clone(\@processMethods), clone(\@outputMethods), clone(\@failMethods), clone(\@successMethods));
 		$runCount = $runCount + 1;
 		sleep($rerunDelay) if($returncode>1);
 	} while(($returncode==3) && ($runCount < ($rerunMax + 1)));
@@ -304,6 +304,7 @@ sub uploaderHelp {
 sub runRoute {
 	my ($externalLogger, $inputMethods, $processMethods, $outputMethods, $failMethods, $successMethods) = @_;
 
+	print Dumper($inputMethods);
 	# now the fun begins, based on the data defined in the routes do some processing and make calls to other modules & scripts
 	if($externalLogger){
 		$externalLogger->update_status('id'=>$loggingID,'status'=>'setup_datastore');
@@ -673,6 +674,10 @@ sub executeMethod{
 	my $systemArguments;
 	my $methodName = $methodData->{'name'};
 	
+	if(not defined $methodName){
+		print Dumper($methodData);
+		confess "executeMethod called with incomplete method data";
+	}
 	my $returnCode = 0;
 
 	my $update_status=1;
@@ -681,84 +686,86 @@ sub executeMethod{
 	if($externalLogger and $update_status){
 		$externalLogger->update_status(id=>$loggingID,'current_operation'=>$methodName);
 	}
-	if( $methodName eq "commandline")
-	{	
-		# get any specified arguments for the process method and set environment varaibles accordingly
-		setUpProcessArguments($methodData);	
-		commandLineInput();
-	}
-	else
-	{
-		my $filename = find_filename($methodScriptsFolder . $methodName);
-		
-		# get any specified arguments for the process method and set environment varaibles accordingly
-		if(not setUpProcessArguments($methodData)){
-			logOutput("-ERROR: Arguments to method not properly defined.  Not running method $methodName.\n",method=>$methodName);
-			$returnCode = 2;
+
+		if( $methodName eq "commandline")
+		{	
+			# get any specified arguments for the process method and set environment varaibles accordingly
+			setUpProcessArguments($methodData);	
+				commandLineInput();
 		}
+		else
+		{
+			my $filename = find_filename($methodScriptsFolder . $methodName);
+		
+			# get any specified arguments for the process method and set environment varaibles accordingly
+			if(not setUpProcessArguments($methodData)){
+				logOutput("-ERROR: Arguments to method not properly defined.  Not running method $methodName.\n",method=>$methodName);
+				$returnCode = 2;
+			}
 
-		if($returnCode<1){
-			if( -x $filename or -x $filename.".pl" or -x $filename.".sh" or -x $filename.".py" or -x $filename.".rb"){
-				my $lastLine;
-				my $lastError;
-				$systemArguments=untaint($filename). " 2>&1";
+			if($returnCode<1){
+				if( -x $filename or -x $filename.".pl" or -x $filename.".sh" or -x $filename.".py" or -x $filename.".rb"){
+					my $lastLine;
+					my $lastError;
+					$systemArguments=untaint($filename). " 2>&1";
 
-				#we use this syntax, in order to dump lines to the logfile as they happen.
-				$|=1;
-				#$/="\r\n";
-				open PIPE,"$systemArguments |" or die "Could not run command $systemArguments";
+					#we use this syntax, in order to dump lines to the logfile as they happen.
+					$|=1;
+					#$/="\r\n";
+					open PIPE,"$systemArguments |" or die "Could not run command $systemArguments";
 
-				unless($loggingStarted)
-				{
-					openLogfile();
-				}	
+					unless($loggingStarted)
+					{
+						openLogfile();
+					}	
 
-				logOutput("\n------------------------------------------\n",'method'=>'CDS');
-				logOutput("\nExecuting method $methodName\n",'method'=>'CDS');
-				while(<PIPE>){
-					$lastLine=$_;
-					$lastError=$_ if(/^-/ or /^ERROR/);
-					logOutput("$_",'method'=>$methodName);
-					flush LOG;
-				}
-				$methodData->{'lastError'}=$lastError;
-				$methodData->{'lastLine'}=$lastLine;
-				close PIPE;
+					logOutput("\n------------------------------------------\n",'method'=>'CDS');
+					logOutput("\nExecuting method $methodName\n",'method'=>'CDS');
+					while(<PIPE>){
+						$lastLine=$_;
+						$lastError=$_ if(/^-/ or /^ERROR/);
+						logOutput("$_",'method'=>$methodName);
+						flush LOG;
+					}
+					$methodData->{'lastError'}=$lastError;
+					$methodData->{'lastLine'}=$lastLine;
+					close PIPE;
 	
-				logOutput("------------------------------------------\n\n",'method'=>'CDS');
-				my $ret = $?;
-				my $exitCode = ($ret >> 8);
-				print "back quotes returned " . ($ret)        . "\n";
-				print "child died on signal " . ($ret & 0xff) . "\n";
-				print "child exit code was "  . $exitCode   . "\n";
+					logOutput("------------------------------------------\n\n",'method'=>'CDS');
+					my $ret = $?;
+					my $exitCode = ($ret >> 8);
+					print "back quotes returned " . ($ret)        . "\n";
+					print "child died on signal " . ($ret & 0xff) . "\n";
+					print "child exit code was "  . $exitCode   . "\n";
 				
-				if($exitCode == 3)
-				{
-					print STDOUT "-ERROR: an error occurred with '$methodName' script.\n";
-					logOutput("-ERROR: an error occurred with '$methodName' script.\n",'method'=>'CDS');	
-					$returnCode = 3;
-				}
-				elsif($exitCode > 0)
-				{
-					print STDOUT "-ERROR: an error occurred with '$methodName' script.\n";
-					logOutput("-ERROR: an error occurred with '$methodName' script.\n",'method'=>'CDS');	
-					$returnCode = 1;
+					if($exitCode == 3)
+					{
+						print STDOUT "-ERROR: an error occurred with '$methodName' script.\n";
+						logOutput("-ERROR: an error occurred with '$methodName' script.\n",'method'=>'CDS');	
+						$returnCode = 3;
+					}
+					elsif($exitCode > 0)
+					{
+						print STDOUT "-ERROR: an error occurred with '$methodName' script.\n";
+						logOutput("-ERROR: an error occurred with '$methodName' script.\n",'method'=>'CDS');	
+						$returnCode = 1;
+					}
+					else
+					{
+						parseTempFile();
+					}
+					chomp $methodData->{'lastError'};
+					chomp $methodData->{'lastLine'};
 				}
 				else
 				{
-					parseTempFile();
+					print STDERR "-ERROR: script for method $methodName does not exist, or is not executable. ($filename)\n\n";
+					logOutput("-ERROR: script for method $methodName does not exist, or is not executable. ($filename)\n\n",'method'=>'CDS');
+					$returnCode = 1;
 				}
-				chomp $methodData->{'lastError'};
-				chomp $methodData->{'lastLine'};
 			}
-			else
-			{
-				print STDERR "-ERROR: script for method $methodName does not exist, or is not executable. ($filename)\n\n";
-				logOutput("-ERROR: script for method $methodName does not exist, or is not executable. ($filename)\n\n",'method'=>'CDS');
-				$returnCode = 1;
-			}
-		}
-	}	#if methodname=='commandline'
+		}	#if methodname=='commandline'
+		
 	if($externalLogger and $update_status){
 		my $status;
 		if($returnCode==0){

@@ -122,7 +122,7 @@ if(! -x $make or ! -x $gcc){
 #extra modules that need to be checked, that don't appear in use ; statements
 #YAML is used by CPAN to store statuses etc.
 #SSL, Net etc. are for ensuring that HTTPS will work, for communicating with HTTPS APIs (e.g., Level3)
-foreach(qw/Crypt::SSLeay Net::SSLeay Net::IDN::Encode LWP::Protocol::https DBD::SQLite YAML URL::Encode/){
+foreach(qw/Crypt::SSLeay Net::SSLeay Net::IDN::Encode LWP::Protocol::https DBD::SQLite YAML URL::Encode Clone/){
 	push @moduleslist,$_ unless(check_is_installed($_));
 }
 push @force_moduleslist,"Amazon::SQS::Simple";	#some modules have dodgy tests and refuse to install unless you force.
