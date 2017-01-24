@@ -270,8 +270,9 @@ else
 	do {
 		$returncode = runRoute($extenalLogger, \@inputMethods, \@processMethods, \@outputMethods, \@failMethods,
 			\@successMethods);
+		$runCount = $runCount + 1;
 		sleep($rerunDelay) if($returncode>1);
-	} while($returncode==3);
+	} while(($returncode==3) && ($runCount < ($rerunMax + 1)));
 
 	print "return code is $returncode";
 
