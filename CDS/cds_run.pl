@@ -70,6 +70,7 @@ my @successMethods;
 
 my $keepDatastore=0;
 our $loggingID;
+our $store;
 
 # location of method scripts
 
@@ -276,11 +277,6 @@ else
 
 	print "return code is $returncode";
 
-	#should output our metadata here
-	if($externalLogger){
-		my $metadata=$store->get_meta_hashref;
-		$externalLogger->setMeta(id=>$loggingID,metadata=>$metadata->{'meta'});
-	}
 	# Clean up
 	deleteTempFile();
 	unlink(untaint($ENV{'cf_datastore_location'})) unless($keepDatastore);
@@ -314,7 +310,7 @@ sub runRoute {
 	}
 
 	#initialise the data store, as per the master directory specified above.
-	my $store=setupDataStore();
+	$store=setupDataStore();
 
 	if(not defined $store){
 		logOutput("ERROR: Unable to initialise a datastore in $dataStoreLocation\n",method=>'Datastore');
@@ -450,9 +446,11 @@ sub runRoute {
 		}
 
 		#change this one
-		for($i = 0; $i < $numberOfProcessMethods; $i++)
+		#for($i = 0; $i < $numberOfProcessMethods; $i++)
+		foreach(@$processMethods)
 		{
-			$method = $processMethods[$i];
+			#$method = $processMethods[$i];
+			$method = $_;
 			$processReturnCode = executeMethod($method);
 
 			if($processReturnCode != 0)
@@ -461,7 +459,7 @@ sub runRoute {
 					logOutput("MESSAGE: 'nonfatal' option set, so continuing on route.\n",method=>'CDS');
 				} else {
 					runFailMethods(\@failMethods,$method);
-					close LOG;
+					#close LOG;
 					deleteTempFile();
 					return $processReturnCode;
 				}
@@ -477,9 +475,11 @@ sub runRoute {
 		}
 
 		#change this one
-		for ($i = 0; $i < $numberOfOutputMethods; $i++)
+		#for ($i = 0; $i < $numberOfOutputMethods; $i++)
+		foreach(@$outputMethods)
 		{
-			$method = $outputMethods[$i];
+			#$method = $outputMethods[$i];
+			$method = $_;
 			$processReturnCode = executeMethod($method);
 
 			if($processReturnCode != 0)
@@ -488,7 +488,7 @@ sub runRoute {
 					logOutput("MESSAGE: 'nonfatal' option set, so continuing on route.\n",method=>'CDS');
 				} else {
 					runFailMethods(\@failMethods,$method);
-					close LOG;
+					#close LOG;
 					deleteTempFile();
 					return $processReturnCode;
 				}
@@ -496,6 +496,13 @@ sub runRoute {
 
 		}
 	}
+	
+	#should output our metadata here
+	if($externalLogger){
+		my $metadata=$store->get_meta_hashref;
+		$externalLogger->setMeta(id=>$loggingID,metadata=>$metadata->{'meta'});
+	}
+	
 	logOutput("\n\n-----------------------------------------\nEnd of route.\n-----------------------------------------\n",method=>'CDS');
 	runSuccessMethods(\@successMethods);
 	return 0;
@@ -611,7 +618,7 @@ $ENV{'cf_last_error'}=$failedMethod->{'lastError'};
 $ENV{'cf_last_line'}=$failedMethod->{'lastLine'};
 	 
 foreach(@$methodList){
-	$method = $_;
+	my $method = $_;
 	$processReturnCode = executeMethod($method,update_status=>0);
 	   
 #	print Dumper($failedMethod);
@@ -637,7 +644,7 @@ if($externalLogger){
 logOutput("Route succeeded.  Executing success methods.\n",method=>'CDS');
 
 foreach(@$methodList){
-	$method = $_;
+	my $method = $_;
 	$processReturnCode = executeMethod($method,update_status=>0);
 
 	if($processReturnCode != 0)
@@ -730,87 +737,6 @@ sub executeMethod{
 					print STDOUT "-ERROR: an error occurred with '$methodName' script.\n";
 					logOutput("-ERROR: an error occurred with '$methodName' script.\n",'method'=>'CDS');	
 					$returnCode = 3;
-					my $reruncommand;
-					$reruncommand = "cds_run.pl";
-					$reruncommand = $reruncommand . " --route " . $routeFileName;
-					if ($inputMedia ne "")
-					{
-						$reruncommand = $reruncommand . " --input-media " . $inputMedia;
-					}
-					if ($inputMeta ne "")
-					{
-						$reruncommand = $reruncommand . " --input-meta " . $inputMeta;
-					}
-					if ($inputInMeta ne "")
-					{
-						$reruncommand = $reruncommand . " --input-inmeta " . $inputInMeta;
-					}
-					if ($inputXML ne "")
-					{
-						$reruncommand = $reruncommand . " --input-xml " . $inputXML;
-					}
-					if ($keepDatastore != 0)
-					{
-						$reruncommand = $reruncommand . " --keep-datastore " . $keepDatastore;
-					}
-					if (defined $loggingID)
-					{
-						if ($loggingID ne "")
-						{
-							$reruncommand = $reruncommand . " --logging-id " . $loggingID;
-						}
-					}
-					if (defined $logDB)
-					{
-						if ($logDB ne "")
-						{
-							$reruncommand = $reruncommand . " --logging-db " . $logDB;
-						}
-					}
-					if (defined $dbHost)
-					{
-						if ($dbHost ne "")
-						{
-							$reruncommand = $reruncommand . " --db-host " . $dbHost;
-						}
-					}
-					if (defined $dbUser)
-					{
-						if ($dbUser ne "")
-						{
-							$reruncommand = $reruncommand . " --db-login " . $dbUser;
-						}
-					}
-					if (defined $dbPass)
-					{
-						if ($dbPass ne "")
-						{
-							$reruncommand = $reruncommand . " --db-pass " . $dbPass;
-						}
-					}
-					if (defined $dbDriver)
-					{
-						if ($dbDriver ne "")
-						{
-							$reruncommand = $reruncommand . " --db-driver " . $dbDriver;
-						}
-					}
-					$runCount = $runCount + 1;
-					$reruncommand = $reruncommand . " --run-count " . $runCount;
-					if ($runCount < ($rerunMax + 1))
-					{
-						my $pid;
-						$pid = fork();
-						if( $pid == 0 ){
-							sleep($rerunDelay);
-							exec($reruncommand);
-							exit 0;
-						}
-					}
-					else
-					{
-						$returnCode = 1;
-					}
 				}
 				elsif($exitCode > 0)
 				{
