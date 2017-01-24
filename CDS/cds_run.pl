@@ -268,7 +268,7 @@ else
 
 	my $returncode;
 	do {
-		$returncode = runRoute($extenalLogger, \@inputMethods, \@processMethods, \@outputMethods, \@failMethods,
+		$returncode = runRoute($externalLogger, \@inputMethods, \@processMethods, \@outputMethods, \@failMethods,
 			\@successMethods);
 		$runCount = $runCount + 1;
 		sleep($rerunDelay) if($returncode>1);
