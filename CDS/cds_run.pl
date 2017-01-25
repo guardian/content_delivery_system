@@ -391,7 +391,6 @@ sub runRoute {
 				$externalLogger->update_status('id'=>$loggingID,'status'=>'process');
 			}
 
-			#leave this one
 			for($i = 0; $i < $numberOfProcessMethods; $i++)
 			{
 				$method = $processMethods[$i];
@@ -413,7 +412,6 @@ sub runRoute {
 				$externalLogger->update_status('id'=>$loggingID,'status'=>'output');
 			}
 
-			#leave this one
 			$numberOfOutputMethods = @outputMethods;
 			print "MESSAGE: number of output methods $numberOfOutputMethods\n";
 			logOutput("MESSAGE: number of output methods $numberOfOutputMethods\n",method=>'CDS');
@@ -446,11 +444,8 @@ sub runRoute {
 			$externalLogger->update_status('id'=>$loggingID,'status'=>'process');
 		}
 
-		#change this one
-		#for($i = 0; $i < $numberOfProcessMethods; $i++)
 		foreach(@$processMethods)
 		{
-			#$method = $processMethods[$i];
 			$method = $_;
 			$processReturnCode = executeMethod($method);
 
@@ -475,11 +470,8 @@ sub runRoute {
 			$externalLogger->update_status('id'=>$loggingID,'status'=>'output');
 		}
 
-		#change this one
-		#for ($i = 0; $i < $numberOfOutputMethods; $i++)
 		foreach(@$outputMethods)
 		{
-			#$method = $outputMethods[$i];
 			$method = $_;
 			$processReturnCode = executeMethod($method);
 
