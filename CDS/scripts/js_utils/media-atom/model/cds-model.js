@@ -41,7 +41,7 @@ class CdsModel {
             atom_channelId: mediaAtomModel.channelId,
             atom_title: mediaAtomModel.title,
             atom_ytCategory: mediaAtomModel.categoryId,
-            atom_privacyStatus: mediaAtomModel.privacyStatus || 'Unlisted'
+            atom_privacyStatus: mediaAtomModel.privacyStatus
         };
 
         if (mediaAtomModel.tags) {
