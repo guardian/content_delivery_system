@@ -460,7 +460,7 @@ sub runRoute {
 					logOutput("MESSAGE: 'nonfatal' option set, so continuing on route.\n",method=>'CDS');
 				} else {
 					runFailMethods(\@failMethods,$method);
-					#close LOG;
+					close LOG;
 					deleteTempFile();
 					return $processReturnCode;
 				}
@@ -489,7 +489,7 @@ sub runRoute {
 					logOutput("MESSAGE: 'nonfatal' option set, so continuing on route.\n",method=>'CDS');
 				} else {
 					runFailMethods(\@failMethods,$method);
-					#close LOG;
+					close LOG;
 					deleteTempFile();
 					return $processReturnCode;
 				}
