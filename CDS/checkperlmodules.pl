@@ -174,8 +174,9 @@ if($do_install){
 #	$junk=<>;
 	print "\n\n";
 	$ENV{'PERL_MM_USE_DEFAULT'}=1;
-	system("sudo cpanm -i @moduleslist");
-	system("sudo cpanm --force -i @force_moduleslist");
+	system("sudo cpanm --force --notest -i @force_moduleslist");
+	system("sudo cpanm --notest -i @moduleslist");
+
 	print "\n\nInstallation complete, assuming that you saw no errors above.  Enjoy CDS!\n";
 } else {
 	print "\n\nI am not able to attempt an automatic installation, probably because you are missing the Developer Tools for your platform.  Please install them then re-run this script, or\n
