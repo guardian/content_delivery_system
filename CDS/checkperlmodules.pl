@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 
+use warnings;
 use Data::Dumper;
 eval "use Encode";
 
@@ -125,6 +126,7 @@ if(! -x $make or ! -x $gcc){
 foreach(qw/Crypt::SSLeay Net::SSLeay Net::IDN::Encode LWP::Protocol::https DBD::SQLite YAML URL::Encode/){
 	push @moduleslist,$_ unless(check_is_installed($_));
 }
+push @force_moduleslist,"Test2::Suite";
 push @force_moduleslist,"Amazon::SQS::Simple";	#some modules have dodgy tests and refuse to install unless you force.
 push @force_moduleslist,"Data::UUID";	#for some reason this is a false-positive in check_is_installed (well, Circle fails to find it)
 recurse_directory(".",\@scriptlist);
@@ -174,8 +176,8 @@ if($do_install){
 #	$junk=<>;
 	print "\n\n";
 	$ENV{'PERL_MM_USE_DEFAULT'}=1;
-	system("sudo cpanm -i @moduleslist");
 	system("sudo cpanm --force -i @force_moduleslist");
+	system("sudo cpanm -i @moduleslist");
 	print "\n\nInstallation complete, assuming that you saw no errors above.  Enjoy CDS!\n";
 } else {
 	print "\n\nI am not able to attempt an automatic installation, probably because you are missing the Developer Tools for your platform.  Please install them then re-run this script, or\n
