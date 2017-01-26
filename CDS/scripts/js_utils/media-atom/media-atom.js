@@ -131,6 +131,7 @@ class MediaAtom {
                     resolve(response);
                 }).catch(error => {
                     Logger.error(`Failed to ${error._method} ${url}. HTTP status: ${error.status}`);
+                    Logger.error(error.response);
                     reject(error);
                 });
             });
