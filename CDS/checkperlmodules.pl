@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 
-use warnings;
 use Data::Dumper;
 eval "use Encode";
 
@@ -123,10 +122,9 @@ if(! -x $make or ! -x $gcc){
 #extra modules that need to be checked, that don't appear in use ; statements
 #YAML is used by CPAN to store statuses etc.
 #SSL, Net etc. are for ensuring that HTTPS will work, for communicating with HTTPS APIs (e.g., Level3)
-foreach(qw/Crypt::SSLeay Net::SSLeay Net::IDN::Encode LWP::Protocol::https DBD::SQLite YAML URL::Encode/){
+foreach(qw/Crypt::SSLeay Net::SSLeay Net::IDN::Encode LWP::Protocol::https DBD::SQLite YAML URL::Encode Clone/){
 	push @moduleslist,$_ unless(check_is_installed($_));
 }
-push @force_moduleslist,"Test2::Suite";
 push @force_moduleslist,"Amazon::SQS::Simple";	#some modules have dodgy tests and refuse to install unless you force.
 push @force_moduleslist,"Data::UUID";	#for some reason this is a false-positive in check_is_installed (well, Circle fails to find it)
 recurse_directory(".",\@scriptlist);
@@ -178,6 +176,7 @@ if($do_install){
 	$ENV{'PERL_MM_USE_DEFAULT'}=1;
 	system("sudo cpanm --force -i @force_moduleslist");
 	system("sudo cpanm -i @moduleslist");
+
 	print "\n\nInstallation complete, assuming that you saw no errors above.  Enjoy CDS!\n";
 } else {
 	print "\n\nI am not able to attempt an automatic installation, probably because you are missing the Developer Tools for your platform.  Please install them then re-run this script, or\n
