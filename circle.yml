@@ -6,6 +6,7 @@ machine:
   java:
     version: oraclejdk8
 
+
 checkout:
   post:
     - chmod a+x ./circle_setup_rvm.sh
