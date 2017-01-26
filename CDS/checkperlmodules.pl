@@ -174,8 +174,8 @@ if($do_install){
 #	$junk=<>;
 	print "\n\n";
 	$ENV{'PERL_MM_USE_DEFAULT'}=1;
-	system("sudo cpanm --force -i @force_moduleslist");
-	system("sudo cpanm -i @moduleslist");
+	system("sudo cpanm --force --notest -i @force_moduleslist");
+	system("sudo cpanm --notest -i @moduleslist");
 
 	print "\n\nInstallation complete, assuming that you saw no errors above.  Enjoy CDS!\n";
 } else {
