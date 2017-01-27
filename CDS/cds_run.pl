@@ -272,6 +272,12 @@ else
 	do {
 		$returncode = runRoute($externalLogger, clone(\@inputMethods), clone(\@processMethods), clone(\@outputMethods), clone(\@failMethods), clone(\@successMethods));
 		$runCount = $runCount + 1;
+		if($returncode==3){
+			logOutput("------------------------------------------\n\n",'method'=>'CDS');
+			logOutput("Running route again (attempt $runCount of $rerunMax) in an attempt to recover the error\n",'method'=>'CDS');
+			logOutput("Delay is $rerunDelay seconds\n",'method'=>'CDS');
+			logOutput("------------------------------------------\n\n",'method'=>'CDS');
+		}
 		sleep($rerunDelay) if($returncode>1);
 	} while(($returncode==3) && ($runCount < ($rerunMax + 1)));
 
@@ -731,7 +737,7 @@ sub executeMethod{
 					if($exitCode == 3)
 					{
 						print STDOUT "-ERROR: an error occurred with '$methodName' script.\n";
-						logOutput("-ERROR: an error occurred with '$methodName' script.\n",'method'=>'CDS');	
+						logOutput("-ERROR: an transient error occurred with '$methodName' script.\n",'method'=>'CDS');
 						$returnCode = 3;
 					}
 					elsif($exitCode > 0)
