@@ -771,7 +771,7 @@ sub executeMethod{
 		} elsif($returnCode==2){
 			$status="nonfatal";
 		} elsif($returnCode==3){
-			$status="reruning";
+			$status="rerunning";
 		}
 		$externalLogger->update_status(id=>$loggingID,current_operation=>'',last_operation=>$methodName,last_error=>$methodData->{'lastError'},last_operation_status=>$status);
 	}
