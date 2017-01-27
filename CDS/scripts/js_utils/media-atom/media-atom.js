@@ -11,7 +11,7 @@ class MediaAtom {
             asset: '/api2/atoms/:id/assets',
             metadata: '/api2/atoms/:id',
             activateAsset: '/api2/atom/:id/asset-active',
-            updateMetadata: '/api/atom/:id/update-metadata'
+            setPlutoId: '/api2/atom/:id/pluto-id'
         };
 
         this.apiPollDuration = apiPollDuration;
@@ -124,7 +124,7 @@ class MediaAtom {
                 }
 
                 const data = { plutoId: cdsModel.plutoId };
-                const url = this._getUrl(this.atomApiPaths.updateMetadata, cdsModel.atomId);
+                const url = this._getUrl(this.atomApiPaths.setPlutoId, cdsModel.atomId);
 
                 this.hmacRequest.put(url, data).then(response => {
                     Logger.info(`Added plutoId ${cdsModel.plutoId} to atom ${cdsModel.atomId}`);
