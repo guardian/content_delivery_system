@@ -101,7 +101,7 @@ my ($src_file,$new_file_name,$dirname,$debug) = @_;
 	if($ENV{'allow_existing'}){
 		if(-f "$dirname/$new_file_name"){
 			print "INFO: $dirname/$new_file_name already exists. allow_existing specified so continuing.\n";
-			return 1;
+			return $new_file_name;
 		}
 	}
 	
