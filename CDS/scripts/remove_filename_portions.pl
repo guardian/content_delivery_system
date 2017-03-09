@@ -97,16 +97,16 @@ my($baseName)=@_;
 sub do_file_move
 {
 my ($src_file,$new_file_name,$dirname,$debug) = @_;
-	
+
+	$new_file_name="$dirname/$new_file_name";
+
 	if($ENV{'allow_existing'}){
-		if(-f "$dirname/$new_file_name"){
-			print "INFO: $dirname/$new_file_name already exists. allow_existing specified so continuing.\n";
+		if(-f $new_file_name){
+			print "INFO: $new_file_name already exists. allow_existing specified so continuing.\n";
 			return $new_file_name;
 		}
 	}
-	
-	$new_file_name="$dirname/$new_file_name";
-	
+
 	if($ENV{'symlink'}){
 		print "DEBUG: symlinking $src_file to $new_file_name\n" if($debug);
 		make_path($dirname);
