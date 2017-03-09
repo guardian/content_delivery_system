@@ -42,6 +42,11 @@ else
   raise RuntimeError, "Need to specify either meta or inmeta format"
 end
 
+if(ENV['debug'])
+  puts "DEBUG: data to send follows:"
+  puts payload
+end
+
 puts "INFO: Sending message to #{topic}"
 m = topic.publish(:message=>payload)
 puts "+SUCCESS: Message sent with message id #{m.message_id}"
