@@ -180,7 +180,7 @@ my $store=CDS::Datastore->new('ffprobe');
 
 #START MAIN
 unless(-f $ENV{'cf_media_file'}){
-	print STDERR "-ERROR: You should specify <take-files>media</take-files> when running this method\n";
+	print STDERR "-ERROR: Media file '".$ENV{'cf_media_file'}."' was not found. You should specify <take-files>media</take-files> when running this method\n";
 	exit 1;
 }
 

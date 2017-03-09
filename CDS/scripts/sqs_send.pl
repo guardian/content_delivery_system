@@ -53,7 +53,10 @@ if($ENV{'inmeta_format'}){
 }elsif($ENV{'json_format'}){
 	print "INFO: Using JSON format for message...\n";
 	$content=to_json($store->get_template_data(1));
-}else {
+}elsif($ENV{'static_test'}){
+	print "INFO: Running static test\n";
+	$content='{"message":"test"}';
+} else {
 	print "-ERROR: You did not specify which format to use to send data.  You should specify <inmeta_format/>, <meta_format/> or <json_format/> to output data\n";
 	exit 1;
 }
