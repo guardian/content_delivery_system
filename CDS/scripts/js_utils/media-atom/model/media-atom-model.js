@@ -57,7 +57,9 @@ class MediaAtomModel {
     }
 
     get privacyStatus () {
-        return this._data.privacyStatus;
+        // If no status on the Media Atom, we always upload as `private`.
+        // A YouTube video can then only become `unlisted` or `public` once the Media Atom is published.
+        return this._data.privacyStatus || 'private';
     }
 }
 
