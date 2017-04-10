@@ -32,6 +32,9 @@ end
 class InvalidSectionError <StandardError
 end
 
+class TranscodeFailedError <StandardError
+end
+
 def debugmsg(msg)
 if ENV['debug'] 
 	puts "DEBUG: #{msg}\n"
@@ -320,12 +323,16 @@ begin # exception handling for createjob below
 						raise DestinationFileExistsError, "AWS said #{result.job[:output][:status_detail]}"
 					end
         end
-        is_running=false
-        break
 			rescue NoMethodError=>e	#sometimes status_detail gives a NoMethodError but I'm not sure where
 				print "WARNING: #{e.message}"
 				print "#{e.backtrace}"
-			end #exception block
+      end #exception block
+      begin
+        status_detail = result.job[:output][:status_detail]
+        raise TranscodeFailedError, "Transcode failed: " + status_detail
+      rescue Exception=>e
+        raise TranscodeFailedError, "Unable to get detailed error information: #{e.message}"
+      end
 		end
 		if result.job.status=='Complete'
 			is_running=false
