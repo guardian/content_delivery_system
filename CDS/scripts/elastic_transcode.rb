@@ -337,7 +337,8 @@ begin # exception handling for createjob below
 		if result.job.status=='Complete'
 			is_running=false
 		end
-	end
+  end
+
 rescue DestinationFileExistsError=>e	#ETS won't over-write an existing file. If we detect this is the problem, then bump a number onto the end of the output filename and try again
 	puts "Requested output file already exists: #{e.message}"
 	tries=tries+1
