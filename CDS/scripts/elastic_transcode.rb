@@ -102,7 +102,9 @@ raise "Couldn't find a preset called #{name}"
 
 end
 
+def resultJobOutput(result)
 
+end
 #START MAIN
 $stdout.sync = true
 $stderr.sync = true
@@ -315,7 +317,12 @@ begin # exception handling for createjob below
 			ap result.job
 			begin #exception block
 				if result.job!=nil and result.job[:output] != nil and result.job[:output][:status_detail] !=nil
-					status_detail = result.job[:output][:status_detail]
+          if result.job[:output][:status_detail].is_a?(Array)
+            status_detail = result.job[:output][0][:status_detail]
+          else
+					  status_detail = result.job[:output][:status_detail]
+          end
+
 					if status_detail.match(/The specified object could not be saved in the specified bucket because an object by that name already exists/)
 						raise DestinationFileExistsError, "AWS said #{result.job[:output][:status_detail]}"
 					end
