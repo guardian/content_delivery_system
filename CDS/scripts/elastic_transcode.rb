@@ -319,7 +319,9 @@ begin # exception handling for createjob below
 					if result.job.playlists != nil and result.job.playlists[0][:status_detail] != nil and result.job.playlists[0][:status_detail].match(/The specified object could not be saved in the specified bucket because an object by that name already exists/)
 						raise DestinationFileExistsError, "AWS said #{result.job[:output][:status_detail]}"
 					end
-				end
+        end
+        is_running=false
+        break
 			rescue NoMethodError=>e	#sometimes status_detail gives a NoMethodError but I'm not sure where
 				print "WARNING: #{e.message}"
 				print "#{e.backtrace}"
