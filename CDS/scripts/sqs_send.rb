@@ -50,6 +50,6 @@ end
 
 puts "INFO: Sending message to #{queue.url}"
 m = queue.send_message({
-                      messageBody: payload
+                      message_body: payload
                       })
 puts "+SUCCESS: Message sent with message id #{m.message_id}"
