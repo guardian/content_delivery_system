@@ -1,5 +1,6 @@
 require 'aws-sdk-v1'
 require 'logger'
+require 'raven'
 
 #This class represents the queue responder itself
 #When you initialise an instance of this class, you tell it which queue to listen to and which route to execute, etc.,
@@ -28,7 +29,13 @@ def startup_responders(logger: nil)
   table.items.each do |item|
     begin
       for i in 1..item.attributes['threads']
-        responder=CDSResponder.new(item.attributes['queue-arn'], item.attributes['route-name'], "--input-"+item.attributes['input-type'], item.attributes['notification'], idle_timeout: 10)
+        responder=CDSResponder.new(
+            item.attributes['queue-arn'],
+            item.attributes['route-name'],
+            "--input-"+item.attributes['input-type'],
+            item.attributes['notification'],
+            idle_timeout: 10
+        )
         responders[item.attributes['queue-arn']] = responder
         logger.info("Started up responder instance #{i} for #{item.attributes['queue-arn']}")
       end
@@ -72,7 +79,11 @@ class CDSResponder
     end
 
     @threadref=Thread.new {
-      ThreadFunc();
+      begin
+        ThreadFunc()
+      rescue Exception=>e
+        Raven.captureException(e)
+      end
     }
   end
 
