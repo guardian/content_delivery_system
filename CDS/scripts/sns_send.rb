@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'aws-sdk'
 require 'aws-sdk-resources'
 require 'CDS/Datastore-Episode5'
 

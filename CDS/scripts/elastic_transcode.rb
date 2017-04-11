@@ -32,6 +32,9 @@ end
 class InvalidSectionError <StandardError
 end
 
+class TranscodeFailedError <StandardError
+end
+
 def debugmsg(msg)
 if ENV['debug'] 
 	puts "DEBUG: #{msg}\n"
@@ -99,7 +102,9 @@ raise "Couldn't find a preset called #{name}"
 
 end
 
+def resultJobOutput(result)
 
+end
 #START MAIN
 $stdout.sync = true
 $stderr.sync = true
@@ -312,23 +317,35 @@ begin # exception handling for createjob below
 			ap result.job
 			begin #exception block
 				if result.job!=nil and result.job[:output] != nil and result.job[:output][:status_detail] !=nil
-					status_detail = result.job[:output][:status_detail]
+          if result.job[:output][:status_detail].is_a?(Array)
+            status_detail = result.job[:output][0][:status_detail]
+          else
+					  status_detail = result.job[:output][:status_detail]
+          end
+
 					if status_detail.match(/The specified object could not be saved in the specified bucket because an object by that name already exists/)
 						raise DestinationFileExistsError, "AWS said #{result.job[:output][:status_detail]}"
 					end
 					if result.job.playlists != nil and result.job.playlists[0][:status_detail] != nil and result.job.playlists[0][:status_detail].match(/The specified object could not be saved in the specified bucket because an object by that name already exists/)
 						raise DestinationFileExistsError, "AWS said #{result.job[:output][:status_detail]}"
 					end
-				end
+        end
 			rescue NoMethodError=>e	#sometimes status_detail gives a NoMethodError but I'm not sure where
 				print "WARNING: #{e.message}"
 				print "#{e.backtrace}"
-			end #exception block
+      end #exception block
+      begin
+        status_detail = result.job[:output][:status_detail]
+        raise TranscodeFailedError, "Transcode failed: " + status_detail
+      rescue Exception=>e
+        raise TranscodeFailedError, "Unable to get detailed error information: #{e.message}"
+      end
 		end
 		if result.job.status=='Complete'
 			is_running=false
 		end
-	end
+  end
+
 rescue DestinationFileExistsError=>e	#ETS won't over-write an existing file. If we detect this is the problem, then bump a number onto the end of the output filename and try again
 	puts "Requested output file already exists: #{e.message}"
 	tries=tries+1
