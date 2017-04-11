@@ -43,7 +43,8 @@ def each(&b)
 end #def each
 
 def rebaseIndexFile(fn,oldbase,newbase)
-    fp = File.open(URI.unescape(fn),"r")
+    unescaped_file = URI.unescape(fn)
+    fp = File.open(URI.unescape(unescaped_file),"r")
     out=""
     while(line=fp.gets)
        if(line=~/^#/)
@@ -52,7 +53,6 @@ def rebaseIndexFile(fn,oldbase,newbase)
         end
           
         uri=URI(line)
-        #uri.
         if(line=~/\.m3u8$/)
             filename=File.join(@basepath,File.basename(uri.path))
             self.rebaseIndexFile(filename,oldbase,newbase)
@@ -64,11 +64,10 @@ def rebaseIndexFile(fn,oldbase,newbase)
         out+=line
     end
     fp.close()
-    FileUtils.cp(fn,"#{fn}.orig")
-    fp=File.open(fn,"wb")
+    FileUtils.cp(unescaped_file,"#{unescaped_file}.orig")
+    fp=File.open(unescaped_file,"wb")
     fp.write(out)
     fp.close()
-        
 end #def rebaseIndexFile
           
 def rebase(oldbase,newbase)
