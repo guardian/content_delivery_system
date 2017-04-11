@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<meta-data xmlns:vs="http://xml.vidispine.com/schema/vidispine">
+    <meta-group type="movie meta">
+        <!--1-->
+        <meta name="gnm_master_website_uploadlog" value="10:44:38 Upload Succeeded&#xA;10:44:32 mp4: Video page updated&#xA;10:44:00 Acquiring media...&#xA;23:48:30 Upload Succeeded&#xA;23:48:23 mp4: Video page updated&#xA;23:47:50 Acquiring media...&#xA;23:27:17 Upload Succeeded&#xA;23:27:11 mp4: Video page updated&#xA;23:26:38 Acquiring media...&#xA;23:21:30 Upload Succeeded&#xA;23:21:14 Composer page created&#xA;23:21:09 Images uploaded to Composer&#xA;23:20:54 Acquired video media and PLUTO holding images&#xA;23:18:41 Acquiring media...&#xA;"/>
+        <!--1-->
+        <meta name="gnm_master_website_edit_url" value="https://composer.gutools.co.uk/content/58ec0558e4b05776df18c7c0"/>
+        <!--1-->
+        <meta name="gnm_master_generic_uploadtype" value="Update"/>
+        <!--1-->
+        <meta name="gnm_master_website_uploadstatus" value="Upload Succeeded"/>
+        <!--1-->
+        <meta name="gnm_master_generic_status" value="Ready to Publish"/>
+        <!--1-->
+        <meta name="durationSeconds" value="115.84"/>
+        <!--1-->
+        <meta name="durationTimeCode" value="115840000@1000000"/>
+        <!--1-->
+        <meta name="originalWidth" value="1920"/>
+        <!--1-->
+        <meta name="originalHeight" value="1080"/>
+        <!--1-->
+        <meta name="mediaType" value="video"/>
+        <!--1-->
+        <meta name="originalUri" value="s3://gnm-multimedia-eu-upload/uploads/pluto_indirect/pubtest1.mp4"/>
+        <!--1-->
+        <meta name="itemId" value="BK-17832"/>
+        <!--1-->
+        <meta name="user" value="david_fanner"/>
+        <!--1-->
+        <meta name="originalFormat" value="mov,mp4,m4a,3gp,3g2,mj2"/>
+        <!--1-->
+        <meta name="originalVideoCodec" value="h264"/>
+        <!--1-->
+        <meta name="originalAudioCodec" value="aac"/>
+        <!--1-->
+        <meta name="gnm_mm_copyright" value="None"/>
+        <!--1-->
+        <meta name="gnm_asset_restrictions_notes" value="Credit: None&#xA;&#x9;Source: None&#xA;&#x9;Photographer: None&#xA;&#x9;Transmission Reference: None&#xA;&#x9;Headline: None&#xA;&#x9;Original date and time (from EXIF): None&#xA;&#x9;"/>
+        <!--1-->
+        <meta name="gnm_master_generic_consists_of_assets" value=""/>
+        <!--1-->
+        <meta name="gnm_asset_filming_location" value="None"/>
+        <!--1-->
+        <meta name="gnm_asset_user_keywords" value="None"/>
+        <!--1-->
+        <meta name="gnm_asset_description" value="None"/>
+        <!--1-->
+        <meta name="originalFilename" value="pubtest1.mp4"/>
+        <!--1-->
+        <meta name="representativeThumbnailNoAuth" value="/APInoauth/thumbnail/BK-2/BK-17832;version=1/1500@PAL?hash=1c13089f52290db6bbcae7b6caf16fa7"/>
+        <!--1-->
+        <meta name="representativeThumbnail" value="/API/thumbnail/BK-2/BK-17832;version=1/1500@PAL"/>
+        <!--4-->
+        <meta name="shapeTag" value="h264_mezzanine|original|h264_publish|lowres|"/>
+        <!--1-->
+        <meta name="portal_ingested" value="2017-04-10T22:12:28.525Z"/>
+        <!--1-->
+        <meta name="original_mimetype" value="video/mp4"/>
+        <!--1-->
+        <meta name="created" value="2017-04-10T13:28:11Z"/>
+        <!--1-->
+        <meta name="gnm_master_pacdata_status" value="missing"/>
+        <!--1-->
+        <meta name="gnm_user_skipped_edl_upload" value="false"/>
+        <!--1-->
+        <meta name="gnm_job_id" value="BK-125064"/>
+        <!--1-->
+        <meta name="gnm_master_spotify_licensor" value="Guardian News And Media"/>
+        <!--1-->
+        <meta name="portal_essence_version" value="1"/>
+        <!--1-->
+        <meta name="gnm_master_licensor" value="Guardian News And Media"/>
+        <!--1-->
+        <meta name="gnm_master_youtube_description" value="Hawke's Lager gets the pub test"/>
+        <!--1-->
+        <meta name="gnm_master_youtube_allowresponses" value="allow_responses"/>
+        <!--1-->
+        <meta name="gnm_master_mainstreamsyndication_author" value="59"/>
+        <!--1-->
+        <meta name="gnm_master_generic_remove" value=""/>
+        <!--1-->
+        <meta name="gnm_master_website_headline" value="Hawke's Lager gets the pub test – video"/>
+        <!--1-->
+        <meta name="gnm_master_dailymotion_title" value="Hawke's Lager gets the pub test – video"/>
+        <!--1-->
+        <meta name="gnm_asset_createdby" value="59"/>
+        <!--1-->
+        <meta name="gnm_master_mainstreamsyndication_title" value="Hawke's Lager gets the pub test – video"/>
+        <!--2-->
+        <meta name="gnm_asset_keywords" value="36727|65936|"/>
+        <!--1-->
+        <meta name="gnm_master_generic_source" value="guardian.co.uk"/>
+        <!--1-->
+        <meta name="gnm_master_generic_publish" value=""/>
+        <!--1-->
+        <meta name="gnm_master_mainstreamsyndication_description" value="Hawke's Lager gets the pub test"/>
+        <!--1-->
+        <meta name="gnm_master_generic_titleid" value="12137986"/>
+        <!--1-->
+        <meta name="gnm_master_spotify_title_id" value="GMBK17832000000000000000"/>
+        <!--1-->
+        <meta name="gnm_master_spotify_id" value="GEBK17832000000000000000"/>
+        <!--1-->
+        <meta name="gnm_master_youtube_publish" value=""/>
+        <!--1-->
+        <meta name="gnm_master_dailymotion_publish" value=""/>
+        <!--1-->
+        <meta name="gnm_commission_workinggroup" value="c55208df-7d4b-4e05-88db-c9cc422818bc"/>
+        <!--1-->
+        <meta name="gnm_commission_title" value="10 April 2017 Weekly Agency News"/>
+        <!--1-->
+        <meta name="gnm_project_headline" value="110417 Dave F Aus News"/>
+        <!--1-->
+        <meta name="gnm_master_interactive_title" value="Hawke's Lager gets the pub test – video"/>
+        <!--2-->
+        <meta name="gnm_master_generic_intendeduploadplatforms" value="Website|YouTube|"/>
+        <!--1-->
+        <meta name="gnm_master_youtube_remove" value=""/>
+        <!--1-->
+        <meta name="title" value="Hawke's Lager gets the pub test – video"/>
+        <!--1-->
+        <meta name="gnm_master_language" value="en"/>
+        <!--1-->
+        <meta name="gnm_master_mainstreamsyndication_publish" value=""/>
+        <!--1-->
+        <meta name="gnm_master_youtube_title" value="Hawke's Lager gets the pub test – video"/>
+        <!--1-->
+        <meta name="gnm_master_interactive_projectref" value="BK-879"/>
+        <!--1-->
+        <meta name="gnm_master_youtube_allowcomments" value="allow_comments"/>
+        <!--1-->
+        <meta name="gnm_storage_rule_deep_archive" value="storage_rule_deep_archive"/>
+        <!--1-->
+        <meta name="gnm_type" value="Master"/>
+        <!--1-->
+        <meta name="gnm_master_website_primary_tone" value="22641"/>
+        <!--1-->
+        <meta name="gnm_master_website_standfirst" value="Hawke's Lager gets the pub test"/>
+        <!--1-->
+        <meta name="gnm_asset_owner" value="59"/>
+        <!--1-->
+        <meta name="gnm_master_generic_holdingimage_16x9" value=""/>
+        <!--1-->
+        <meta name="gnm_master_youtube_embeddable" value="embeddable"/>
+        <!--1-->
+        <meta name="gnm_master_dailymotion_description" value="Hawke's Lager gets the pub test"/>
+        <!--1-->
+        <meta name="gnm_master_youtube_notify_channel_subscribers" value="notify_channel_subscribers"/>
+        <!--1-->
+        <meta name="gnm_master_youtube_allowembedding" value="allow_embedding"/>
+        <!--1-->
+        <meta name="gnm_master_generic_production_office" value="AUS"/>
+        <!--1-->
+        <meta name="gnm_master_youtube_allowratings" value="allow_ratings"/>
+        <!--1-->
+        <meta name="gnm_master_website_byline" value=""/>
+        <!--1-->
+        <meta name="gnm_asset_category" value="Master"/>
+        <!--1-->
+        <meta name="gnm_master_website_trail" value="Hawke's Lager gets the pub test"/>
+        <!--1-->
+        <meta name="gnm_master_dailymotion_author" value="59"/>
+        <!--1-->
+        <meta name="__metadata_last_modified" value="2017-04-11T10:44:40.890+01:00"/>
+        <!--1-->
+        <meta name="__placeholder_shape_size" value="1"/>
+        <!--1-->
+        <meta name="__shape_size" value="5"/>
+        <!--1-->
+        <meta name="__shape" value="BK-37614"/>
+        <!--1-->
+        <meta name="__shape" value="BK-37615"/>
+        <!--1-->
+        <meta name="__shape" value="BK-37617"/>
+        <!--1-->
+        <meta name="__shape" value="BK-37616"/>
+        <!--1-->
+        <meta name="__shape" value="BK-37618"/>
+        <!--1-->
+        <meta name="__version_count" value="2"/>
+        <!--1-->
+        <meta name="__version" value="0"/>
+        <!--1-->
+        <meta name="__version" value="1"/>
+        <!--1-->
+        <meta name="__shapetag_h264_mezzanine_hash" value="bca442cddf7f303256042f3adb0889390cc442fe"/>
+        <!--1-->
+        <meta name="__shapetag_h264_publish_hash" value="5a3c50cdb8511e191f8cd0ac0c3f2b3b1b1a0a81"/>
+        <!--1-->
+        <meta name="__shapetag_original_hash" value="7673188ce0de1b4ef3fb74e54eaf74b7a9786826"/>
+        <!--1-->
+        <meta name="__shapetag_lowres_hash" value="0840ef68fde8b5a34b97e139139fd8131e32cc4c"/>
+        <!--1-->
+        <meta name="__shape_last_added" value="2017-04-10T21:18:55.076Z"/>
+        <!--1-->
+        <meta name="__storage_original" value="BK-2"/>
+        <!--1-->
+        <meta name="__storage_original" value="BK-11"/>
+        <!--1-->
+        <meta name="__storage_original_size" value="2"/>
+        <!--1-->
+        <meta name="__storage_h264_publish" value="BK-3"/>
+        <!--1-->
+        <meta name="__storage_h264_publish_size" value="1"/>
+        <!--1-->
+        <meta name="__storage_lowres" value="BK-12"/>
+        <!--1-->
+        <meta name="__storage_lowres_size" value="1"/>
+        <!--1-->
+        <meta name="__storage_h264_mezzanine" value="BK-3"/>
+        <!--1-->
+        <meta name="__storage_h264_mezzanine" value="BK-5"/>
+        <!--1-->
+        <meta name="__storage_h264_mezzanine_size" value="2"/>
+        <!--1-->
+        <meta name="__storage_size" value="5"/>
+        <!--1-->
+        <meta name="__storage" value="BK-3"/>
+        <!--1-->
+        <meta name="__storage" value="BK-2"/>
+        <!--1-->
+        <meta name="__storage" value="BK-5"/>
+        <!--1-->
+        <meta name="__storage" value="BK-12"/>
+        <!--1-->
+        <meta name="__storage" value="BK-11"/>
+        <!--1-->
+        <meta name="__storagegroup_size" value="3"/>
+        <!--1-->
+        <meta name="__storagegroup" value="Proxies"/>
+        <!--1-->
+        <meta name="__storagegroup" value="Guardian Masters"/>
+        <!--1-->
+        <meta name="__storagegroup" value="Nearline"/>
+        <!--1-->
+        <meta name="__sequence_size" value="0"/>
+        <!--1-->
+        <meta name="__collection_size" value="1"/>
+        <!--1-->
+        <meta name="__collection" value="BK-879"/>
+        <!--1-->
+        <meta name="__ancestor_collection_size" value="2"/>
+        <!--1-->
+        <meta name="__ancestor_collection" value="BK-877"/>
+        <!--1-->
+        <meta name="__ancestor_collection" value="BK-879"/>
+        <!--0-->
+        <meta name="gnm_mm_ref" value=""/>
+        <!--0-->
+        <meta name="gnm_storage_rule_projects_completed" value=""/>
+        <!--0-->
+        <meta name="gnm_asset_file_last_modified" value=""/>
+        <!--0-->
+        <meta name="gnm_asset_file_created" value=""/>
+        <!--0-->
+        <meta name="gnm_asset_restrictions_apply" value=""/>
+        <!--0-->
+        <meta name="gnm_mm_caption" value=""/>
+        <!--0-->
+        <meta name="gnm_asset_status" value=""/>
+        <!--0-->
+        <meta name="gnm_storage_rule_deletable" value=""/>
+        <!--0-->
+        <meta name="gnm_mm_photographer" value=""/>
+        <!--0-->
+        <meta name="gnm_storage_rule_projects_held" value=""/>
+        <!--0-->
+        <meta name="gnm_mm_provider" value=""/>
+        <!--0-->
+        <meta name="gnm_asset_fee_notes" value=""/>
+        <!--0-->
+        <meta name="gnm_mm_headline" value=""/>
+        <!--0-->
+        <meta name="gnm_asset_filename" value=""/>
+        <!--0-->
+        <meta name="gnm_storage_rule_sensitive" value=""/>
+        <!--xmp_root-->
+        <!--1-->
+        <meta name="xmp_xmpDM_startTimeScale" value="25"/>
+        <!--1-->
+        <meta name="xmp_xmpDM_audioChannelType" value="Stereo"/>
+        <!--1-->
+        <meta name="xmp_xmpMM_InstanceID" value="xmp.iid:a1d6d58d-e1a3-4302-bc44-15996b8e3a0b"/>
+        <!--1-->
+        <meta name="xmp_xmpDM_startTimeSampleSize" value="1"/>
+        <!--1-->
+        <meta name="xmp_xmpMM_OriginalDocumentID" value="xmp.did:572e6cfa-19b3-4696-8075-a735ade0dd07"/>
+        <!--1-->
+        <meta name="xmp_xmpMM_DocumentID" value="65c16289-00e9-3b0f-d5e9-f27400000045"/>
+        <!--1-->
+        <meta name="xmp_dc_format" value="H.264"/>
+        <!--1-->
+        <meta name="xmp_xmp_MetadataDate" value="2017-04-10T23:28:14+10:00"/>
+        <!--1-->
+        <meta name="xmp_xmp_ModifyDate" value="2017-04-10T13:28:14Z"/>
+        <!--1-->
+        <meta name="xmp_xmpDM_videoFrameRate" value="25.000000"/>
+        <!--1-->
+        <meta name="xmp_xmp_CreatorTool" value="Adobe Adobe Media Encoder CC 2015.4 (Macintosh)"/>
+        <!--1-->
+        <meta name="xmp_xmpDM_videoPixelAspectRatio" value="1/1"/>
+        <!--1-->
+        <meta name="xmp_xmpDM_videoFieldOrder" value="Progressive"/>
+        <!--1-->
+        <meta name="xmp_xmpDM_audioSampleType" value="16Int"/>
+        <!--1-->
+        <meta name="xmp_xmpDM_audioSampleRate" value="48000"/>
+        <!--1-->
+        <meta name="xmp_xmp_CreateDate" value="2017-04-10T13:28:11Z"/>
+    </meta-group>
+    <meta-movie-info>
+        <meta-movie tokens="format duration bitrate size tracks"/>
+        <meta-track tokens="type format start duration bitrate size"/>
+        <meta-video-track tokens="width height framerate"/>
+        <meta-audio-track tokens="channels bitspersample samplerate"/>
+        <meta-hint-track tokens="payload fmtp"/>
+    </meta-movie-info>
+</meta-data>
