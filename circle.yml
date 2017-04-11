@@ -15,7 +15,7 @@ checkout:
 dependencies:
   override:
     #json is a listed dependency of aws-sdk
-    - gem install webrick aws-sdk-v1 rspec trollop sentry-raven
+    - gem install webrick aws-sdk-v1 aws-sdk aws-sdk-resources rspec trollop
     - sudo -i /home/ubuntu/content_delivery_system/CDS/install.sh -y
     - cd CDS/scripts/js_utils; npm install
 
