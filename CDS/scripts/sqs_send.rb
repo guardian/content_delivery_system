@@ -28,8 +28,12 @@ else
   sqscli = Aws::SQS::Client.new(region: region)
 end
 
-sqs = Aws::SQS::Resource.new(client: sqscli)
-queue = sqs.queue(ENV['queue_url'])
+if not ENV['queue_url']
+  raise RuntimeError, "you need to pass a queue to send the message to, in <queue_url>"
+end
+
+resource = Aws::SQS::Resource.new(client: sqscli)
+queue = resource.queue(ENV['queue_url'])
 
 if(ENV['meta_format'])
   payload = $store.export_meta
@@ -45,7 +49,7 @@ if(ENV['debug'])
 end
 
 puts "INFO: Sending message to #{queue.url}"
-m = queue.sendMessage({
+m = queue.send_message({
                       messageBody: payload
                       })
 puts "+SUCCESS: Message sent with message id #{m.message_id}"
