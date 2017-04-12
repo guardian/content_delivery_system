@@ -38,5 +38,5 @@ deployment:
     branch: /.*/
     commands:
       - cd CDS/cdsresponder; gem build cdsresponder.gemspec
-      - cd CDS/Ruby/Elastictranscode; gem build cds-elastictranscode.gemspec
+      - cd CDS/Ruby/ElasticTranscode; gem build cds-elastictranscode.gemspec
       - sbt riffRaffUpload

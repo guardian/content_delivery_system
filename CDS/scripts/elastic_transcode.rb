@@ -280,7 +280,7 @@ begin
                   :duration => given_duration
               }
           }
-      ];
+      ]
     else
       puts "-WARNING: Provided duration '#{given_duration}' is either blank or not valid"
     end
@@ -292,7 +292,6 @@ begin
 
     result=$ets.create_job(args)
 
-    #puts result.to_yaml
 
     puts "Status of job: #{result.job.status}"
     jobid=result.job.id

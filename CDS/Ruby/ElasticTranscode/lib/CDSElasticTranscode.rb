@@ -79,16 +79,42 @@ class CDSElasticTranscode
     raise ObjectNotFound, "Couldn't find a preset called #{name}"
   end
 
+  #  Maps a list of preset names into a list of looked-up objects, raises ObjectNotFound if any of the presets cannot be found.
+
+  def lookup_multiple_presets(name_list)
+    page_token=nil
+    return_list = []
+    begin
+      if page_token
+        result=@ets.list_presets(:page_token=>page_token)
+      else
+        result=@ets.list_presets
+      end
+      return_list << result.presets.filter {|p| p.name==name }
+
+      if return_list.length == name_list.length
+        return return_list
+      end
+    end while page_token
+    missing_presets = name_list.filter {|incoming_name|
+      not return_list.include?(incoming_name)
+    }
+    raise ObjectNotFound, "The following presets could not be found: #{missing_presets}"
+  end
+
   # generates outputs arguments, for the list of presets coming in
   # Parameters:
   # +presetNames+:: list of preset names to look up (if passing from CDS arguments, remember to substitute and chomp)
+  # +output_base+:: base of the filename to use for output, as a String.  This will have bitrate and codec appended to it
+  # +watermark+:: S3 path of a still to use as a watermark
+  # +segment_duration+:: if generating an HLS manifest, the duration to use of each video segment
   def presets_to_outputs(preset_names,output_base,watermark,segment_duration: nil)
-    preset_names.map do |presetName|
-      preset=self.lookup_preset(presetName)
-      @logger.debug("Output #{presetName}: Using preset ID #{preset.id}")
+    n=0
+    self.lookup_multiple_presets(preset_names).map do |preset|
+      @logger.debug("Output #{n}: Using preset ID #{preset.id}")
 
       output_path = FilenameUtils.new(output_base)
-      output_path.add_transcode_parts!(preset.video.bit_rate.to_i,preset.video.codec.gsub(/[^\w\d]/, ''))
+      output_path.add_transcode_parts!(preset.video.bit_rate.to_i, preset.video.codec.gsub(/[^\w\d]/, ''))
 
       #if we're not making an HLS wrapper then put in the container as a file extension. If not, append a _ to separate out the sequence numbers
       if preset.container != 'ts'
@@ -111,6 +137,7 @@ class CDSElasticTranscode
       if segment_duration #if a playlist is specified, assume we're doing HLS and hence need segments
         outputinfo[:segment_duration] = segment_duration.to_s
       end
+      n+=1
       outputinfo
     end
   end
