@@ -15,3 +15,5 @@ test_routes/*
 project/*
 target/*
 node_modules
+/CDS/Ruby/ElasticTranscode/doc/
+/CDS/Ruby/ElasticTranscode/.yardoc/

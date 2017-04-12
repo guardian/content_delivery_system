@@ -2,19 +2,31 @@ require 'aws-sdk'
 require 'filename_utils'
 require 'logger'
 
+#Generic error raised by CDSElasticTranscode.  All other raised errors derive from this
 class CDSElasticTranscodeError < StandardError
 
 end
 
+#Error indicating that a requested object could not be looked up
 class ObjectNotFound < CDSElasticTranscodeError
 
 end
 
-
+#This class is a helper object, encapsulating all the necessary API calls to Elastic Transcoder.
 class CDSElasticTranscode
+  # Allows read access to the list of filenames that will be output to S3
+  # @return [Array[String]]
   attr_accessor :output_names
+  # Allows read access to the container information about all files that will be output to S3
+  # @return [Array[Hash]]
   attr_accessor :containers
 
+  # Initialize a new CDSElasticTranscode helper.  You must pass AWS credentials, or rely on the SDK loading them automatically;
+  # no connection is attempted until you call a method that requires access, like lookup_pipeline.
+  # @param region [String] AWS region to connect to. Defaults to eu-west-1.
+  # @param aws_access_key [String] Explicit AWS credential key.  Defaults to environment specified credentials if is nil or you don't specify
+  # @param aws_secret_key [String] Explicit AWS secret.  Defaults to environment specified credentials if is nil or you don't specify
+  # @param logger [Logger] Use this logger for outputting messages.  If is nil or unspecified, a new logger will be created pointing to STDOUT.
   def initialize(region: "eu-west-1", aws_access_key: nil, aws_secret_key: nil, logger: nil)
     if aws_access_key and aws_access_key
       @ets = Aws::ElasticTranscoder::Client.new(:region=>region, aws_access_key=>aws_access_key, aws_secret_access_key=>aws_secret_key)
@@ -33,8 +45,8 @@ class CDSElasticTranscode
 
   # Scans available Elastic Transcoder pipelines and returns the ID of the one with a matching name,
   # or raises ObjectNotFound if it can't be found
-  # Params:
-  # +name+:: (String) Pipeline name to look up
+  # @param name [String] Pipeline name to look up
+  # @return [String] Internal ID of the pipeline with the given name
   def lookup_pipeline(name)
     page_token=nil
     begin
@@ -54,12 +66,11 @@ class CDSElasticTranscode
     raise ObjectNotFound, "Couldn't find a pipeline called #{name}"
   end
 
-  #  Scans available Elastic Transcoder presets and returns an object representing the one with a matching name,
+  # Scans available Elastic Transcoder presets and returns an object representing the one with a matching name,
   # or raises ObjectNotFound if it can't be found
-  #  Returns a +Aws::ElasticTranscoder::Types::Preset+ object.
   #
-  # Params:
-  # +name+:: (String) Preset name to look up
+  # @param name [String] Preset name to look up
+  # @return [Aws::ElasticTranscoder::Types::Preset] AWS SDK elastic transcoder preset matching the given name
   def lookup_preset(name)
     page_token=nil
     begin
@@ -80,7 +91,8 @@ class CDSElasticTranscode
   end
 
   #  Maps a list of preset names into a list of looked-up objects, raises ObjectNotFound if any of the presets cannot be found.
-
+  # @param name_list [Array] Array of names to look up.
+  # @return [Array] Array of +Aws::ElasticTranscoder::Types::Preset+ objects matching the name_list passed in
   def lookup_multiple_presets(name_list)
     page_token=nil
     return_list = []
@@ -90,25 +102,21 @@ class CDSElasticTranscode
       else
         result=@ets.list_presets
       end
-      return_list << result.presets.filter {|p| p.name==name }
+      return_list += result.presets.select {|p| name_list.include?(p.name) }
+      return return_list if return_list.length == name_list.length
 
-      if return_list.length == name_list.length
-        return return_list
-      end
     end while page_token
-    missing_presets = name_list.filter {|incoming_name|
-      not return_list.include?(incoming_name)
-    }
+    missing_presets = name_list.select {|incoming_name| not return_list.include?(incoming_name) }
     raise ObjectNotFound, "The following presets could not be found: #{missing_presets}"
   end
 
   # generates outputs arguments, for the list of presets coming in
-  # Parameters:
-  # +presetNames+:: list of preset names to look up (if passing from CDS arguments, remember to substitute and chomp)
-  # +output_base+:: base of the filename to use for output, as a String.  This will have bitrate and codec appended to it
-  # +watermark+:: S3 path of a still to use as a watermark
-  # +segment_duration+:: if generating an HLS manifest, the duration to use of each video segment
-  def presets_to_outputs(preset_names,output_base,watermark,segment_duration: nil)
+  # @param presetNames [Array[String]] list of preset names to look up (if passing from CDS arguments, remember to substitute and chomp)
+  # @param output_base [String] base of the filename to use for output, as a String.  This will have bitrate and codec appended to it
+  # @param watermark [String] S3 path of a still to use as a watermark. nil if you don't want to use a watermark.
+  # @param segment_duration [Integer] if generating an HLS manifest, the duration (in seconds) to use of each video segment
+  # @return [Array[Hash]] list of output hashes to pass to ETS
+  def presets_to_outputs(preset_names,output_base,watermark: nil,segment_duration: nil)
     n=0
     self.lookup_multiple_presets(preset_names).map do |preset|
       @logger.debug("Output #{n}: Using preset ID #{preset.id}")

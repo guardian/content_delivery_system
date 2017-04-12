@@ -7,6 +7,7 @@ class FilenameUtils
   attr_accessor :serial
 
   # Initialise from a path name
+  # @param fullpath [String] A file path to break down and represent
   def initialize(fullpath)
     @prefix = File.dirname(fullpath)
     @filename = File.basename(fullpath)
@@ -23,15 +24,17 @@ class FilenameUtils
     @serial=0
   end
 
-  #increments the serial portion of the filename
+  # increments the serial portion of the filename.  The filename returned by #filepath will be changed to file-{number}.xxx
+  # @return [Integer] new serial number value
   def increment!
     @serial+=1
   end
 
   # Updates the filename objects to represent a transcode output with the given bitrate and codec
   # Parameters:
-  # +bitrate+:: (integer) target output bitrate
-  # +codec+:: (string) codec that we are transcoding to
+  # @param bitrate [Integer] target output bitrate
+  # @param codec [String] codec that we are transcoding to
+  # @return [String] portion that is appended to the filename
   def add_transcode_parts!(bitrate, codec)
     raise ArgumentError, "bitrate must be an integer" unless(bitrate.is_a?(Integer))
     if bitrate > 1024
@@ -44,6 +47,8 @@ class FilenameUtils
   end
 
   # Returns a reconsituted file path for the object
+  # @param with_extension [Boolean] whether or not to include the file extension in the result
+  # @return [String] New file path, including any serial number an codec/bitrate portions
   def filepath(with_extension: true)
     if @serial>0
       serialpart = "-#{@serial}"
@@ -59,8 +64,8 @@ class FilenameUtils
   end
 
   # Returns an S3 url, for the given bucket name
-  # Params:
-  #  +bucketname+:: (String) bucket to generate the URL for
+  # @param bucketname [String] bucket to generate the URL for
+  # @return [String] Unchecked S3 url for the bucket and path
   def s3path(bucketname)
     "s3://#{bucketname}" + "/" + self.filepath
   end

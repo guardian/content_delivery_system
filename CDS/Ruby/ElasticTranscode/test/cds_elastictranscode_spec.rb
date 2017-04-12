@@ -21,6 +21,11 @@ describe 'Elastic transcode class' do
     ets = CDSElasticTranscode.new(region: 'eu-west-1')
     result = ets.lookup_preset('GNM - 4mbit 1280x720 MP4 [mobile]')
 
-    puts result
+    expect(result.is_a?(Aws::ElasticTranscoder::Types::Preset)).to eq true
+    expect(result.id).to eq '1387374573575-dzvtfo'
+
+    result_list = ets.lookup_multiple_presets(['GNM - 4mbit 1280x720 MP4 [mobile]','GNM - 1mbit 1024x576 MP4 [mobile]'])
+    puts result_list
   end
+
 end
