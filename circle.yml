@@ -29,6 +29,8 @@ test:
   override:
     - bash ./tests/runtests.sh
     - cd CDS/cdsresponder; rspec -P test/*Spec.rb
+    #at present, the actual cds_elastictranscode_spec tests require access to a specific AWS account
+    - cd CDS/Ruby/ElasticTranscode; rspec test/filename_utils_spec.rb
     - cd CDS/scripts/js_utils; npm test
 
 deployment:
@@ -36,4 +38,5 @@ deployment:
     branch: /.*/
     commands:
       - cd CDS/cdsresponder; gem build cdsresponder.gemspec
+      - cd CDS/Ruby/Elastictranscode; gem build cds-elastictranscode.gemspec
       - sbt riffRaffUpload
