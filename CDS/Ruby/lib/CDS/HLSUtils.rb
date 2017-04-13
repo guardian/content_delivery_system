@@ -44,7 +44,7 @@ end #def each
 
 def rebaseIndexFile(fn,oldbase,newbase)
     unescaped_file = URI.unescape(fn)
-    fp = File.open(URI.unescape(unescaped_file),"r")
+    fp = File.open(unescaped_file,"r")
     out=""
     while(line=fp.gets)
        if(line=~/^#/)
