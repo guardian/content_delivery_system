@@ -2,6 +2,7 @@ require 'aws-sdk-resources'
 require 'logger'
 require 'filename_utils'
 
+# This class represents a single output for Elastic Transcoder and handles filename generation and updates
 class CDSElasticOutput
   # Initialise a new CDSElasticOutput object
   # Parameters:
@@ -14,6 +15,10 @@ class CDSElasticOutput
     @filenameutil.add_transcode_parts!(preset.video.bit_rate.to_i, preset.video.codec.gsub(/[^\w\d]/, ''))
     @watermark = watermark
     @segment_duration = segment_duration
+  end
+
+  def initialize_dup(source)
+
   end
 
   # Returns a hash suitable for elastic transcoder output
@@ -38,7 +43,13 @@ class CDSElasticOutput
     temp
   end
 
+  # Increments the version number part of the filename
+  # @return [Integer] new value of the version number
   def increment!
     @filenameutil.increment!
+  end
+
+  def increment
+
   end
 end

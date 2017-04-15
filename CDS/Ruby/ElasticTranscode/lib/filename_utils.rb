@@ -24,10 +24,30 @@ class FilenameUtils
     @serial=0
   end
 
-  # increments the serial portion of the filename.  The filename returned by #filepath will be changed to file-{number}.xxx
+  def initialize_dup(source)
+    puts "initialize_dup: #{source}"
+    @prefix = source.prefix
+    @filename = source.filename
+    @fileappend = source.fileappend
+    @filebase = source.filebase
+    @extension = source.extension
+    @serial = source.serial
+    super
+  end
+
+  # increments the serial portion of the filename, modifying this object in-place.
+  # The filename returned by #filepath will be changed to file-{number}.xxx
   # @return [Integer] new serial number value
   def increment!
     @serial+=1
+  end
+
+  # increments the serial portion of the filename, returning a new copy of the object with an updated serial
+  # @return [FilenameUtils] new FilenameUtils object
+  def increment
+    new_one = self.dup
+    new_one.serial +=1
+    new_one
   end
 
   # Updates the filename objects to represent a transcode output with the given bitrate and codec

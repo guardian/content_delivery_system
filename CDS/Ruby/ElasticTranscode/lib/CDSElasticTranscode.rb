@@ -198,15 +198,14 @@ class CDSElasticTranscode
   # @param arguments [Hash] - compiled arguments has.  Get this value by calling #generate_args
   # @param outputs [Array[CDSElasticOutput]] - list of compiled output hashes. Get this value by calling #presets_to_outputs
   def do_transcode(arguments, outputs)
-    current_outputs = outputs.clone
     begin
-      jobinfo = @ets.create_job(arguments.merge({:outputs=>current_outputs}))
+      jobinfo = @ets.create_job(arguments.merge({:outputs=>outputs}))
     rescue DestinationFileExists=>e
       @logger.error("The file #{e.message} already exists.  Retrying with new outputs")
       outputs.each do |out|
-
+        out.increment!
       end
-
+      retry
     end #exception handling
   end
 end
