@@ -327,8 +327,6 @@ begin
   rescue DestinationFileExistsError => e #ETS won't over-write an existing file. If we detect this is the problem, then bump a number onto the end of the output filename and try again
     puts "Requested output file already exists: #{e.message}"
     tries=tries+1
-    #FIXMEFIXMEFIXME
-    #this line needs to be changed to update all of the potential filenames in outputs
     n=0
     output_names = []
     outputs.each { |o|

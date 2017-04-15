@@ -1,5 +1,6 @@
 require 'aws-sdk'
 require 'filename_utils'
+require 'cds_elastic_output'
 require 'logger'
 
 #Generic error raised by CDSElasticTranscode.  All other raised errors derive from this
@@ -9,6 +10,11 @@ end
 
 #Error indicating that a requested object could not be looked up
 class ObjectNotFound < CDSElasticTranscodeError
+
+end
+
+#Error indicating that the ETS errored because the file we are trying to create is already in the output bucket
+class DestinationFileExists < CDSElasticTranscodeError
 
 end
 
@@ -115,7 +121,7 @@ class CDSElasticTranscode
   # @param output_base [String] base of the filename to use for output, as a String.  This will have bitrate and codec appended to it
   # @param watermark [String] S3 path of a still to use as a watermark. nil if you don't want to use a watermark.
   # @param segment_duration [Integer] if generating an HLS manifest, the duration (in seconds) to use of each video segment
-  # @return [Array[Hash]] list of output hashes to pass to ETS
+  # @return [Array[CDSElasticOutput]] list of output hashes to pass to ETS
   def presets_to_outputs(preset_names,output_base,watermark: nil,segment_duration: nil)
     n=0
     self.lookup_multiple_presets(preset_names).map do |preset|
@@ -135,29 +141,30 @@ class CDSElasticTranscode
       @output_names << output_path_string
       @containers << preset.container
 
-      outputinfo = {
-          :preset_id=>preset.id,
-          :key=>output_path_string,
-          :thumbnail_pattern=>"",
-          :input_key=>watermark,
-      }
-
-      if segment_duration #if a playlist is specified, assume we're doing HLS and hence need segments
-        outputinfo[:segment_duration] = segment_duration.to_s
-      end
+      # outputinfo = {
+      #     :preset_id=>preset.id,
+      #     :key=>output_path_string,
+      #     :thumbnail_pattern=>"",
+      #     :input_key=>watermark,
+      # }
+      #
+      # if segment_duration #if a playlist is specified, assume we're doing HLS and hence need segments
+      #   outputinfo[:segment_duration] = segment_duration.to_s
+      # end
       n+=1
-      outputinfo
+      CDSElasticOutput(preset, output_base, watermark, segment_duration)
     end
   end
 
   # generates an arguments Hash to pass to Elastic Transcoder
   # Parameters:
-  # +pipeline_id+:: internal ID of the pipeline to use.  Get this value by calling #lookup_pipeline
-  # +input_path+:: FilenameUtils representation of the input key to use
-  # +outputs+:: List of output hashes to generate.  Get this value by calling #presets_to_outputs.
-  # +playlist+:: (defaults to False) - set to true if generating an HLS manifest
-  # +playlist_name+:: (String) set this to the name of the master manifest to output, if generating an HLS manifest
-  # +playlist_format+:: (defaults to HLSv3) set this if you want to generate another type of playlist
+  # @param pipeline_id [String] internal ID of the pipeline to use.  Get this value by calling #lookup_pipeline
+  # @param input_path [FilenameUtils] representation of the input key to use
+  # @param outputs [List[Hash]] List of output hashes to generate.  Get this value by calling #presets_to_outputs.
+  # @param playlist [Boolean] (optional, defaults to False) - set to true if generating an HLS manifest
+  # @param playlist_name [String] (optional) set this to the name of the master manifest to output, if generating an HLS manifest
+  # @param playlist_format [String] (optional, defaults to HLSv3) set this if you want to generate another type of playlist
+  # @return [Hash] arguments hash for elastic transcoder
   def generate_args(pipeline_id, input_path, outputs, playlist: false, playlist_name: nil, playlist_format: "HLSv3")
     raise ArgumentError, "input_path must be a filename_utils object" unless input_path.is_a?(FilenameUtils)
     if playlist_name
@@ -171,8 +178,8 @@ class CDSElasticTranscode
                        :aspect_ratio => 'auto',
                        :interlaced => 'auto',
                        :container => 'auto'
-            },
-            :outputs => outputs
+            }
+            #outputs are filled in when we create the job.
     }
     if playlist
       args[:playlists] = [
@@ -184,5 +191,22 @@ class CDSElasticTranscode
       ]
     end
     args
+  end
+
+  # triggers the actual transcode, and monitors it
+  # Parameters:
+  # @param arguments [Hash] - compiled arguments has.  Get this value by calling #generate_args
+  # @param outputs [Array[CDSElasticOutput]] - list of compiled output hashes. Get this value by calling #presets_to_outputs
+  def do_transcode(arguments, outputs)
+    current_outputs = outputs.clone
+    begin
+      jobinfo = @ets.create_job(arguments.merge({:outputs=>current_outputs}))
+    rescue DestinationFileExists=>e
+      @logger.error("The file #{e.message} already exists.  Retrying with new outputs")
+      outputs.each do |out|
+
+      end
+
+    end #exception handling
   end
 end
