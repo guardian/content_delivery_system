@@ -67,4 +67,13 @@ describe 'FilenameUtils' do
     fn.add_transcode_parts!(360,"vp8")
     expect(fn.filepath).to eq("/a kinda long/path_to/a file with spaces and € symbols_360k_vp8.dat")
   end
+
+  it 'should increment and return a new object' do
+    fn = FilenameUtils.new("/a kinda long/path_to/a file with spaces and € symbols.dat")
+    new = fn.increment
+
+    expect(new).not_to equal(fn)
+    expect(fn.filepath).to eq("/a kinda long/path_to/a file with spaces and € symbols.dat")
+    expect(new.filepath).to eq("/a kinda long/path_to/a file with spaces and € symbols-1.dat")
+  end
 end

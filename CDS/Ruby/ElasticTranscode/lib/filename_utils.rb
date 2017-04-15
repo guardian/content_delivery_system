@@ -24,6 +24,10 @@ class FilenameUtils
     @serial=0
   end
 
+  def fileappend
+    @fileappend
+  end
+
   def initialize_dup(source)
     puts "initialize_dup: #{source}"
     @prefix = source.prefix
