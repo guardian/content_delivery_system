@@ -156,7 +156,7 @@ class CDSElasticTranscode
       #   outputinfo[:segment_duration] = segment_duration.to_s
       # end
       n+=1
-      CDSElasticOutput(preset, output_base, watermark, segment_duration)
+      CDSElasticOutput.new(preset, output_base, watermark, segment_duration: segment_duration)
     end
   end
 
