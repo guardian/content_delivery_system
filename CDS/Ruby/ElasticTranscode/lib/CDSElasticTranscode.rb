@@ -18,6 +18,10 @@ class DestinationFileExists < CDSElasticTranscodeError
 
 end
 
+class TranscodeFailedError < CDSElasticTranscodeError
+
+end
+
 #This class is a helper object, encapsulating all the necessary API calls to Elastic Transcoder.
 class CDSElasticTranscode
   # Allows read access to the list of filenames that will be output to S3
@@ -197,15 +201,50 @@ class CDSElasticTranscode
   # Parameters:
   # @param arguments [Hash] - compiled arguments has.  Get this value by calling #generate_args
   # @param outputs [Array[CDSElasticOutput]] - list of compiled output hashes. Get this value by calling #presets_to_outputs
-  def do_transcode(arguments, outputs)
+  # @return [Types::ReadJobResponse] - information about the completed job
+  def do_transcode(arguments, outputs, should_raise: true)
+    current_outputs = outputs
     begin
-      jobinfo = @ets.create_job(arguments.merge({:outputs=>outputs}))
+      jobinfo = @ets.create_job(arguments.merge({:outputs=>current_outputs}))
+
+      jobid=jobinfo.job.id
+      @logger.info("Job ID: #{jobid}")
+
+      is_running = true
+
+      while is_running
+        sleep(10)
+        jobinfo = @ets.read_job(jobid)
+        @logger.info("Status of job: #{jobinfo.job.status}")
+        is_running =
+            case jobinfo.job.status
+              when "Complete"
+                false
+              when "Error"
+                if result.job.output and result.job.output.status_detail
+                  if result.job.output.status_detail.match(/The specified object could not be saved in the specified bucket because an object by that name already exists/)
+                    raise DestinationFileExists, result.job.output.key
+                  end
+                end
+                if result.job.playlists and result.job.playlists[0].status_detail
+                  if result.job.playlists[0].status_detail.match(/The specified object could not be saved in the specified bucket because an object by that name already exists/)
+                    raise DestinationFileExists, result.job.output.key
+                  end
+                end
+                false
+              when "Queued"
+                true
+              when "Processing"
+                true
+              else
+                raise RuntimeError, "Unrecognised job status: #{jobinfo.job.status}"
+            end #case job.status
+      end #while is_running
     rescue DestinationFileExists=>e
       @logger.error("The file #{e.message} already exists.  Retrying with new outputs")
-      outputs.each do |out|
-        out.increment!
-      end
+      current_outputs = current_outputs.map{ |o| o.increment }  #this will generate a new list, of new objects
       retry
     end #exception handling
+    $ets.read_job(:id => jobid)
   end
 end
