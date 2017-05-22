@@ -145,23 +145,12 @@ class CDSElasticTranscode
       @output_names << output_path_string
       @containers << preset.container
 
-      # outputinfo = {
-      #     :preset_id=>preset.id,
-      #     :key=>output_path_string,
-      #     :thumbnail_pattern=>"",
-      #     :input_key=>watermark,
-      # }
-      #
-      # if segment_duration #if a playlist is specified, assume we're doing HLS and hence need segments
-      #   outputinfo[:segment_duration] = segment_duration.to_s
-      # end
       n+=1
       CDSElasticOutput.new(preset, output_base, watermark, segment_duration: segment_duration)
     end
   end
 
   # generates an arguments Hash to pass to Elastic Transcoder
-  # Parameters:
   # @param pipeline_id [String] internal ID of the pipeline to use.  Get this value by calling #lookup_pipeline
   # @param input_path [FilenameUtils] representation of the input key to use
   # @param outputs [List[Hash]] List of output hashes to generate.  Get this value by calling #presets_to_outputs.
@@ -198,14 +187,17 @@ class CDSElasticTranscode
   end
 
   # triggers the actual transcode, and monitors it
-  # Parameters:
   # @param arguments [Hash] - compiled arguments has.  Get this value by calling #generate_args
   # @param outputs [Array[CDSElasticOutput]] - list of compiled output hashes. Get this value by calling #presets_to_outputs
+  # @param retry_limit [Integer] - defaults to 100.  If the output file already exists, we will retry by incrementing a digit at the end of the filename; but only this many times
+  # @param should_raise [Boolean] - defaults to true.  If the transcode fails, raise a TranscodeFailedError rather than returning
   # @return [Types::ReadJobResponse] - information about the completed job
-  def do_transcode(arguments, outputs, should_raise: true)
+  def do_transcode(arguments, outputs, retry_limit: 100, should_raise: true)
     current_outputs = outputs
+    attempt = 0
     begin
-      jobinfo = @ets.create_job(arguments.merge({:outputs=>current_outputs}))
+      attempt +=1
+      jobinfo = @ets.create_job(arguments.merge({:outputs=>current_outputs.map {|o| o.to_hash}}))
 
       jobid=jobinfo.job.id
       @logger.info("Job ID: #{jobid}")
@@ -214,27 +206,27 @@ class CDSElasticTranscode
 
       while is_running
         sleep(10)
-        jobinfo = @ets.read_job(jobid)
+        jobinfo = @ets.read_job(:id => jobid)
         @logger.info("Status of job: #{jobinfo.job.status}")
         is_running =
             case jobinfo.job.status
               when "Complete"
                 false
               when "Error"
-                if result.job.output and result.job.output.status_detail
-                  if result.job.output.status_detail.match(/The specified object could not be saved in the specified bucket because an object by that name already exists/)
-                    raise DestinationFileExists, result.job.output.key
+                if jobinfo.job.output and jobinfo.job.output.status_detail
+                  if jobinfo.job.output.status_detail.match(/The specified object could not be saved in the specified bucket because an object by that name already exists/)
+                    raise DestinationFileExists, jobinfo.job.output.key
                   end
                 end
-                if result.job.playlists and result.job.playlists[0].status_detail
-                  if result.job.playlists[0].status_detail.match(/The specified object could not be saved in the specified bucket because an object by that name already exists/)
-                    raise DestinationFileExists, result.job.output.key
+                if jobinfo.job.playlists and jobinfo.job.playlists[0] and jobinfo.job.playlists[0].status_detail
+                  if jobinfo.job.playlists[0].status_detail.match(/The specified object could not be saved in the specified bucket because an object by that name already exists/)
+                    raise DestinationFileExists, jobinfo.job.output.key
                   end
                 end
                 false
               when "Queued"
                 true
-              when "Processing"
+              when "Progressing"
                 true
               else
                 raise RuntimeError, "Unrecognised job status: #{jobinfo.job.status}"
@@ -243,8 +235,9 @@ class CDSElasticTranscode
     rescue DestinationFileExists=>e
       @logger.error("The file #{e.message} already exists.  Retrying with new outputs")
       current_outputs = current_outputs.map{ |o| o.increment }  #this will generate a new list, of new objects
-      retry
+      retry if attempt<retry_limit
+      raise
     end #exception handling
-    $ets.read_job(:id => jobid)
+    @ets.read_job(:id => jobid)
   end
 end

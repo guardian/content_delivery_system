@@ -28,6 +28,8 @@ class FilenameUtils
     @fileappend
   end
 
+  # Initialise from another FilenameUtils object
+  # @param source [FilenameUtils] Source object to duplicate from
   def initialize_dup(source)
     puts "initialize_dup: #{source}"
     @prefix = source.prefix
@@ -80,11 +82,18 @@ class FilenameUtils
       serialpart = ""
     end
 
+
     if @extension and with_extension
-      File.join(@prefix,@filebase + @fileappend + serialpart + "." + @extension)
+      simple_path = @filebase + @fileappend + serialpart + "." + @extension
     else
-      File.join(@prefix,@filebase + @fileappend + serialpart)
+      simple_path = @filebase + @fileappend + serialpart
     end
+    if @prefix != '.'
+      File.join(@prefix,simple_path)
+    else
+      simple_path
+    end
+
   end
 
   # Returns an S3 url, for the given bucket name
