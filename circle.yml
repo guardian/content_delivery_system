@@ -17,7 +17,7 @@ dependencies:
     #json is a listed dependency of aws-sdk
     - gem install webrick aws-sdk-v1 aws-sdk aws-sdk-resources rspec trollop sentry-raven
     - sudo -i /home/ubuntu/content_delivery_system/CDS/install.sh -y
-    - sudo chown -r ubuntu.ubuntu /home/ubuntu/content_delivery_system/*
+    - sudo chown -R ubuntu.ubuntu /home/ubuntu/content_delivery_system/*
     - cd CDS/scripts/js_utils; npm install
 
   cache_directories:
