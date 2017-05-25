@@ -36,4 +36,9 @@ deployment:
     branch: /.*/
     commands:
       - cd CDS/cdsresponder; gem build cdsresponder.gemspec
+      - cd CDS/Ruby; gem build cdslib.gemspec
+      - cd CDS/Ruby; gem build elementallib.gemspec
+      - cd CDS/Ruby; gem build R2NewspaperIntegration.gemspec
+      - cd CDS/Ruby; gem build thumborlib.gemspec
+      - cd CDS/Ruby; gem build vslib.gemspec
       - sbt riffRaffUpload
