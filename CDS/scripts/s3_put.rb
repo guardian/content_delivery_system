@@ -140,7 +140,7 @@ files_to_upload.each do |filename|
            it.rebase("HLS/",prefix)
        end #
        it.each do |componentfile,componenturi|
-           m3u_files << componentfile
+           m3u_files << URI.unescape(componentfile)
        end #it.each
    end #if(filename=~/\.m3u8$/)
 end #files_to_upload.each
