@@ -15,8 +15,9 @@ checkout:
 dependencies:
   override:
     #json is a listed dependency of aws-sdk
-    - gem install webrick aws-sdk-v1 aws-sdk aws-sdk-resources rspec trollop
+    - gem install webrick aws-sdk-v1 aws-sdk aws-sdk-resources rspec trollop sentry-raven
     - sudo -i /home/ubuntu/content_delivery_system/CDS/install.sh -y
+    - sudo chown -R ubuntu.ubuntu /home/ubuntu/content_delivery_system/*
     - cd CDS/scripts/js_utils; npm install
 
   cache_directories:
@@ -36,4 +37,9 @@ deployment:
     branch: /.*/
     commands:
       - cd CDS/cdsresponder; gem build cdsresponder.gemspec
+      - cd CDS/Ruby; gem build cdslib.gemspec
+      - cd CDS/Ruby; gem build elementallib.gemspec
+      - cd CDS/Ruby; gem build R2NewspaperIntegration.gemspec
+      - cd CDS/Ruby; gem build thumborlib.gemspec
+      - cd CDS/Ruby; gem build vslib.gemspec
       - sbt riffRaffUpload
