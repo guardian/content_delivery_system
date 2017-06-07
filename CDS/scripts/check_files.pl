@@ -35,7 +35,14 @@ if($mediaFile)
 	unless(-e $mediaFile)
 	{
 		print STDERR "-FATAL: media file '$mediaFile' does not exist\n";
-		exit 1;
+		if (defined($ENV{'abort_if_unavailable'}))
+		{
+			exit 1;
+		}
+		else
+		{
+			exit 3;
+		}
 	}
 	else
 	{
@@ -48,7 +55,14 @@ if($metaFile)
 	unless(-e $metaFile)
 	{
 		print STDERR "-FATAL: meta file '$metaFile' does not exist\n";
-		exit 1;
+		if (defined($ENV{'abort_if_unavailable'}))
+		{
+			exit 1;
+		}
+		else
+		{
+			exit 3;
+		}
 	}	
 	else
 	{
@@ -61,7 +75,14 @@ if($inmetaFile)
 	unless(-e $inmetaFile)
 	{
 		print STDERR "-FATAL: inmeta file '$inmetaFile' does not exist\n";
-		exit 1;
+		if (defined($ENV{'abort_if_unavailable'}))
+		{
+			exit 1;
+		}
+		else
+		{
+			exit 3;
+		}
 	}	
 	else
 	{
@@ -74,7 +95,14 @@ if($xmlFile)
 	unless(-e $xmlFile)
 	{
 		print STDERR "-FATAL: xml file '$xmlFile' does not exist\n";
-		exit 1;
+		if (defined($ENV{'abort_if_unavailable'}))
+		{
+			exit 1;
+		}
+		else
+		{
+			exit 3;
+		}
 	}	
 	else
 	{
@@ -86,7 +114,11 @@ foreach(@extrafiles){
 	my $filetocheck=$store->substitute_string($_);
 	unless(-f $filetocheck){
 		print STDERR "-FATAL: extra file '$filetocheck' does not exist.\n";
-		exit 1;
+		if (defined($ENV{'abort_if_unavailable'})){
+			exit 1;
+		} else {
+			exit 3;
+		}
 	} else {
 		print STDOUT "+SUCCESS: extra file '$filetocheck' exists\n";
 	}

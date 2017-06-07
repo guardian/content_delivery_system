@@ -10,7 +10,8 @@ require 5.008008;
 use strict;
 use warnings;
 
-
+use Clone 'clone';
+use Carp;
 use XML::SAX;
 use Getopt::Long;
 use File::Path;
@@ -70,6 +71,7 @@ my @successMethods;
 
 my $keepDatastore=0;
 our $loggingID;
+our $store;
 
 # location of method scripts
 
@@ -86,6 +88,10 @@ my $dbHost;
 my $dbUser;
 my $dbPass;
 my $dbDriver;
+
+my $runCount = 1;
+my $rerunMax = 64;
+my $rerunDelay = 8;
 
 my $debugLevel = 2;
 
@@ -128,6 +134,7 @@ my $configData=readConfigFile();
 		    "db-login=s" =>\$dbUser,
 		    "db-pass=s" =>\$dbPass,
 		    "db-driver=s" =>\$dbDriver,
+			"run-count=s" =>\$runCount,
 	            "route=s" => \$routeFileName ); 
 
 $dbHost=$configData->{'db-host'} unless($dbHost);
@@ -135,6 +142,12 @@ $logDB=$configData->{'logging-db'} unless($logDB);
 $dbUser=$configData->{'db-login'} unless($dbUser);
 $dbPass=$configData->{'db-pass'} unless($dbPass);
 $dbDriver=$configData->{'db-driver'} unless($dbDriver);
+if (defined $configData->{'max-retries'}) {
+	$rerunMax=$configData->{'max-retries'};
+}
+if (defined $configData->{'retry-delay'}) {
+	$rerunDelay=$configData->{'retry-delay'};
+}
 
 # Do we need to use an external logging module?
 if($logDB){
@@ -216,6 +229,16 @@ else
 			print Dumper($routes_parser->{'Handler'});
 		}
 		
+		if(defined $routes_parser->{'Handler'}->{'route'}->{'max_retries'})
+		{
+			$rerunMax = $routes_parser->{'Handler'}->{'route'}->{'max_retries'};
+		}	
+		
+		if(defined $routes_parser->{'Handler'}->{'route'}->{'retry_delay'})
+		{
+			$rerunDelay = $routes_parser->{'Handler'}->{'route'}->{'retry_delay'};
+		}	
+	
 		# TO DO: there should be some validation done on the parser contents.
 	
 		@inputMethods = @{$routes_parser->{'Handler'}->{'methods'}->{'input'}} if(defined $routes_parser->{'Handler'}->{'methods'}->{'input'});	
@@ -245,201 +268,15 @@ else
 		exit 1;
 	}
 
-	# now the fun begins, based on the data defined in the routes do some processing and make calls to other modules & scripts
-	if($externalLogger){
-		$externalLogger->update_status('id'=>$loggingID,'status'=>'setup_datastore');
-	}
+	my $returncode;
+	do {
+		$returncode = runRoute($externalLogger, clone(\@inputMethods), clone(\@processMethods), clone(\@outputMethods), clone(\@failMethods), clone(\@successMethods));
+		$runCount = $runCount + 1;
+		sleep($rerunDelay) if($returncode>1);
+	} while(($returncode==3) && ($runCount < ($rerunMax + 1)));
 
-	#initialise the data store, as per the master directory specified above.
-	my $store=setupDataStore();
+	print "return code is $returncode";
 
-	if(not defined $store){
-		logOutput("ERROR: Unable to initialise a datastore in $dataStoreLocation\n",method=>'Datastore');
-		die "ERROR: Unable to initialise a datastore in $dataStoreLocation\n";
-	}
-
-	$store->set('meta','loggingid',$loggingID);
-	my $method;
-	my $i;
-	
-	createTempFile();
-
-
-	print "-----------------------------------------------------------\n";
-	print "MESSAGE: number of input methods $numberOfInputMethods\n";
-	logOutput("MESSAGE: number of input methods $numberOfInputMethods\n",method=>'CDS');
-	if($externalLogger){
-		$externalLogger->update_status('id'=>$loggingID,'status'=>'input');
-	}
-
-    for ($i = 0; $i < $numberOfInputMethods; $i++) 
-    {
-    	$method = $inputMethods[$i];
-		$processReturnCode = executeMethod($method);	
-		
-	    if($processReturnCode == 1)
-	    {
-	    	   if(defined $method->{'nonfatal'}){
-	    			logOutput("MESSAGE: 'nonfatal' option set, so continuing on route.\n",method=>'CDS');
-	    		} else {
-	   				runFailMethods(\@failMethods,$method);
-					deleteTempFile();	
-					goto exitScript; # HACK to short ciruit and jump out of the loop
-				}
-	    }						
-    }    
-    
-	# Now for some fun, is ths script running in batch mode?
-	
-	# Batch mode is set after doing a ftp-pull and multiple file groups have been downloaded.
-	
-	if( $batchRouteMode == 1)
-	{
-		print "MESSAGE: cds_run is running in batch mode\n";
-		logOutput("MESSAGE: cds_run is running in batch mode\n",method=>'CDS');
-		
-		my $numberOfFileGroups = @filesToProcess;
-		my $index;
-		
-		for ($index = 0; $index < $numberOfFileGroups; $index++)
-		{
-			print "MESSAGE: batch processing at index $index\n";
-			logOutput("MESSAGE: batch processing at index $index\n",method=>'CDS');	
-			
-			
-			my $record = $filesToProcess[$index];
-
-			if($debugLevel > 0)
-			{
-				print STDOUT "DEBUG: current file group\n";
-				logOutput("DEBUG: current file group\n",method=>'CDS');
-				print Dumper(\$record);
-				logOutput (Dumper(\$record),method=>'CDS');				
-			}		
-			
-			# Not all the files may be in use at any given time.
-			$inputMedia = $record->{'cf_media_file'};
-			$inputInMeta = $record->{'cf_inmeta_file'};
-			$inputXML = $record->{'cf_xml_file'};
-			$inputMeta = $record->{'cf_meta_file'};	
-		
-			print "-----------------------------------------------------------\n";
-			print "MESSAGE: number of process methods $numberOfProcessMethods\n";
-			logOutput("MESSAGE: number of process methods $numberOfProcessMethods\n",method=>'CDS');
-if($externalLogger){
-	$externalLogger->update_status('id'=>$loggingID,'status'=>'process');
-}
-
-		    for($i = 0; $i < $numberOfProcessMethods; $i++)
-		    {
-		    	$method = $processMethods[$i];
-		    	$processReturnCode = executeMethod($method);
-		    	
-	    		if($processReturnCode == 1)
-	    		{
-	    			if(defined $method->{'nonfatal'}){
-	    				logOutput("MESSAGE: 'nonfatal' option set, so continuing on route.\n",method=>'CDS');
-	    			} else {
-	    				runFailMethods(\@failMethods,$method);
-	    				goto nextInBatch;
-	    			}
-	    		}		    	
-		    }
-			
-			print "-----------------------------------------------------------\n";
-			if($externalLogger){
-				$externalLogger->update_status('id'=>$loggingID,'status'=>'output');
-			}
-
-			$numberOfOutputMethods = @outputMethods;
-			print "MESSAGE: number of output methods $numberOfOutputMethods\n";	
-			logOutput("MESSAGE: number of output methods $numberOfOutputMethods\n",method=>'CDS');
-		    for ($i = 0; $i < $numberOfOutputMethods; $i++) 
-		    {
-		    	$method = $outputMethods[$i];
-		    	$processReturnCode = executeMethod($method);	
-		    	
-	    		if($processReturnCode == 1)
-	    		{
-	    			if(defined $method->{'nonfatal'}){
-	    				logOutput("MESSAGE: 'nonfatal' option set, so continuing on route.\n",method=>'CDS');
-	    			} else {
-						runFailMethods(\@failMethods,$method);
-	    				goto nextInBatch;
-	    			}
-	    		}				
-		    }
-		   	nextInBatch:
-		}
-		
-	
-	}	#batchmode==1
-	else
-	{
-		print "-----------------------------------------------------------\n";
-		print "MESSAGE number of process methods $numberOfProcessMethods\n";
-		logOutput("MESSAGE number of process methods $numberOfProcessMethods\n",method=>'CDS');
-		if($externalLogger){
-			$externalLogger->update_status('id'=>$loggingID,'status'=>'process');
-		}
-
-	    for($i = 0; $i < $numberOfProcessMethods; $i++)
-	    {
-	    	$method = $processMethods[$i];
-	    	$processReturnCode = executeMethod($method);
-	    	
-	    	if($processReturnCode != 0)
-	    	{
-	    		if(defined $method->{'nonfatal'}){
-	    			logOutput("MESSAGE: 'nonfatal' option set, so continuing on route.\n",method=>'CDS');
-	    		} else {
-	    			runFailMethods(\@failMethods,$method);
-	  	    		close LOG;
-					deleteTempFile();	  		
-	    			goto exitScript;
-	    		}
-	    	}
-	    }
-		
-		print "-----------------------------------------------------------\n";
-		print "MESSAGE number of output methods $numberOfOutputMethods\n";	
-		logOutput("MESSAGE number of output methods $numberOfOutputMethods\n");
-
-if($externalLogger){
-	$externalLogger->update_status('id'=>$loggingID,'status'=>'output');
-}
-
-	    for ($i = 0; $i < $numberOfOutputMethods; $i++) 
-	    {
-	    	$method = $outputMethods[$i];
-	    	$processReturnCode = executeMethod($method);	
-	    	
-	    	if($processReturnCode != 0)
-	    	{
-	    		if(defined $method->{'nonfatal'}){
-	    			logOutput("MESSAGE: 'nonfatal' option set, so continuing on route.\n",method=>'CDS');
-	    		} else {
-	    			runFailMethods(\@failMethods,$method);
-	   	    		close LOG;
-					deleteTempFile();	 		
-	    			goto exitScript;
-			}
-	    	}	    	
-	    					
-	    }		
-	}
-	
-	logOutput("\n\n-----------------------------------------\nEnd of route.\n-----------------------------------------\n",method=>'CDS');
-	
-	runSuccessMethods(\@successMethods);
-	
-	exitScript:
-
-	#should output our metadata here
-	if($externalLogger){
-		my $metadata=$store->get_meta_hashref;
-		$externalLogger->setMeta(id=>$loggingID,metadata=>$metadata->{'meta'});
-	}
 	# Clean up
 	deleteTempFile();
 	unlink(untaint($ENV{'cf_datastore_location'})) unless($keepDatastore);
@@ -450,6 +287,7 @@ if($externalLogger){
 	
 #------------------------------------------------------------------------------
 # sub routines
+
 
 sub uploaderHelp {
 	print STDERR "\n";
@@ -463,7 +301,203 @@ sub uploaderHelp {
 	#print STDERR "--config (optional)\n";
 }
 
+sub runRoute {
+	my ($externalLogger, $inputMethods, $processMethods, $outputMethods, $failMethods, $successMethods) = @_;
 
+	print Dumper($inputMethods);
+	# now the fun begins, based on the data defined in the routes do some processing and make calls to other modules & scripts
+	if($externalLogger){
+		$externalLogger->update_status('id'=>$loggingID,'status'=>'setup_datastore');
+	}
+
+	#initialise the data store, as per the master directory specified above.
+	$store=setupDataStore();
+
+	if(not defined $store){
+		logOutput("ERROR: Unable to initialise a datastore in $dataStoreLocation\n",method=>'Datastore');
+		die "ERROR: Unable to initialise a datastore in $dataStoreLocation\n";
+	}
+
+	$store->set('meta','loggingid',$loggingID);
+	my $method;
+	my $i;
+
+	createTempFile();
+
+
+	print "-----------------------------------------------------------\n";
+	print "MESSAGE: number of input methods ".scalar @{$inputMethods} ."\n";
+
+	logOutput("MESSAGE: number of input methods ".scalar @{$inputMethods} ."\n",method=>'CDS');
+	if($externalLogger){
+		$externalLogger->update_status('id'=>$loggingID,'status'=>'input');
+	}
+
+	foreach(@$inputMethods)
+	{
+		$method = $_;
+		$processReturnCode = executeMethod($method);
+
+		if($processReturnCode >0)
+		{
+			if(defined $method->{'nonfatal'}){
+				logOutput("MESSAGE: 'nonfatal' option set, so continuing on route.\n",method=>'CDS');
+			} else {
+				runFailMethods(\@failMethods,$method);
+				deleteTempFile();
+				return $processReturnCode;
+			}
+		}
+	}
+
+	# Now for some fun, is ths script running in batch mode?
+
+	# Batch mode is set after doing a ftp-pull and multiple file groups have been downloaded.
+
+	if( $batchRouteMode == 1)
+	{
+		print "MESSAGE: cds_run is running in batch mode\n";
+		logOutput("MESSAGE: cds_run is running in batch mode\n",method=>'CDS');
+
+		my $numberOfFileGroups = @filesToProcess;
+		my $index;
+
+		for ($index = 0; $index < $numberOfFileGroups; $index++)
+		{
+			print "MESSAGE: batch processing at index $index\n";
+			logOutput("MESSAGE: batch processing at index $index\n",method=>'CDS');
+
+			my $record = $filesToProcess[$index];
+
+			if($debugLevel > 0)
+			{
+				print STDOUT "DEBUG: current file group\n";
+				logOutput("DEBUG: current file group\n",method=>'CDS');
+				print Dumper(\$record);
+				logOutput (Dumper(\$record),method=>'CDS');
+			}
+
+			# Not all the files may be in use at any given time.
+			$inputMedia = $record->{'cf_media_file'};
+			$inputInMeta = $record->{'cf_inmeta_file'};
+			$inputXML = $record->{'cf_xml_file'};
+			$inputMeta = $record->{'cf_meta_file'};
+
+			print "-----------------------------------------------------------\n";
+			print "MESSAGE: number of process methods $numberOfProcessMethods\n";
+			logOutput("MESSAGE: number of process methods $numberOfProcessMethods\n",method=>'CDS');
+
+			if($externalLogger){
+				$externalLogger->update_status('id'=>$loggingID,'status'=>'process');
+			}
+
+			for($i = 0; $i < $numberOfProcessMethods; $i++)
+			{
+				$method = $processMethods[$i];
+				$processReturnCode = executeMethod($method);
+
+				if($processReturnCode == 1)
+				{
+					if(defined $method->{'nonfatal'}){
+						logOutput("MESSAGE: 'nonfatal' option set, so continuing on route.\n",method=>'CDS');
+					} else {
+						runFailMethods(\@failMethods,$method);
+						goto nextInBatch;
+					}
+				}
+			}
+
+			print "-----------------------------------------------------------\n";
+			if($externalLogger){
+				$externalLogger->update_status('id'=>$loggingID,'status'=>'output');
+			}
+
+			$numberOfOutputMethods = @outputMethods;
+			print "MESSAGE: number of output methods $numberOfOutputMethods\n";
+			logOutput("MESSAGE: number of output methods $numberOfOutputMethods\n",method=>'CDS');
+			for ($i = 0; $i < $numberOfOutputMethods; $i++)
+			{
+				$method = $outputMethods[$i];
+				$processReturnCode = executeMethod($method);
+
+				if($processReturnCode == 1)
+				{
+					if(defined $method->{'nonfatal'}){
+						logOutput("MESSAGE: 'nonfatal' option set, so continuing on route.\n",method=>'CDS');
+					} else {
+						runFailMethods(\@failMethods,$method);
+						goto nextInBatch;
+					}
+				}
+			}
+			nextInBatch:
+		}
+
+
+	}	#batchmode==1
+	else
+	{
+		print "-----------------------------------------------------------\n";
+		print "MESSAGE number of process methods $numberOfProcessMethods\n";
+		logOutput("MESSAGE number of process methods $numberOfProcessMethods\n",method=>'CDS');
+		if($externalLogger){
+			$externalLogger->update_status('id'=>$loggingID,'status'=>'process');
+		}
+
+		foreach(@$processMethods)
+		{
+			$method = $_;
+			$processReturnCode = executeMethod($method);
+
+			if($processReturnCode != 0)
+			{
+				if(defined $method->{'nonfatal'}){
+					logOutput("MESSAGE: 'nonfatal' option set, so continuing on route.\n",method=>'CDS');
+				} else {
+					runFailMethods(\@failMethods,$method);
+					deleteTempFile();
+					return $processReturnCode;
+				}
+			}
+		}
+
+		print "-----------------------------------------------------------\n";
+		print "MESSAGE number of output methods $numberOfOutputMethods\n";
+		logOutput("MESSAGE number of output methods $numberOfOutputMethods\n");
+
+		if($externalLogger){
+			$externalLogger->update_status('id'=>$loggingID,'status'=>'output');
+		}
+
+		foreach(@$outputMethods)
+		{
+			$method = $_;
+			$processReturnCode = executeMethod($method);
+
+			if($processReturnCode != 0)
+			{
+				if(defined $method->{'nonfatal'}){
+					logOutput("MESSAGE: 'nonfatal' option set, so continuing on route.\n",method=>'CDS');
+				} else {
+					runFailMethods(\@failMethods,$method);
+					deleteTempFile();
+					return $processReturnCode;
+				}
+			}
+
+		}
+	}
+	
+	#should output our metadata here
+	if($externalLogger){
+		my $metadata=$store->get_meta_hashref;
+		$externalLogger->setMeta(id=>$loggingID,metadata=>$metadata->{'meta'});
+	}
+	
+	logOutput("\n\n-----------------------------------------\nEnd of route.\n-----------------------------------------\n",method=>'CDS');
+	runSuccessMethods(\@successMethods);
+	return 0;
+}
 
 sub commandLineInput {
 	
@@ -575,7 +609,7 @@ $ENV{'cf_last_error'}=$failedMethod->{'lastError'};
 $ENV{'cf_last_line'}=$failedMethod->{'lastLine'};
 	 
 foreach(@$methodList){
-	$method = $_;
+	my $method = $_;
 	$processReturnCode = executeMethod($method,update_status=>0);
 	   
 #	print Dumper($failedMethod);
@@ -601,7 +635,7 @@ if($externalLogger){
 logOutput("Route succeeded.  Executing success methods.\n",method=>'CDS');
 
 foreach(@$methodList){
-	$method = $_;
+	my $method = $_;
 	$processReturnCode = executeMethod($method,update_status=>0);
 
 	if($processReturnCode != 0)
@@ -624,11 +658,16 @@ sub find_filename {
 # 0=>run successful
 # 1=>run failed for some reason (script flagged an error or did not exist - logged)
 # 2=>one of the file arguments requested in take-files did not exist, so the script didn't run.
+# 3=>rerun the route.
 sub executeMethod{
 	my ($methodData,%args) = @_;
 	my $systemArguments;
 	my $methodName = $methodData->{'name'};
 	
+	if(not defined $methodName){
+		print Dumper($methodData);
+		confess "executeMethod called with incomplete method data";
+	}
 	my $returnCode = 0;
 
 	my $update_status=1;
@@ -637,78 +676,86 @@ sub executeMethod{
 	if($externalLogger and $update_status){
 		$externalLogger->update_status(id=>$loggingID,'current_operation'=>$methodName);
 	}
-	if( $methodName eq "commandline")
-	{	
-		# get any specified arguments for the process method and set environment varaibles accordingly
-		setUpProcessArguments($methodData);	
-		commandLineInput();
-	}
-	else
-	{
-		my $filename = find_filename($methodScriptsFolder . $methodName);
-		
-		# get any specified arguments for the process method and set environment varaibles accordingly
-		if(not setUpProcessArguments($methodData)){
-			logOutput("-ERROR: Arguments to method not properly defined.  Not running method $methodName.\n",method=>$methodName);
-			$returnCode = 2;
+
+		if( $methodName eq "commandline")
+		{	
+			# get any specified arguments for the process method and set environment varaibles accordingly
+			setUpProcessArguments($methodData);	
+				commandLineInput();
 		}
+		else
+		{
+			my $filename = find_filename($methodScriptsFolder . $methodName);
+		
+			# get any specified arguments for the process method and set environment varaibles accordingly
+			if(not setUpProcessArguments($methodData)){
+				logOutput("-ERROR: Arguments to method not properly defined.  Not running method $methodName.\n",method=>$methodName);
+				$returnCode = 2;
+			}
 
-		if($returnCode<1){
-			if( -x $filename or -x $filename.".pl" or -x $filename.".sh" or -x $filename.".py" or -x $filename.".rb"){
-				my $lastLine;
-				my $lastError;
-				$systemArguments=untaint($filename). " 2>&1";
+			if($returnCode<1){
+				if( -x $filename or -x $filename.".pl" or -x $filename.".sh" or -x $filename.".py" or -x $filename.".rb"){
+					my $lastLine;
+					my $lastError;
+					$systemArguments=untaint($filename). " 2>&1";
 
-				#we use this syntax, in order to dump lines to the logfile as they happen.
-				$|=1;
-				#$/="\r\n";
-				open PIPE,"$systemArguments |" or die "Could not run command $systemArguments";
+					#we use this syntax, in order to dump lines to the logfile as they happen.
+					$|=1;
+					#$/="\r\n";
+					open PIPE,"$systemArguments |" or die "Could not run command $systemArguments";
 
-				unless($loggingStarted)
-				{
-					openLogfile();
-				}	
+					unless($loggingStarted)
+					{
+						openLogfile();
+					}	
 
-				logOutput("\n------------------------------------------\n",'method'=>'CDS');
-				logOutput("\nExecuting method $methodName\n",'method'=>'CDS');
-				while(<PIPE>){
-					$lastLine=$_;
-					$lastError=$_ if(/^-/ or /^ERROR/);
-					logOutput("$_",'method'=>$methodName);
-					flush LOG;
-				}
-				$methodData->{'lastError'}=$lastError;
-				$methodData->{'lastLine'}=$lastLine;
-				close PIPE;
+					logOutput("\n------------------------------------------\n",'method'=>'CDS');
+					logOutput("\nExecuting method $methodName\n",'method'=>'CDS');
+					while(<PIPE>){
+						$lastLine=$_;
+						$lastError=$_ if(/^-/ or /^ERROR/);
+						logOutput("$_",'method'=>$methodName);
+						flush LOG;
+					}
+					$methodData->{'lastError'}=$lastError;
+					$methodData->{'lastLine'}=$lastLine;
+					close PIPE;
 	
-				logOutput("------------------------------------------\n\n",'method'=>'CDS');
-				my $ret = $?;
-				my $exitCode = ($ret >> 8);
-				print "back quotes returned " . ($ret)        . "\n";
-				print "child died on signal " . ($ret & 0xff) . "\n";
-				print "child exit code was "  . $exitCode   . "\n";
-
-				if($exitCode > 0)
-				{
-					print STDOUT "-ERROR: an error occurred with '$methodName' script.\n";
-					logOutput("-ERROR: an error occurred with '$methodName' script.\n",'method'=>'CDS');	
-					$returnCode = 1;
+					logOutput("------------------------------------------\n\n",'method'=>'CDS');
+					my $ret = $?;
+					my $exitCode = ($ret >> 8);
+					print "back quotes returned " . ($ret)        . "\n";
+					print "child died on signal " . ($ret & 0xff) . "\n";
+					print "child exit code was "  . $exitCode   . "\n";
+				
+					if($exitCode == 3)
+					{
+						print STDOUT "-ERROR: an error occurred with '$methodName' script.\n";
+						logOutput("-ERROR: an error occurred with '$methodName' script.\n",'method'=>'CDS');	
+						$returnCode = 3;
+					}
+					elsif($exitCode > 0)
+					{
+						print STDOUT "-ERROR: an error occurred with '$methodName' script.\n";
+						logOutput("-ERROR: an error occurred with '$methodName' script.\n",'method'=>'CDS');	
+						$returnCode = 1;
+					}
+					else
+					{
+						parseTempFile();
+					}
+					chomp $methodData->{'lastError'};
+					chomp $methodData->{'lastLine'};
 				}
 				else
 				{
-					parseTempFile();
+					print STDERR "-ERROR: script for method $methodName does not exist, or is not executable. ($filename)\n\n";
+					logOutput("-ERROR: script for method $methodName does not exist, or is not executable. ($filename)\n\n",'method'=>'CDS');
+					$returnCode = 1;
 				}
-				chomp $methodData->{'lastError'};
-				chomp $methodData->{'lastLine'};
 			}
-			else
-			{
-				print STDERR "-ERROR: script for method $methodName does not exist, or is not executable. ($filename)\n\n";
-				logOutput("-ERROR: script for method $methodName does not exist, or is not executable. ($filename)\n\n",'method'=>'CDS');
-				$returnCode = 1;
-			}
-		}
-	}	#if methodname=='commandline'
+		}	#if methodname=='commandline'
+		
 	if($externalLogger and $update_status){
 		my $status;
 		if($returnCode==0){
@@ -717,6 +764,8 @@ sub executeMethod{
 			$status="error";
 		} elsif($returnCode==2){
 			$status="nonfatal";
+		} elsif($returnCode==3){
+			$status="reruning";
 		}
 		$externalLogger->update_status(id=>$loggingID,current_operation=>'',last_operation=>$methodName,last_error=>$methodData->{'lastError'},last_operation_status=>$status);
 	}
