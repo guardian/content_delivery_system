@@ -133,7 +133,7 @@ class VSItem < VSApi
     end
     
     def refresh(refreshShapes: true)
-        return self.populate(@id, refreshShapes: refreshShapes)
+      self.populate(@id, refreshShapes: refreshShapes)
     end #def refresh
     
     def refresh!(refreshShapes: true)
