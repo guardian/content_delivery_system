@@ -116,7 +116,7 @@ if(ENV['download'])
 		
 		output_file_path = File.join(download_path,File.basename(s.fileURI().path))
 		
-		File.open(output_file_path) do |f|
+		File.open(output_file_path,"w") do |f|
 			s.fileData do |data|
 				f.write(data)
 			end #s.fileData
@@ -163,7 +163,8 @@ begin
         puts "Shape exists, but path is zero-length. Waiting for shape to have a valid path..."
         s = item.shapes.shapeForTag(shapetag,refresh: true)
     end
-    puts "Found #{s.id} at "+URI.unescape(s.fileURI(scheme: "file").path)
+    output_file_path=URI.unescape(s.fileURI(scheme: "file").path)
+    puts "Found #{s.id} at "+output_file_path
 rescue VSNotFound=>e
     puts "No shape was found with the tag #{shapetag}"
     
@@ -198,9 +199,9 @@ rescue VSNotFound=>e
 end
 
 unless(ENV['no_set_media'])
-    puts "INFO: Outputting found encoding "+URI.unescape(s.fileURI(scheme: "file").path)+ " as media file"
+    puts "INFO: Outputting found encoding "+output_file_path+ " as media file"
     File.open(ENV['cf_temp_file'],'w') do |tempfile|
-        tempfile.write("cf_media_file="+URI.unescape(s.fileURI(scheme: "file").path))
+        tempfile.write("cf_media_file="+output_file_path)
     end #File.open
 end #unless(no_set_media)
 
@@ -214,7 +215,7 @@ if(ENV['set_key'])
         key=ENV['set_key']
     end
     puts "INFO: Outputting encoding path to key #{key} in section #{section}"
-    $store.set(section,key,URI.unescape(s.fileURI(scheme: "file").path))
+    $store.set(section,key,output_file_path)
 end
 
 print "+SUCCESS: Found an encoding matching shape tag #{shapetag}"
