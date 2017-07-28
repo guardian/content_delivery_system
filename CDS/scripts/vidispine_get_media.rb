@@ -116,7 +116,7 @@ if(ENV['download'])
 		
 		output_file_path = File.join(download_path,File.basename(s.fileURI().path))
 		
-		File.open(output_file_path) do |f|
+		File.open(output_file_path,"w") do |f|
 			s.fileData do |data|
 				f.write(data)
 			end #s.fileData
