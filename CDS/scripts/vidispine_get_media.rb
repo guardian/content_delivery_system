@@ -50,12 +50,13 @@ rescue ArgumentError=>e
     exit(1)
 end
 
-wait_time = 300
-retry_delay = 10
+
 begin
     wait_time = $store.substitute_string(ENV['wait_time']).to_i
     retry_delay = $store.substitute_string(ENV['retry_delay']).to_i
 rescue Exception=>e
+  wait_time = 300
+  retry_delay = 10
 end
 
 begin
@@ -90,7 +91,6 @@ puts "Found item #{vsid}, with currently available shapes:"
 item.shapes.each do |s|
     #specify a url scheme (e.g., file, http, omms, s3, etc.) to only return URIs that match that scheme
     s.eachFileURI(scheme: nil) do |u|
-        # puts "\t#{s.id} (#{s.tag}): "+URI.unescape(u.path)+" on #{storage}\n";
         puts "\t#{s.id} (#{s.tag}): #{u.to_s}\n";
     end
 end
@@ -103,100 +103,68 @@ if(ENV['download'])
 		download_path = $store.substitute_string(ENV['download_path'])
 	else
 		download_path = "/tmp"
-	end
-	
-	begin
-		s = item.shapes.shapeForTag(shapetag, refresh: true)
-		while(s.fileURI().path.length == 0)
-			sleep(5)
-			puts "Shape exists, but path is zero-length. Probably still transcoding, waiting for a valid path..."
-			s = item.shapes.shapeForTag(shapetag, refresh: true)
-		end #while
-		puts "Found #{s.id} at "+URI.unescape(s.fileURI().path)
-		
-		output_file_path = File.join(download_path,File.basename(s.fileURI().path))
-		
-		File.open(output_file_path,"w") do |f|
-			s.fileData do |data|
-				f.write(data)
-			end #s.fileData
-		end #File.open
-		
-	rescue VSNotFound=>e
-		puts "No shape was found with the tag #{shapetag}"
-	
-		if(ENV['no_transcode'])
-			elapsed = Time.now.to_i - start_time
-			if(elapsed > wait_time)
-				puts "No joy after #{elapsed} seconds."
-				exit(1)
-			end
-			sleep(retry_delay)
-			item.refresh
-			retry
-		end 
+  end
 
-		if(have_transcoded)
-			puts "-ERROR: Previous transcode attempt failed, so we cannot continue.  Remove the shape from the item in Vidispine and re-run the route."
-			exit(1)
-		end
-		have_transcoded=true
-		begin
-			item.transcode!(shapetag)
-			puts "INFO: Transcode completed. Waiting 5s for Vidispine to kick in before re-trying..."
-			sleep(5)
-			retry
-		rescue VSNotFound=>e
-			puts "-ERROR: Shape tag #{shapetag} does not exist."
-			exit(1)
-		rescue VSException=>e
-			puts e.backtrace
-			puts "-ERROR: Vidispine reported #{e.message}"
-		end
-	end #exception block
-end #if(ENV['download'])
+  shouldHaveScheme=nil
+else
+  shouldHaveScheme='file'
+end
+
+
 begin
-    s = item.shapes.shapeForTag(shapetag, scheme: "file",refresh: true)
-    #if path is empty then it must be transcoding, so wait for it.
-    while(s.fileURI(scheme: "file").path.length==0)
-        sleep(5)
-        puts "Shape exists, but path is zero-length. Waiting for shape to have a valid path..."
-        s = item.shapes.shapeForTag(shapetag,refresh: true)
-    end
+  s = item.shapes.shapeForTag(shapetag, scheme: shouldHaveScheme, refresh: true)
+  while(s.fileURI().path.length == 0)
+    sleep(5)
+    puts "Shape exists, but path is zero-length. Probably still transcoding, waiting for a valid path..."
+    s = item.shapes.shapeForTag(shapetag, refresh: true)
+  end #while
+  puts "Found #{s.id} at "+URI.unescape(s.fileURI().path)
+
+  if ENV['download']
+    output_file_path = File.join(download_path,File.basename(s.fileURI().path))
+
+    File.open(output_file_path,"w") do |f|
+      s.fileData do |data|
+        f.write(data)
+      end #s.fileData
+    end #File.open
+  else #if ENV['download']
     output_file_path=URI.unescape(s.fileURI(scheme: "file").path)
     puts "Found #{s.id} at "+output_file_path
-rescue VSNotFound=>e
-    puts "No shape was found with the tag #{shapetag}"
-    
-    if(ENV['no_transcode'])
-        elapsed = Time.now.to_i - start_time
-        if(elapsed > wait_time)
-            puts "No joy after #{elapsed} seconds."
-            exit(1)
-        end
-        sleep(retry_delay)
-        item.refresh
-        retry
-    end 
+  end #if ENV['download']
 
-    if(have_transcoded)
-        puts "-ERROR: Previous transcode attempt failed, so we cannot continue.  Remove the shape from the item in Vidispine and re-run the route."
-        exit(1)
+rescue VSNotFound=>e
+  puts "No shape was found with the tag #{shapetag}"
+
+  if(ENV['no_transcode'])
+    elapsed = Time.now.to_i - start_time
+    if(elapsed > wait_time)
+      puts "No joy after #{elapsed} seconds."
+      exit(1)
     end
-    have_transcoded=true
-    begin
-        item.transcode!(shapetag)
-        puts "INFO: Transcode completed. Waiting 5s for Vidispine to kick in before re-trying..."
-        sleep(5)
-        retry
-    rescue VSNotFound=>e
-        puts "-ERROR: Shape tag #{shapetag} does not exist."
-        exit(1)
-    rescue VSException=>e
-        puts e.backtrace
-        puts "-ERROR: Vidispine reported #{e.message}"
-    end
-end
+    sleep(retry_delay)
+    item.refresh
+    retry
+  end
+
+  if(have_transcoded)
+    puts "-ERROR: Previous transcode attempt failed, so we cannot continue.  Remove the shape from the item in Vidispine and re-run the route."
+    exit(1)
+  end
+  have_transcoded=true
+  begin
+    item.transcode!(shapetag)
+    puts "INFO: Transcode completed. Waiting 5s for Vidispine to kick in before re-trying..."
+    sleep(5)
+    retry
+  rescue VSNotFound=>e
+    puts "-ERROR: Shape tag #{shapetag} does not exist."
+    exit(1)
+  rescue VSException=>e
+    puts e.backtrace
+    puts "-ERROR: Vidispine reported #{e.message}"
+  end
+end #exception block
 
 unless(ENV['no_set_media'])
     puts "INFO: Outputting found encoding "+output_file_path+ " as media file"
