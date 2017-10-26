@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 $|=1;
 
-my $version='$Rev: 949 $ $LastChangedDate: 2014-07-25 10:43:51 +0100 (Fri, 25 Jul 2014) $';
+my $version='';
 
 # This CDS method polls an FTP server, downloading all files that have appeared since the previous run. 
 # The previous contents of the FTP server is stored in a text file, specified in the old-file-list option.
@@ -35,7 +35,7 @@ use strict;
 use warnings;
 
 use Net::FTP;
-
+use File::Path qw/make_path/;
 use Data::Dumper;
 use CDS::Datastore;
 
@@ -244,15 +244,9 @@ if($ENV{'debug'}){
 	print Dumper(\%collection);
 }
 
-#now build a download list, if the file hasn't been seen before then get it.
+#now build a download list, if the file has not been seen before then get it.
 my @download_list;
 my @ignore_list;
-#my $n=0;
-#foreach(@files){
-#	++$n;
-#	add_file_to_list($_,\@download_list,@oldfiles);
-#	last if($n>$ENV{'limit-files'});
-#}
 
 foreach(keys %collection){
 	my $take=1;
@@ -309,6 +303,15 @@ open OLDFILELIST,">>$oldFileListName" or die "-FATAL Could not open file list ca
 print OLDFILELIST "$_\n" foreach(@ignore_list);
 
 my $successfulDownloadCount = 0;
+
+if(not -d $localPath){
+    print STDOUT "WARNING: output path $localPath does not exist. Trying to create...\n";
+	my $dirs_created = make_path($localPath);
+	if($dirs_created==0){
+		print STDERR "ERROR: Unable to create $localPath.";
+		exit(1);
+	}
+}
 
 foreach(@download_list){
 	chdir $localPath;
