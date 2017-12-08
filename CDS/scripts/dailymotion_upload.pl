@@ -196,7 +196,7 @@ my $req;
 if ($block == 0) {
 	my $ua = LWP::UserAgent->new;
 	
-	if ($imageurl eq "") or ($imageurl eq "http://invalid.url") {
+	if (($imageurl eq "") || ($imageurl eq "http://invalid.url")) {
 	
 		$req = $ua->request(POST 'https://api.dailymotion.com/video/'.$server4->{'id'}.'?',
 			  Content_Type => 'application/x-www-form-urlencoded',
@@ -231,7 +231,7 @@ if ($block == 0) {
 
 else {
 	
-	if ($imageurl eq "") or ($imageurl eq "http://invalid.url") {
+	if (($imageurl eq "") || ($imageurl eq "http://invalid.url")) {
 	
 		$req = $ua->request(POST 'https://api.dailymotion.com/video/'.$server4->{'id'}.'?',
 			  Content_Type => 'application/x-www-form-urlencoded',
