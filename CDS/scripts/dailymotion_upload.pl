@@ -207,7 +207,7 @@ my $content = [
 				  description=>$videodescription,
 				  explicit=>$adult,
 				  access_token=>$server->{'access_token'}
-			  ]
+			  ];
 			  
 if ($block == 1) {
 	#$content->{'mediablocking'} = 'country/all/media/mobile';
