@@ -188,81 +188,46 @@ else {
 }
 
 
+sub is_imageurl_valid {
+	my ($url_to_check) = @_;
+
+	my $url_status = 'valid';
+
+	if (($url_to_check eq "") || ($url_to_check eq "http://invalid.url")) {
+		$url_status = 'invalid';
+	}
+	
+	return $url_status;
+}
+    
+my $content = [
+				  title=>$videotitle,
+				  channel=>$videocat,
+				  tags=>$tags,
+				  description=>$videodescription,
+				  explicit=>$adult,
+				  access_token=>$server->{'access_token'}
+			  ]
+			  
+if ($block == 1) {
+	#$content->{'mediablocking'} = 'country/all/media/mobile';
+}
+
+if (is_imageurl_valid($imageurl) eq 'valid') {
+	$content->{'thumbnail_url'} = $imageurl;
+}
+
 
 my $server4 = decode_json($req->content);
 
 my $req;
 
-if ($block == 0) {
-	my $ua = LWP::UserAgent->new;
+my $ua = LWP::UserAgent->new;
 	
-	if (($imageurl eq "") || ($imageurl eq "http://invalid.url")) {
-	
-		$req = $ua->request(POST 'https://api.dailymotion.com/video/'.$server4->{'id'}.'?',
-			  Content_Type => 'application/x-www-form-urlencoded',
-			  Content => [
-				  title=>$videotitle,
-				  channel=>$videocat,
-				  tags=>$tags,
-				  description=>$videodescription,
-				  explicit=>$adult,
-				  thumbnail_url=>$imageurl,
-				  #taken_time=>$videotaken,
-				  access_token=>$server->{'access_token'}
-			  ]
+$req = $ua->request(POST 'https://api.dailymotion.com/video/'.$server4->{'id'}.'?',
+		Content_Type => 'application/x-www-form-urlencoded',
+		Content => $content
 		);
-	
-	} else {
-	
-		$req = $ua->request(POST 'https://api.dailymotion.com/video/'.$server4->{'id'}.'?',
-			  Content_Type => 'application/x-www-form-urlencoded',
-			  Content => [
-				  title=>$videotitle,
-				  channel=>$videocat,
-				  tags=>$tags,
-				  description=>$videodescription,
-				  explicit=>$adult,
-				  access_token=>$server->{'access_token'}
-			  ]
-		);
-	
-	}
-}
-
-else {
-	
-	if (($imageurl eq "") || ($imageurl eq "http://invalid.url")) {
-	
-		$req = $ua->request(POST 'https://api.dailymotion.com/video/'.$server4->{'id'}.'?',
-			  Content_Type => 'application/x-www-form-urlencoded',
-			  Content => [
-				  title=>$videotitle,
-				  channel=>$videocat,
-				  tags=>$tags,
-				  description=>$videodescription,
-				  explicit=>$adult,
-				  #mediablocking=>'country/all/media/mobile',
-				  thumbnail_url=>$imageurl,
-				  #taken_time=>$videotaken,
-				  access_token=>$server->{'access_token'}
-			  ]
-		);
-
-	} else {
-	
-		$req = $ua->request(POST 'https://api.dailymotion.com/video/'.$server4->{'id'}.'?',
-			  Content_Type => 'application/x-www-form-urlencoded',
-			  Content => [
-				  title=>$videotitle,
-				  channel=>$videocat,
-				  tags=>$tags,
-				  description=>$videodescription,
-				  explicit=>$adult,
-				  access_token=>$server->{'access_token'}
-			  ]
-		);
-	}
-}
 
 print $req->request()->as_string();
  	
