@@ -27,6 +27,20 @@ use Data::Dumper;
 use File::Basename;
 use CDS::Datastore;
 
+sub is_imageurl_valid {
+	my ($url_to_check) = @_;
+
+	my $url_status = 1;
+
+	if (($url_to_check eq "") || ($url_to_check eq "http://invalid.url")) {
+		$url_status = 0;
+	}
+	
+	return $url_status;
+}
+
+#START MAIN
+
 my $store=CDS::Datastore->new('dailymotion_upload');
 
 my $videotitle = $store->substitute_string($ENV{'video_title'});
@@ -63,7 +77,6 @@ if ($store->substitute_string($ENV{'video_adult'}) eq "contains_adult_content") 
 
  
 use HTTP::Request::Common;
-
  
 my $file, $result, $message;
 
@@ -82,8 +95,6 @@ my $req = $ua->request(POST 'https://api.dailymotion.com/oauth/token',
 );
 
 print $req->request()->as_string();
- 	
- 	
  	
 print "\nRESPONSE -- \n" . $req->as_string;
  
@@ -120,7 +131,6 @@ my $server2 = decode_json($req->content);
 my $ua = LWP::UserAgent->new;
 my $req;
 
-
 use HTTP::Request::Common qw(POST $DYNAMIC_FILE_UPLOAD);
 
 $DYNAMIC_FILE_UPLOAD=1;
@@ -129,8 +139,6 @@ my $request   =  HTTP::Request::Common::POST
   $server2->{'upload_url'},
   Content_Type => 'form-data',
   Content => [ 'file' => [ $ENV{'cf_media_file'} ] ];
-
-
 
 print Dumper($req);
 
@@ -157,8 +165,6 @@ my $req = $ua->request(POST 'https://api.dailymotion.com/me/videos?',
 
 print $req->request()->as_string();
  	
- 	
- 	
 print "\nRESPONSE -- \n" . $req->as_string;
  
 # Check the outcome of the response
@@ -169,20 +175,7 @@ if ($req->is_success) {
 else {
   print "\n in else not success\n";
 }
-
-
-sub is_imageurl_valid {
-	my ($url_to_check) = @_;
-
-	my $url_status = 'valid';
-
-	if (($url_to_check eq "") || ($url_to_check eq "http://invalid.url")) {
-		$url_status = 'invalid';
-	}
-	
-	return $url_status;
-}
-    
+   
 my $content = [
 				  title=>$videotitle,
 				  channel=>$videocat,
@@ -192,7 +185,7 @@ my $content = [
 				  access_token=>$server->{'access_token'}
 			  ];
 			  
-if (is_imageurl_valid($imageurl) eq 'valid') {
+if (is_imageurl_valid($imageurl)) {
 	$content->{'thumbnail_url'} = $imageurl;
 }
 
