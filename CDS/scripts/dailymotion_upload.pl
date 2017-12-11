@@ -186,7 +186,7 @@ my $content = [
 			  ];
 			  
 if (is_imageurl_valid($imageurl)) {
-	$content->{'thumbnail_url'} = $imageurl;
+	$content{'thumbnail_url'} = $imageurl;
 }
 
 
