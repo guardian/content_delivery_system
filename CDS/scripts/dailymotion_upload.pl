@@ -27,11 +27,21 @@ use Data::Dumper;
 use File::Basename;
 use CDS::Datastore;
 
+sub is_imageurl_valid {
+	my ($url_to_check) = @_;
+
+	my $url_status = 1;
+
+	if (($url_to_check eq "") || ($url_to_check eq "http://invalid.url")) {
+		$url_status = 0;
+	}
+	
+	return $url_status;
+}
+
+#START MAIN
+
 my $store=CDS::Datastore->new('dailymotion_upload');
-
-#my $imagefile = $ARGV[1];
-
-#print "\n".$imagefile."\n";
 
 my $videotitle = $store->substitute_string($ENV{'video_title'});
 my $videodescription = $store->substitute_string($ENV{'video_description'});
@@ -67,19 +77,8 @@ if ($store->substitute_string($ENV{'video_adult'}) eq "contains_adult_content") 
 
  
 use HTTP::Request::Common;
-
  
 my $file, $result, $message;
-#my $filePath = '/vagrant';
-#my $keyword = "test.mp4";
- 
-#$file = $filePath.'/'.$keyword."";
- 
- 
-#if(scalar @ARGV <1){
-#	print "Usage: ./dailymotion_upload [filename]\n";
-#}
-
 
 
 my $ua = LWP::UserAgent->new;
@@ -97,12 +96,10 @@ my $req = $ua->request(POST 'https://api.dailymotion.com/oauth/token',
 
 print $req->request()->as_string();
  	
- 	
- 	
 print "\nRESPONSE -- \n" . $req->as_string;
  
 # Check the outcome of the response
-#print Dumper(decode_json($req->content));
+
 if ($req->is_success) {
     #print Dumper(decode_json($req->content));
 }
@@ -121,7 +118,7 @@ print $req->request()->as_string();
 print "\nRESPONSE -- \n" . $req->as_string;
  
 # Check the outcome of the response
-#print Dumper(decode_json($req->content));
+
 if ($req->is_success) {
     #print Dumper(decode_json($req->content));
 }
@@ -134,8 +131,6 @@ my $server2 = decode_json($req->content);
 my $ua = LWP::UserAgent->new;
 my $req;
 
-
-#use LWP::UserAgent;
 use HTTP::Request::Common qw(POST $DYNAMIC_FILE_UPLOAD);
 
 $DYNAMIC_FILE_UPLOAD=1;
@@ -145,11 +140,7 @@ my $request   =  HTTP::Request::Common::POST
   Content_Type => 'form-data',
   Content => [ 'file' => [ $ENV{'cf_media_file'} ] ];
 
-
-
 print Dumper($req);
-
-#my $resp = $ua->request($req);
 
 my $resp = $ua->request($request);
 
@@ -174,59 +165,41 @@ my $req = $ua->request(POST 'https://api.dailymotion.com/me/videos?',
 
 print $req->request()->as_string();
  	
- 	
- 	
 print "\nRESPONSE -- \n" . $req->as_string;
  
 # Check the outcome of the response
-#print Dumper(decode_json($req->content));
+
 if ($req->is_success) {
     #print Dumper(decode_json($req->content));
 }
 else {
   print "\n in else not success\n";
 }
-
+   
+my $content = [
+				  title=>$videotitle,
+				  channel=>$videocat,
+				  tags=>$tags,
+				  description=>$videodescription,
+				  explicit=>$adult,
+				  access_token=>$server->{'access_token'}
+			  ];
+			  
+if (is_imageurl_valid($imageurl)) {
+	$content->{'thumbnail_url'} = $imageurl;
+}
 
 
 my $server4 = decode_json($req->content);
 
 my $req;
 
-if ($block == 0) {
-	my $ua = LWP::UserAgent->new;
-	$req = $ua->request(POST 'https://api.dailymotion.com/video/'.$server4->{'id'}.'?',
-		  Content_Type => 'application/x-www-form-urlencoded',
-		  Content => [
-			  title=>$videotitle,
-			  channel=>$videocat,
-			  tags=>$tags,
-			  description=>$videodescription,
-			  explicit=>$adult,
-			  thumbnail_url=>$imageurl,
-			  #taken_time=>$videotaken,
-			  access_token=>$server->{'access_token'}
-		  ]
-	);
-}
-
-else {
+my $ua = LWP::UserAgent->new;
 	
-	$req = $ua->request(POST 'https://api.dailymotion.com/video/'.$server4->{'id'}.'?',
-		  Content_Type => 'application/x-www-form-urlencoded',
-		  Content => [
-			  title=>$videotitle,
-			  channel=>$videocat,
-			  tags=>$tags,
-			  description=>$videodescription,
-			  explicit=>$adult,
-			  #mediablocking=>'country/all/media/mobile',
-			  thumbnail_url=>$imageurl,
-			  #taken_time=>$videotaken,
-			  access_token=>$server->{'access_token'}
-		  ]
-	);
-}
+$req = $ua->request(POST 'https://api.dailymotion.com/video/'.$server4->{'id'}.'?',
+		Content_Type => 'application/x-www-form-urlencoded',
+		Content => $content
+		);
 
 print $req->request()->as_string();
  	
@@ -234,7 +207,7 @@ print $req->request()->as_string();
 print "\nRESPONSE -- \n" . $req->as_string;
  
 # Check the outcome of the response
-#print Dumper(decode_json($req->content));
+
 if ($req->is_success) {
     #print Dumper(decode_json($req->content));
 }
@@ -256,7 +229,7 @@ print $req->request()->as_string();
 print "\nRESPONSE -- \n" . $req->as_string;
  
 # Check the outcome of the response
-#print Dumper(decode_json($req->content));
+
 if ($req->is_success) {
     #print Dumper(decode_json($req->content));
 }
