@@ -26,6 +26,8 @@ use JSON;
 use Data::Dumper;
 use File::Basename;
 use CDS::Datastore;
+use HTTP::Request::Common;
+use HTTP::Request::Common qw(POST $DYNAMIC_FILE_UPLOAD);
 
 sub is_imageurl_valid {
 	my ($url_to_check) = @_;
@@ -42,6 +44,8 @@ sub is_imageurl_valid {
 #START MAIN
 
 my $store=CDS::Datastore->new('dailymotion_upload');
+
+print "INFO: Setting up parameters\n";
 
 my $videotitle = $store->substitute_string($ENV{'video_title'});
 my $videodescription = $store->substitute_string($ENV{'video_description'});
@@ -75,9 +79,7 @@ if ($store->substitute_string($ENV{'video_adult'}) eq "contains_adult_content") 
 	$adult = 'true';
 }
 
- 
-use HTTP::Request::Common;
- 
+print "INFO: Logging in to Daily Motion\n";
 my $file, $result, $message;
 
 
@@ -100,16 +102,14 @@ print "\nRESPONSE -- \n" . $req->as_string;
  
 # Check the outcome of the response
 
-if ($req->is_success) {
-    #print Dumper(decode_json($req->content));
-}
-else {
-  print "\n in else not success\n";
+unless ($req->is_success) {
+    print "-ERROR: Unable to log in to daily motion. Server response was ".$req->code.": ".$req->message."\n";
+	exit(1);
 }
 
+print "INFO: Getting token to upload file...\n";
 my $server = decode_json($req->content);
 
-my $ua = LWP::UserAgent->new;
 my $req = $ua->request(GET 'https://api.dailymotion.com/file/upload?access_token='.$server->{'access_token'});
 
 print $req->request()->as_string();
@@ -119,11 +119,11 @@ print "\nRESPONSE -- \n" . $req->as_string;
  
 # Check the outcome of the response
 
-if ($req->is_success) {
-    #print Dumper(decode_json($req->content));
-}
-else {
-  print "\n in else not success\n";
+unless ($req->is_success) {
+	print "-ERROR: Unable to get token. Server response was ".$req->code.": ".$req->message."\n";
+	print $req->decoded_content;
+	print "\n";
+	exit(1);
 }
 
 my $server2 = decode_json($req->content);
@@ -131,10 +131,8 @@ my $server2 = decode_json($req->content);
 my $ua = LWP::UserAgent->new;
 my $req;
 
-use HTTP::Request::Common qw(POST $DYNAMIC_FILE_UPLOAD);
-
+print "INFO: Uploading file ".$ENV{'cf_media_file'}." to DM...\n";
 $DYNAMIC_FILE_UPLOAD=1;
-my $ua=LWP::UserAgent->new();
 my $request   =  HTTP::Request::Common::POST
   $server2->{'upload_url'},
   Content_Type => 'form-data',
@@ -154,7 +152,7 @@ if(not $resp->is_success){
 }
 
 my $server3 = decode_json($resp->content);
-my $ua = LWP::UserAgent->new;
+print "INFO: Adding uploaded file ".$server3->{'url'}." as a video to account...\n";
 my $req = $ua->request(POST 'https://api.dailymotion.com/me/videos?',
 	  Content_Type => 'application/x-www-form-urlencoded',
 	  Content => [
@@ -175,26 +173,26 @@ if ($req->is_success) {
 else {
   print "\n in else not success\n";
 }
-   
-my $content = [
-				  title=>$videotitle,
-				  channel=>$videocat,
-				  tags=>$tags,
-				  description=>$videodescription,
-				  explicit=>$adult,
-				  access_token=>$server->{'access_token'}
-			  ];
-			  
-if (is_imageurl_valid($imageurl)) {
-	$content{'thumbnail_url'} = $imageurl;
-}
-
+print Dumper($content);
 
 my $server4 = decode_json($req->content);
 
-my $req;
+print "INFO: Setting video metadata";
 
-my $ua = LWP::UserAgent->new;
+my $content = {
+	title        => $videotitle,
+	channel      => $videocat,
+	tags         => $tags,
+	description  => $videodescription,
+	explicit     => $adult,
+	access_token => $server->{'access_token'}
+};
+			  
+if (is_imageurl_valid($imageurl)) {
+	$content->{'thumbnail_url'} = $imageurl;
+}
+
+my $req;
 	
 $req = $ua->request(POST 'https://api.dailymotion.com/video/'.$server4->{'id'}.'?',
 		Content_Type => 'application/x-www-form-urlencoded',
@@ -215,7 +213,6 @@ else {
   print "\n in else not success\n";
 }
 
-my $ua = LWP::UserAgent->new;
 my $req = $ua->request(POST 'https://api.dailymotion.com/video/'.$server4->{'id'}.'?',
 	  Content_Type => 'application/x-www-form-urlencoded',
 	  Content => [
@@ -237,4 +234,8 @@ else {
   print "\n in else not success\n";
 }
 
+print "INFO: Done. Outputting video id ".$server4->{'id'}."\n";
+
 $store->set('meta','dailymotion_video_id',$server4->{'id'});
+
+print "+SUCCESS: Completed upload\n";
