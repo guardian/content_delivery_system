@@ -23,8 +23,8 @@
 # <no_public_stats/> - [OPTIONAL] Specifies that stats should be hidden to the public
 # <publish_at>{timestamp} - [OPTIONAL] Asks YouTube to only publish at a given time . You can set this from the data$store by using a substitution
 # <license_type>{creativeCommon|youtube} - [Optional] Tells YouTube to apply the relevant license type to the content. You can set this from the data$store by using a substitution
-# <recording_date>{timestamp} - [OPTIONAL] Set the given value as the recording date.You can set this from the data$store by using a substitution 
-# <gps_coords>{lat}:{long} - [OPTIONAL] Set the given latitude/longitude as the location where the media was recorded. You can set this from the data$store by using a substitution 
+# <recording_date>{timestamp} - [OPTIONAL] Set the given value as the recording date.You can set this from the data$store by using a substitution
+# <gps_coords>{lat}:{long} - [OPTIONAL] Set the given latitude/longitude as the location where the media was recorded. You can set this from the data$store by using a substitution
 
 #END DOC
 
@@ -32,14 +32,9 @@
 require 'google/api_client'
 require 'google/api_client/client_secrets'
 require 'json'
-require 'launchy'
-require 'thin'
 require 'date'
 require 'rubygems'
-require 'google/api_client'
 require 'awesome_print'
-#require 'FileUtils'
-
 require 'CDS/Datastore'
 
 #INTERNAL PARAMETERS
@@ -105,23 +100,7 @@ class CommandLineOAuthHelper
         end
       end
     else
-      auth = @authorization
-      url = @authorization.authorization_uri().to_s
-      server = Thin::Server.new('0.0.0.0', 8080) do
-        run lambda { |env|
-          # Exchange the auth code & quit
-          req = Rack::Request.new(env)
-          auth.code = req['code']
-          auth.fetch_access_token!
-          server.stop()
-          [200, {'Content-Type' => 'text/html'}, RESPONSE_HTML]
-        }
-      end
-
-      Launchy.open(url)
-      server.start()
-
-      save(credentialsFile)
+      raise RuntimeError("-ERROR: Credentials file #{credentialsFile} could not be found")
     end
 
     return @authorization
@@ -151,7 +130,7 @@ begin
 	client = Google::APIClient.new(:application_name => 'gnm-youtube-uploader', :application_version => '1.0')
 	#youtube = client.discovered_api(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION)
 	youtube = nil
-	
+
 	if ENV['service_account']
 		puts "Using server key credentials from #{ENV['private_key']} with passphrase."
 		#load credentials for server->server interactions (see https://code.google.com/p/google-api-ruby-client/wiki/ServiceAccounts)
@@ -165,10 +144,10 @@ begin
 				puts "DEBUG: Got credentials:"
 				ap creds
 			end
-            
+
 			raise InvalidCredentials, "No credentials present in #{ENV['client_secrets']}" if(not creds)
 			raise InvalidCredentials, "Credentials in #{ENV['client_secrets']} not valid" if(not creds['web'] or not creds['web']['client_email'])
-            
+
 			client.authorization = Signet::OAuth2::Client.new(
 				:token_credential_uri => 'https://accounts.google.com/o/oauth2/token',
   				:audience => 'https://accounts.google.com/o/oauth2/token',
@@ -186,21 +165,11 @@ begin
 		client.authorization = auth_util.authorize()
 		youtube = client.discovered_api(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION)
 	end
-	
+
 	#Right, now we should be clear to do something interesting.
 	puts "Authorised to YouTube"
-	if(ENV['debug'])
-#		ap youtube
-		#puts youtube.discovery_document
-#		puts youtube.inspect
-#		ap youtube.to_h
-#		ap youtube.discovered_methods
-		#ap youtube.discovery_document
-	end
-	
-	return client, youtube
-#TODO: exception handling
 
+	return client, youtube
 end
 
 
@@ -230,13 +199,13 @@ if(@cached_document==nil)
 	rescue Exception => e
 		puts "-WARNING: Unable to parse requested cache age #{ENV['cache_max_age']} hours: #{e.message}. Defaulting to 12 hours"
 	end
-	
+
 	download_attempts=0
 
 	unless(File.exists?(@cache_file))
 		self.download_data!
 	end
-	
+
 	begin
 		if(self.cache_age() > max_age)
 			self.download_data!
@@ -245,7 +214,7 @@ if(@cached_document==nil)
 	rescue StandardError=>e
 		puts "-WARNING: #{e.message}"
 	end
-	
+
 	begin
 		File.open(@cache_file,mode="r"){ |f|
 			puts "Waiting for shared lock on cache file #{@cache_file}..."
@@ -296,7 +265,7 @@ def download_data!
 puts "Attempting to refresh category list..."
 begin
 	client, youtube = youtube_connect()
-	
+
 	ap youtube.to_h
 	videos_catlist_response=client.execute!(
 		:api_method => youtube.videoCategories.list,
@@ -305,7 +274,7 @@ begin
 			:regionCode => "GB"
 		}
 	)
-	
+
 	if(ENV['debug'])
 		puts "DEBUG: Youtube responded:"
 		ap videos_catlist_response
@@ -441,7 +410,7 @@ if ENV['owner_account']
     parts = owner_acct.split('|')
     owner_acct = parts[0] if(parts.length > 1)
 	  params[:onBehalfOfContentOwner]=owner_acct
-	# <owner_account>blah - [OPTIONAL] specifies that the content should be uploaded on behalf of the given account.  This may fail on certain types of account. It sets the 'onBehalfOfContentOwner' field, which Google#'s documentation states "is intended exclusively for YouTube content partners". You can set this from the data$store by using a substitution. 
+	# <owner_account>blah - [OPTIONAL] specifies that the content should be uploaded on behalf of the given account.  This may fail on certain types of account. It sets the 'onBehalfOfContentOwner' field, which Google#'s documentation states "is intended exclusively for YouTube content partners". You can set this from the data$store by using a substitution.
 end
 
 
@@ -449,7 +418,7 @@ if ENV['owner_channel']
     owner_chl = $store.substitute_string(ENV['owner_channel'])
     parts = owner_chl.split('|')
     owner_chl = parts[0] if(parts.length > 1)
-    
+
 	params[:onBehalfOfContentOwnerChannel]=owner_chl
 	# <owner_channel>blah - [OPTIONAL] specified that the content should be uploaded to the given channel.  This may fail on certain types of account. It sets the 'onBehalfOfContentOwnerChannel' field, which Google#'s documentation states "is intended exclusively for YouTube content partners". You can set this from the data$store by using a substitution.
 end
@@ -526,7 +495,7 @@ if ENV['gps_coords']
 	body[:recordingDetails][:location][:longitude]=params[1].to_f
 	# <owner_channel>blah - [OPTIONAL] specified that the content should be uploaded to the given channel.  This may fail on certain types of account. It sets the 'onBehalfOfContentOwnerChannel' field, which Google#'s documentation states "is intended exclusively for YouTube content partners". You can set this from the data$store by using a substitution.
 end
-# <gps_coords>{lat}:{long} - [OPTIONAL] Set the given latitude/longitude as the location where the media was recorded. You can set this from the data$store by using a substitution 
+# <gps_coords>{lat}:{long} - [OPTIONAL] Set the given latitude/longitude as the location where the media was recorded. You can set this from the data$store by using a substitution
 
 puts "Argument mapping complete. Data that will get sent to YouTube:"
 ap body
@@ -542,14 +511,14 @@ end
 puts "Attempting to connect to YouTube..."
 begin
 	client, youtube=youtube_connect()
-	
+
 	video_insert_response=client.execute!(
 		:api_method => youtube.videos.insert,
 		:body_object => body,
 		:media =>Google::APIClient::UploadIO.new(ENV['cf_media_file'],'video/*'),
 		:parameters => params
 	)
-	
+
 	if(ENV['debug'])
 		puts "Data returned from YouTube:"
 		ap video_insert_response
@@ -568,7 +537,7 @@ rescue Google::APIClient::TransmissionError => e
 	  body[:snippet][:categoryId] = 25
 	  retry
 	end
-	
+
 	$stdout.puts "-ERROR: Unable to recover error: #{e.result.body}"
 	exit 1
 
@@ -578,5 +547,3 @@ rescue StandardError=>e
 	exit 1
 end
 exit 0
-
-
