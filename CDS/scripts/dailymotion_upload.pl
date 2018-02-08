@@ -112,10 +112,8 @@ my $server = decode_json($req->content);
 
 my $req = $ua->request(GET 'https://api.dailymotion.com/file/upload?access_token='.$server->{'access_token'});
 
-print $req->request()->as_string();
- 	
+print $req->request()->as_string() if($ENV{'debug'});
 
-print "\nRESPONSE -- \n" . $req->as_string;
  
 # Check the outcome of the response
 
