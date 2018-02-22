@@ -82,7 +82,11 @@ end
 
 #pt = DateTime.strptime($store.substitute_string(ENV['pub_time']), '%Y-%m-%dT%H:%M:%SZ')
 
-pt = DateTime.parse($store.substitute_string(ENV['pub_time']))
+if $store.substitute_string(ENV['pub_time']) != ""
+	pt = DateTime.parse($store.substitute_string(ENV['pub_time']))
+else
+	pt = DateTime.now
+end
 
 $store.substitute_string(ENV['time_format'])
 
