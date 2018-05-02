@@ -14,7 +14,6 @@ $version='dailymotion_upload.pl $Rev: 1393 $';
 # <video_mobile>weather or not to ban mobile access to the video. Currently disabled due to partner status requirement
 # <video_adult>weather or not the video contains adult content
 # <video_holding_image>blah - URL of an image for use with the video
-# <video_language>blah - two letter code representing the language of the video
 # <client_id>blah Dailymotion app client id
 # <client_secret>blah Dailymotion app secret
 # <username>blah Username of Dailymotion account
@@ -48,8 +47,6 @@ my $store=CDS::Datastore->new('dailymotion_upload');
 
 print "INFO: Setting up parameters\n";
 
-my $videolanguage = 'en';
-$videolanguage = $store->substitute_string($ENV{'video_language'});
 my $videotitle = $store->substitute_string($ENV{'video_title'});
 my $videodescription = $store->substitute_string($ENV{'video_description'});
 my $videocat = $store->substitute_string($ENV{'video_category'});
@@ -469,7 +466,6 @@ my $content = {
 	tags         => $tags,
 	description  => $videodescription,
 	explicit     => $adult,
-	language	 => $videolanguage,
 	access_token => $server->{'access_token'}
 };
 			  
