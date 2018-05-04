@@ -66,75 +66,75 @@ my @tags=split /\|/,$tagstring;
 
 if ($videocat eq 'news') {
 
-	if (grep { $_ eq 'Celebrity' } @tags) {
+	if (grep { $_ eq 'celebrity' } @tags) {
 		$videocat = 'people';
 	}
 	
-	if (grep { $_ eq 'Animals' } @tags) {
+	if (grep { $_ eq 'animals' } @tags) {
 		$videocat = 'animals';
 	}
 
-	if (grep { $_ eq 'Television' } @tags) {
+	if (grep { $_ eq 'television' } @tags) {
 		$videocat = 'tv';
 	}
 	
-	if (grep { $_ eq 'Travel' } @tags) {
+	if (grep { $_ eq 'travel' } @tags) {
 		$videocat = 'travel';
 	}
 	
-	if (grep { $_ eq 'Beauty' } @tags) {
+	if (grep { $_ eq 'beauty' } @tags) {
 		$videocat = 'lifestyle';
 	}
 	
-	if (grep { $_ eq 'Fashion' } @tags) {
+	if (grep { $_ eq 'fashion' } @tags) {
 		$videocat = 'lifestyle';
 	}
 	
-	if (grep { $_ eq 'Life and style' } @tags) {
+	if (grep { $_ eq 'life and style' } @tags) {
 		$videocat = 'lifestyle';
 	}
 	
-	if (grep { $_ eq 'Entertainment' } @tags) {
+	if (grep { $_ eq 'entertainment' } @tags) {
 		$videocat = 'fun';
 	}
 	
-	if (grep { $_ eq 'Games' } @tags) {
+	if (grep { $_ eq 'games' } @tags) {
 		$videocat = 'videogames';
 	}
 	
-	if (grep { $_ eq 'Comedy' } @tags) {
+	if (grep { $_ eq 'comedy' } @tags) {
 		$videocat = 'fun';
 	}
 
-	if (grep { $_ eq 'Education' } @tags) {
+	if (grep { $_ eq 'education' } @tags) {
 		$videocat = 'school';
 	}
 
-	if (grep { $_ eq 'Technology' } @tags) {
+	if (grep { $_ eq 'technology' } @tags) {
 		$videocat = 'tech';
 	}	
 
-	if (grep { $_ eq 'Art and design' } @tags) {
+	if (grep { $_ eq 'art and design' } @tags) {
 		$videocat = 'creation';
 	}
 		
-	if (grep { $_ eq 'Art' } @tags) {
+	if (grep { $_ eq 'art' } @tags) {
 		$videocat = 'creation';
 	}
 		
-	if (grep { $_ eq 'Music' } @tags) {
+	if (grep { $_ eq 'music' } @tags) {
 		$videocat = 'music';
 	}
 	
-	if (grep { $_ eq 'Film' } @tags) {
+	if (grep { $_ eq 'film' } @tags) {
 		$videocat = 'shortfilms';
 	}
 	
-	if (grep { $_ eq 'Sport' } @tags) {
+	if (grep { $_ eq 'sport' } @tags) {
 		$videocat = 'sport';
 	}	
 	
-	if (grep { $_ eq 'News' } @tags) {
+	if (grep { $_ eq 'news' } @tags) {
 		$videocat = 'news';
 	}	
 
@@ -145,111 +145,111 @@ if(scalar @tags>10){
 	@tags = splice(@tags,0,10);
 }
 
-if (grep { $_ eq 'UK news' } @tags) {
+if (grep { $_ eq 'uk news' } @tags) {
 	push @tags, 'United Kingdom';
 	push @tags, 'United Kingdom of Great Britain and Northern Ireland';
 }
 
-if (grep { $_ eq 'Germany' } @tags) {
+if (grep { $_ eq 'germany' } @tags) {
 	push @tags, 'Deutschland';
 	push @tags, 'Federal Republic of Germany';
 	push @tags, 'Bundesrepublik Deutschland';
 }
 
-if (grep { $_ eq 'France' } @tags) {
+if (grep { $_ eq 'france' } @tags) {
 	push @tags, 'French Republic';
 }
 
-if (grep { $_ eq 'Italy' } @tags) {
+if (grep { $_ eq 'italy' } @tags) {
 	push @tags, 'Italia';
 	push @tags, 'Italian Republic';
 	push @tags, 'Repubblica Italiana';
 }
 
-if (grep { $_ eq 'Russia' } @tags) {
+if (grep { $_ eq 'russia' } @tags) {
 	push @tags, 'Russian Federation';
 }
 
-if (grep { $_ eq 'Spain' } @tags) {
+if (grep { $_ eq 'spain' } @tags) {
 	push @tags, 'Kingdom of Spain';
 }
 
-if (grep { $_ eq 'Turkey' } @tags) {
+if (grep { $_ eq 'turkey' } @tags) {
 	push @tags, 'Republic of Turkey';
 	push @tags, 'West Asia';
 	push @tags, 'Asia';
 	push @tags, 'Middle East';
 }
 
-if (grep { $_ eq 'China' } @tags) {
+if (grep { $_ eq 'china' } @tags) {
 	push @tags, "People's Republic of China";
 	push @tags, 'Asia';
 	push @tags, 'East Asia';
 }
 
-if (grep { $_ eq 'India' } @tags) {
+if (grep { $_ eq 'india' } @tags) {
 	push @tags, 'Republic of India';
 	push @tags, 'Asia';
 	push @tags, 'South Asia';
 }
 
-if (grep { $_ eq 'Japan' } @tags) {
+if (grep { $_ eq 'japan' } @tags) {
 	push @tags, 'Asia';
 	push @tags, 'East Asia';
 }
 
-if (grep { $_ eq 'Syria' } @tags) {
+if (grep { $_ eq 'syria' } @tags) {
 	push @tags, 'Syrian Arab Republic';
 	push @tags, 'West Asia';
 	push @tags, 'Asia';
 	push @tags, 'Middle East';
 }
 
-if (grep { $_ eq 'Morocco' } @tags) {
+if (grep { $_ eq 'morocco' } @tags) {
 	push @tags, 'Kingdom of Morocco';
 	push @tags, 'Maghreb';
 	push @tags, 'North Africa';
 	push @tags, 'Africa';
 }
 
-if (grep { $_ eq 'Tunisia' } @tags) {
+if (grep { $_ eq 'tunisia' } @tags) {
 	push @tags, 'Tunisian Republic';
 	push @tags, 'Maghreb';
 	push @tags, 'North Africa';
 	push @tags, 'Africa';
 }
 
-if (grep { $_ eq 'Nigeria' } @tags) {
+if (grep { $_ eq 'nigeria' } @tags) {
 	push @tags, 'Federal Republic of Nigeria';
 	push @tags, 'West Africa';
 	push @tags, 'Africa';
 }
 
-if (grep { $_ eq 'United Arab Emirates' } @tags) {
+if (grep { $_ eq 'united arab emirates' } @tags) {
 	push @tags, 'West Asia';
 	push @tags, 'Asia';
 	push @tags, 'Middle East';
 }
 
-if (grep { $_ eq 'South Korea' } @tags) {
+if (grep { $_ eq 'south korea' } @tags) {
 	push @tags, 'Republic of Korea';
 	push @tags, 'Korean Peninsula';
 	push @tags, 'Asia';
 	push @tags, 'East Asia';
 }
 
-if (grep { $_ eq 'Australia news' } @tags) {
+if (grep { $_ eq 'australia news' } @tags) {
 	push @tags, 'Commonwealth of Australia';
 	push @tags, 'Oceania';
 	push @tags, 'Australasia';
 }
 
-if (grep { $_ eq 'New Zealand' } @tags) {
+if (grep { $_ eq 'new zealand' } @tags) {
 	push @tags, 'Oceania';
 	push @tags, 'Australasia';
 }
 
-if (grep { $_ eq 'US news' } @tags) {
+if (grep { $_ eq 'us news' } @tags) {
 	push @tags, 'United States';
 	push @tags, 'United States of America';
 	push @tags, 'USA';
@@ -257,42 +257,42 @@ if (grep { $_ eq 'US news' } @tags) {
 	push @tags, 'The Americas';	
 }
 
-if (grep { $_ eq 'Canada' } @tags) {
+if (grep { $_ eq 'canada' } @tags) {
 	push @tags, 'North America';
 	push @tags, 'The Americas';	
 }
 
-if (grep { $_ eq 'Brazil' } @tags) {
+if (grep { $_ eq 'brazil' } @tags) {
 	push @tags, 'Federative Republic of Brazil';
 	push @tags, 'South America';
 	push @tags, 'The Americas';	
 }
 
-if (grep { $_ eq 'Colombia' } @tags) {
+if (grep { $_ eq 'colombia' } @tags) {
 	push @tags, 'Republic of Colombia';
 	push @tags, 'South America';
 	push @tags, 'The Americas';	
 }
 
-if (grep { $_ eq 'Honduras' } @tags) {
+if (grep { $_ eq 'honduras' } @tags) {
 	push @tags, 'Republic of Honduras';
 	push @tags, 'North America';
 	push @tags, 'The Americas';	
 }
 
-if (grep { $_ eq 'Guatemala' } @tags) {
+if (grep { $_ eq 'guatemala' } @tags) {
 	push @tags, 'Republic of Guatemala';
 	push @tags, 'North America';
 	push @tags, 'The Americas';	
 }
 
-if (grep { $_ eq 'El Salvador' } @tags) {
+if (grep { $_ eq 'el salvador' } @tags) {
 	push @tags, 'Republic of El Salvador';
 	push @tags, 'North America';
 	push @tags, 'The Americas';	
 }
 
-if (grep { $_ eq 'Haiti' } @tags) {
+if (grep { $_ eq 'haiti' } @tags) {
 	push @tags, 'Republic of Haiti';
 	push @tags, 'Hispaniola';
 	push @tags, 'Greater Antilles';
@@ -301,48 +301,48 @@ if (grep { $_ eq 'Haiti' } @tags) {
 	push @tags, 'The Americas';	
 }
 
-if (grep { $_ eq 'Film' } @tags) {
+if (grep { $_ eq 'film' } @tags) {
 	push @tags, 'Movie';
 	push @tags, 'Cinema';
 	push @tags, 'Motion picture';
 }
 
-if (grep { $_ eq 'Football' } @tags) {
+if (grep { $_ eq 'football' } @tags) {
 	push @tags, 'Soccer';
 	push @tags, 'Association football';
 }
 
-if (grep { $_ eq 'Whales' } @tags) {
+if (grep { $_ eq 'whales' } @tags) {
 	push @tags, 'Animals';
 	push @tags, 'Mammals';
 }
 
-if (grep { $_ eq 'BBC' } @tags) {
+if (grep { $_ eq 'bbc' } @tags) {
 	push @tags, 'British Broadcasting Corporation';
 }
 
-if (grep { $_ eq 'FBI' } @tags) {
+if (grep { $_ eq 'fbi' } @tags) {
 	push @tags, 'Federal Bureau of Investigation';
 }
 
-if (grep { $_ eq 'Nasa' } @tags) {
+if (grep { $_ eq 'nasa' } @tags) {
 	push @tags, 'National Aeronautics and Space Administration';
 }
 
-if (grep { $_ eq 'NSA' } @tags) {
+if (grep { $_ eq 'nsa' } @tags) {
 	push @tags, 'National Security Agency';
 }
 
-if (grep { $_ eq 'Farc' } @tags) {
+if (grep { $_ eq 'farc' } @tags) {
 	push @tags, 'Revolutionary Armed Forces of Colombia';
 	push @tags, 'Fuerzas Armadas Revolucionarias de Colombia';
 }
 
-if (grep { $_ eq 'NRA' } @tags) {
+if (grep { $_ eq 'nra' } @tags) {
 	push @tags, 'National Rifle Association of America';
 }
 
-if (grep { $_ eq 'NYPD' } @tags) {
+if (grep { $_ eq 'nypd' } @tags) {
 	push @tags, 'City of New York Police Department';
 	push @tags, 'New York City Police Department';
 }
