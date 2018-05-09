@@ -541,7 +541,7 @@ $hour=sprintf("%02d",$hour);
 $min=sprintf("%02d",$min);
 $sec=sprintf("%02d",$sec);
 
-my $_=$string;
+$_=$string;
 s/{year}/$year/g;
 s/{month}/$mon/g;
 s/{day}/$mday/g;
