@@ -9,6 +9,7 @@
 use LWP::UserAgent;
 use JSON;
 use CDS::Datastore;
+use HTTP::Request::Common;
 
 sub is_imageurl_valid {
 	my ($url_to_check) = @_;
