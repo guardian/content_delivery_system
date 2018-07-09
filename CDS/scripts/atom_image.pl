@@ -2,7 +2,9 @@
 
 #This CDS module attempts to acquire an image URL from CAPI given an Atom id. as an input.
 #Arguments:
-# <atom_id> - the Atom id. of the video 
+# <atom_id> - the Atom id. of the video
+# <max_retries> - maximum number of times to try connecting to CAPI 
+# <sleep_delay> - number of seconds to wait before each retry
 
 #END DOC
   
@@ -33,29 +35,37 @@ print "INFO: Attempting to get image URL from CAPI\n";
 my $ua = LWP::UserAgent->new;
 
 my $retries = 0;
+my $max_retries = 8;
+if(defined $ENV{'max_retries'}){
+	$max_retries = $store->substitute_string($ENV{'max_retries'});
+}
+my $sleep_delay = 20;
+if(defined $ENV{'sleep_delay'}){
+	$sleep_delay = $store->substitute_string($ENV{'sleep_delay'});
+}
 
 my $response;
 while(true) {
 	$response = $ua->request(GET 'https://internal.content.guardianapis.com/atom/media/'.$store->substitute_string($ENV{'atom_id'}));
 	if($response->code >=400 && $response->code <=499){
-     	print $response->content;
-     	print "\n-ERROR: CAPI returned " . $response->code . ", actual error is logged above.\n";
-     	exit(1);
+		print $response->content;
+		print "\n-ERROR: CAPI returned " . $response->code . ", actual error is logged above.\n";
+		exit(1);
   	} elsif ($response->code >=500 && $response->code <= 599){
-     	print $response->content;
-     	print "\n-ERROR: CAPI returned " . $response->code . ", actual error is logged above.\n";
-     	exit(1) if($retries>=8);
-     	sleep(20);
-     	continue;
+		print $response->content;
+		print "\n-ERROR: CAPI returned " . $response->code . ", actual error is logged above.\n";
+		exit(1) if($retries>=$max_retries);
+		sleep($sleep_delay);
+		continue;
   	} elsif($response->code==200){
-      	print "*INFO: Got response from CAPI\n";
-      	last;
+		print "*INFO: Got response from CAPI\n";
+		last;
   	} else {
-      	print "-ERROR: Unexpected status code ".$response->code." from CAPI, retrying";
-      	sleep(20);
-      	continue;
-    }
-    $retries = $retries + 1;
+		print "-ERROR: Unexpected status code ".$response->code." from CAPI, retrying";
+		sleep($sleep_delay);
+		continue;
+	}
+	$retries = $retries + 1;
 }
 
 my $capi = decode_json($response->content);
