@@ -51,16 +51,16 @@ while(true) {
 		print $response->content;
 		print "\n-ERROR: CAPI returned " . $response->code . ", actual error is logged above.\n";
 		exit(1);
-  	} elsif ($response->code >=500 && $response->code <= 599){
+	} elsif ($response->code >=500 && $response->code <= 599){
 		print $response->content;
 		print "\n-ERROR: CAPI returned " . $response->code . ", actual error is logged above.\n";
 		exit(1) if($retries>=$max_retries);
 		sleep($sleep_delay);
 		continue;
-  	} elsif($response->code==200){
+	} elsif($response->code==200){
 		print "*INFO: Got response from CAPI\n";
 		last;
-  	} else {
+	} else {
 		print "-ERROR: Unexpected status code ".$response->code." from CAPI, retrying";
 		sleep($sleep_delay);
 		continue;
