@@ -3,6 +3,12 @@
 #This module tests if an image file is a PNG and, if it is, attempts to convert it into a JPEG.
 #It depends on ImageMagick being available on the local node (apt-get install ImageMagick or yum install ImageMagick or port install ImageMagick etc.), specifically the 'convert' and 'identify' commands.
 #
+#----
+#NOTE
+#----
+#
+#Unlike other CDS methods, this method will overwrite the input file with the output file.
+#
 #Arguments:
 # <input_key>{meta:FileNameKey} - use the provided key as an input
 # <output_key>keyname - output the path of the file into this key in the meta: section of the datastore
