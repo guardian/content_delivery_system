@@ -19,28 +19,20 @@ input_image=store.substitute_string(ENV['input_file'])
 
 cmdline="identify -format '%m' '#{input_image}'"
 
-command_result = %x[cmdline]
+command_result = system(cmdline)
 
-if (command_result == 'PNG')
+if (command_result)
   cmdline="convert '#{input_image}' '#{input_image}'"
   system(cmdline)
 else
-  exit 0
+  puts "The image is already a JPEG."
 end
 
 output_path=store.substitute_string(ENV['output_path'])
 
 if(ENV['output_key'])
     keyname=ENV['output_key']
-    existing_value=""
-    existing_value=store.get('meta',keyname)
-    new_value=""
-    if(existing_value.length>0)
-        new_value=existing_value+"|"+filename_list
-    else
-        new_value=filename_list
-    end
-    store.set('meta',keyname,new_value)
+    store.set('meta',keyname,input_image)
 
 else
     puts "-WARNING: No <output_key> specified so not outputting image path to datastore."
