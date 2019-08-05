@@ -46,7 +46,7 @@ if(defined $ENV{'sleep_delay'}){
 
 my $response;
 while(true) {
-	$response = $ua->request(GET 'https://internal.content.guardianapis.com/atom/media/'.$store->substitute_string($ENV{'atom_id'}));
+	$response = $ua->request(GET 'https://content.guardianapis.com/atom/media/'.$store->substitute_string($ENV{'atom_id'}).'?api-key='.$store->substitute_string($ENV{'api_key'}));
 	if($response->code >=400 && $response->code <=499){
 		print $response->content;
 		print "\n-ERROR: CAPI returned " . $response->code . ", actual error is logged above.\n";

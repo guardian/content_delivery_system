@@ -364,7 +364,7 @@ if ($store->substitute_string($ENV{'video_adult'}) eq "contains_adult_content") 
 }
 
 my $ua = LWP::UserAgent->new;
-my $req = $ua->request(GET 'https://internal.content.guardianapis.com/atom/media/'.$store->substitute_string($ENV{'atom_id'}));
+my $req = $ua->request(GET 'https://content.guardianapis.com/atom/media/'.$store->substitute_string($ENV{'atom_id'}).'?api-key='.$store->substitute_string($ENV{'api_key'}));
 
 my $capi = decode_json($req->content);
 
