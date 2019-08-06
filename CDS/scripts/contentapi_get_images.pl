@@ -11,6 +11,7 @@ $|=1;
 # <octopus_id_key>blah [optional] - use this datastore key to get the Octopus ID.  Defaults to 'octopus ID'.
 # <output_key_prefix>blah [optional] - prefix this to all keys that are output. Defaults to '' (blank string).
 # <output_fields>field1|field2|field3... [optional] - only output these fields.
+# <api_key>CAPI API key to use.
 #END DOC
 
 my $version='contentapi_get_images $Rev: 754 $ $LastChangedDate: 2014-02-10 17:42:40 +0000 (Mon, 10 Feb 2014) $';
@@ -21,10 +22,7 @@ use JSON;
 use Data::Dumper;
 
 #configurable parameters
-#If running this inside the GNM network it's recommended to use prod-mq-elb.content instead.
-my $insidegnm=1;
 my $webservice_base="http://content.guardianapis.com";
-my $internal_webservice_base="http://prod-mq-elb.content.guardianapis.com/api";
 
 my $params='format=json&show-media=all&order-by=newest';
 #my $debug=1;
@@ -38,12 +36,11 @@ unless($octid=~/^\d+$/){
 	return undef;
 }
 
+# CAPI access code changed in August 2019 because of a change to CAPI.
+# An API key is now required to access CAPI. E-mail content.platforms@guardian.co.uk for a key.
 my $url;
-if($insidegnm){
-	$url="$internal_webservice_base/internal-code/octopus/$octid.json?user-tier=internal&$params&api-key=gnm-multimedia-imageretrieval";
-} else {
-	$url="$webservice_base/internal-code/octopus/$octid.json?$params&api-key=$apikey";
-}
+
+$url="$webservice_base/internal-code/octopus/$octid.json?$params&api-key=$apikey";
 
 print "info: about to query $url\n" if($debug);
 my $ua=LWP::UserAgent->new;
