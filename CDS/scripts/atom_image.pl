@@ -74,19 +74,21 @@ if(defined $ENV{'output-smaller-than'}){
   my %image_urls;
   my $image_place = 0;
   while($image_place < 20) {
-    if ($capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}->{$image_place}->{'dimensions'}->{'height'} < $store->substitute_string($ENV{'output-smaller-than-height'}) {
-      if ($capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}->{$image_place}->{'dimensions'}->{'width'} < $store->substitute_string($ENV{'output-smaller-than-width'}) {
-        $image_urls{$image_place} = $capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}->{$image_place}->{'dimensions'}->{'width'};
+    if (defined $capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}[$image_place]->{'file'}) {
+      if ($capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}[$image_place]->{'dimensions'}->{'height'} < $store->substitute_string($ENV{'output-smaller-than-height'})) {
+        if ($capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}[$image_place]->{'dimensions'}->{'width'} < $store->substitute_string($ENV{'output-smaller-than-width'})) {
+          $image_urls{$image_place} = $capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}[$image_place]->{'dimensions'}->{'width'};
+        }
       }
     }
     $image_place = $image_place + 1;
   }
-  my @image_urls_sorted = sort {$b <=> $a} (values %image_urls);
-  unless (is_imageurl_valid($capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}->{@image_urls_sorted[0]}->{'file'})) {
+  my @image_urls_sorted = sort {$b <=> $a} (keys %image_urls);
+  unless (is_imageurl_valid($capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}[@image_urls_sorted[0]]->{'file'})) {
   	exit(1);
   }
-  print "INFO: Outputting image URL ".$capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}->{@image_urls_sorted[0]}->{'file'}."\n";
-  $store->set('meta','atom_image_url',$capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}->{@image_urls_sorted[0]}->{'file'});
+  print "INFO: Outputting image URL ".$capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}[@image_urls_sorted[0]]->{'file'}."\n";
+  $store->set('meta','atom_image_url',$capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}[@image_urls_sorted[0]]->{'file'});
 } else {
   unless (is_imageurl_valid($capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'master'}->{'file'})) {
   	exit(1);
