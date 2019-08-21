@@ -363,11 +363,6 @@ if ($store->substitute_string($ENV{'video_adult'}) eq "contains_adult_content") 
 	$adult = 'true';
 }
 
-my $ua = LWP::UserAgent->new;
-my $req = $ua->request(GET 'https://content.guardianapis.com/atom/media/'.$store->substitute_string($ENV{'atom_id'}).'?api-key='.$store->substitute_string($ENV{'api_key'}));
-
-my $capi = decode_json($req->content);
-
 print "INFO: Logging in to Daily Motion\n";
 my $file, $result, $message;
 
@@ -477,9 +472,9 @@ my $content = {
 	language	 => $videolanguage,
 	access_token => $server->{'access_token'}
 };
-			  
-if (is_imageurl_valid($capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'master'}->{'file'})) {
-	$content->{'thumbnail_url'} = $capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'master'}->{'file'};
+
+if (is_imageurl_valid($imageurl)) {
+	$content->{'thumbnail_url'} = $imageurl;
 }
 
 my $req;
