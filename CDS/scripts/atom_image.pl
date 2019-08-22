@@ -78,7 +78,8 @@ if(defined $ENV{'output-smaller-than'}){
   my $max_width = $store->substitute_string($ENV{'output-smaller-than-width'});
   my $assets = $capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'};
   my $match = undef;
-  foreach(@{$assets}){
+  my @sorted_assets = sort { $b->{'dimensions'}->{'height'} <=> $a->{'dimensions'}->{'height'} } @{$assets};
+  foreach(@sorted_assets){
     my $current_asset = $_;
     next if(not defined $current_asset->{'file'});
     if($current_asset->{'dimensions'}->{'height'} < $max_height and $current_asset->{'dimensions'}->{'width'} < $max_width){
