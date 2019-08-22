@@ -74,24 +74,20 @@ while(true) {
 my $capi = decode_json($response->content);
 
 if(defined $ENV{'output-smaller-than'}){
-  my %image_urls;
-  my $image_place = 0;
-  while($image_place < 20) {
-    if (defined $capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}[$image_place]->{'file'}) {
-      if ($capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}[$image_place]->{'dimensions'}->{'height'} < $store->substitute_string($ENV{'output-smaller-than-height'})) {
-        if ($capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}[$image_place]->{'dimensions'}->{'width'} < $store->substitute_string($ENV{'output-smaller-than-width'})) {
-          $image_urls{$image_place} = $capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}[$image_place]->{'dimensions'}->{'width'};
-        }
-      }
+  my $max_height = $store->substitute_string($ENV{'output-smaller-than-height'});
+  my $max_width = $store->substitute_string($ENV{'output-smaller-than-width'});
+  my $assets = $capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'};
+  my $match = undef;
+  foreach(@{$assets}){
+    my $current_asset = $_;
+    next if(not defined $current_asset->{'file'});
+    if($current_asset->{'dimensions'}->{'height'} < $max_height and $current_asset->{'dimensions'}->{'width'} < $max_width){
+      $match = $current_asset->{'file'};
+      last if(is_imageurl_valid($current_asset->{'file'}));
     }
-    $image_place = $image_place + 1;
   }
-  my @image_urls_sorted = sort {$b <=> $a} (keys %image_urls);
-  unless (is_imageurl_valid($capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}[@image_urls_sorted[0]]->{'file'})) {
-  	exit(1);
-  }
-  print "INFO: Outputting image URL ".$capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}[@image_urls_sorted[0]]->{'file'}."\n";
-  $store->set('meta','atom_image_url',$capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'}[@image_urls_sorted[0]]->{'file'});
+  print "INFO: Outputting image URL ".$match."\n";
+  $store->set('meta','atom_image_url',$match);
 } else {
   unless (is_imageurl_valid($capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'master'}->{'file'})) {
   	exit(1);
