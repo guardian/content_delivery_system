@@ -5,6 +5,9 @@
 # <atom_id> - the Atom id. of the video
 # <max_retries> - maximum number of times to try connecting to CAPI 
 # <sleep_delay> - number of seconds to wait before each retry
+# <output-smaller-than/> - If present then script will attempt to find an image smaller than the supplied dimensions
+# <output-smaller-than-height> - Integer - Find an image smaller than this in height
+# <output-smaller-than-width> - Integer - Find an image smaller than this in width
 
 #END DOC
   
@@ -70,12 +73,28 @@ while(true) {
 
 my $capi = decode_json($response->content);
 
-unless (is_imageurl_valid($capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'master'}->{'file'})) {
-	exit(1);
+if(defined $ENV{'output-smaller-than'}){
+  my $max_height = $store->substitute_string($ENV{'output-smaller-than-height'});
+  my $max_width = $store->substitute_string($ENV{'output-smaller-than-width'});
+  my $assets = $capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'assets'};
+  my $match = undef;
+  my @sorted_assets = sort { $b->{'dimensions'}->{'height'} <=> $a->{'dimensions'}->{'height'} } @{$assets};
+  foreach(@sorted_assets){
+    my $current_asset = $_;
+    next if(not defined $current_asset->{'file'});
+    if($current_asset->{'dimensions'}->{'height'} < $max_height and $current_asset->{'dimensions'}->{'width'} < $max_width){
+      $match = $current_asset->{'file'};
+      last if(is_imageurl_valid($current_asset->{'file'}));
+    }
+  }
+  print "INFO: Outputting image URL ".$match."\n";
+  $store->set('meta','atom_image_url',$match);
+} else {
+  unless (is_imageurl_valid($capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'master'}->{'file'})) {
+  	exit(1);
+  }
+  print "INFO: Outputting image URL ".$capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'master'}->{'file'}."\n";
+  $store->set('meta','atom_image_url',$capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'master'}->{'file'});
 }
-
-print "INFO: Outputting image URL ".$capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'master'}->{'file'}."\n";
-
-$store->set('meta','atom_image_url',$capi->{'response'}->{'media'}->{'data'}->{'media'}->{'trailImage'}->{'master'}->{'file'});
 
 print "+SUCCESS: URL acquired\n";
