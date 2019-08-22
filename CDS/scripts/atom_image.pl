@@ -5,6 +5,9 @@
 # <atom_id> - the Atom id. of the video
 # <max_retries> - maximum number of times to try connecting to CAPI 
 # <sleep_delay> - number of seconds to wait before each retry
+# <output-smaller-than/> - If present then script will attempt to find an image smaller than the supplied dimensions
+# <output-smaller-than-height> - Integer - Find an image smaller than this in height
+# <output-smaller-than-width> - Integer - Find an image smaller than this in width
 
 #END DOC
   
