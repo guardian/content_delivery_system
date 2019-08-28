@@ -366,7 +366,7 @@ if ($store->substitute_string($ENV{'video_adult'}) eq "contains_adult_content") 
 print "INFO: Logging in to Daily Motion\n";
 my $file, $result, $message;
 
-
+my $ua = LWP::UserAgent->new;
 
 my $req = $ua->request(POST 'https://api.dailymotion.com/oauth/token',
 	  Content_Type => 'application/x-www-form-urlencoded',
