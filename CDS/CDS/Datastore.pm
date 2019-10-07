@@ -8,16 +8,16 @@ my $configDefinitionsDir = "/etc/cds_backend/conf.d/";
 sub new {
     my ($proto,$modulename,$debug)=@_;
     my $class=ref($proto) || $proto;    #this allows other classes to derive from us, the arg passed is the child class
-  
+
     my $self={};
 
-    $self->{'debug'}=1 if($debug);  
+    $self->{'debug'}=1 if($debug);
   	print STDERR "CDS::Datastore->new ($proto)- DEBUG - using database '".$ENV{'cf_datastore_location'}."'\n";
-  	
+
   	if(not defined $modulename or $modulename eq ""){
   		die "CDS::Datastore->new - FATAL - You must supply a module name to initialise a datastore.\n";
   	}
-  	
+
   	my $db=$ENV{'cf_datastore_location'};
   	if(not defined $ENV{'cf_datastore_location'} or $ENV{'cf_datastore_location'} eq ""){
   		print STDERR "CDS::Datastore->new - ERROR - cf_datastore_location is not set. Expect problems.\n";
@@ -233,7 +233,7 @@ if($type eq 'meta'){
 } elsif($type eq 'track') {
 	my $trackType=$self->find_value('type',\@_);
 	my $trackId=$self->getTrackId($sourceid,$trackType);
-	
+
 	my $rq=$self->{'dbh'}->prepare("BEGIN");
 	$rq->execute;
 	do{
@@ -324,7 +324,7 @@ if($type eq 'meta'){
 		$self->warn("Unable to find a track index for type '$tracktype'");
 		return undef;
 	}
-	
+
 	foreach(@_){
 		my $key=$_;
 		$key=~s/'/''/;
@@ -336,7 +336,7 @@ if($type eq 'meta'){
 		}
 	}
 	return $rtn[0] if(scalar @rtn<2);
-	return @rtn;	
+	return @rtn;
 } elsif($type eq 'media' or $type eq 'media') {
 	foreach(@_){
 		my $key=$_;
@@ -410,7 +410,7 @@ do{
 	while(defined $query and my $data=$query->fetchrow_hashref){
 		$record{$data->{'key'}}=$data->{'value'} if(not defined $record{$data->{'key'}});
 	}
-#the 'type' key identifies the track - vide, audi etc.	
+#the 'type' key identifies the track - vide, audi etc.
 	if(defined $record{'type'} and $record{'type'} ne ''){
 		$rtn{$record{'type'}}=\%record;
 	} else {
@@ -526,7 +526,7 @@ sub substitute_string {
 my($self,$string)=@_;
 
 my $rtn;
-#{media-file} {*-file} {filename} {filepath} {filebase} {fileextn} {year} {month} {day} {hour} {min} {sec} 
+#{media-file} {*-file} {filename} {filepath} {filebase} {fileextn} {year} {month} {day} {hour} {min} {sec}
 #{meta:*} {track:type:*} {media:*} {failed-method} {last-error}	# NOTE - {last-line} is deprecated - if $ENV{'cf_last_error'} is not set then {last-error} is set to $ENV{'cf_last_line'}
 
 my($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
@@ -541,7 +541,7 @@ $hour=sprintf("%02d",$hour);
 $min=sprintf("%02d",$min);
 $sec=sprintf("%02d",$sec);
 
-my $_=$string;
+$_=$string;
 s/{year}/$year/g;
 s/{month}/$mon/g;
 s/{day}/$mday/g;
@@ -558,7 +558,7 @@ $dt = DateTime->now;
 my $wt;
 $wk = $dt->add( days => 7 );
 my $nw;
-$nw = substr($wk, 0, 10); 
+$nw = substr($wk, 0, 10);
 s/{nextweek}/$nw/g;
 
 my $filepath,$filebase,$fileextn;
