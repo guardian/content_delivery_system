@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-version='$Rev: 959 $ $LastChangedDate: 2014-07-31 16:10:05 +0100 (Thu, 31 Jul 2014) $'
 #This CDS method outputs a notification into the PLUTO notification area for the given user(s) and group(s)
 #Arguments:
 # <cantemo_host>cantemo.hostname.com - contact Cantemo on this server
@@ -30,10 +29,10 @@ unless(ENV['cantemo_host'] and ENV['cantemo_user'] and ENV['cantemo_passwd'])
     puts "-ERROR: You need to specify cantemo login details with <cantemo_host>, <cantemo_user> and <cantemo_passwd>"
     exit(1)
 end
-creds=Credentials.new(server: $store.substitute_string(ENV['cantemo_host']),
-                      user: $store.substitute_string(ENV['cantemo_user']),
-                      password: $store.substitute_string(ENV['cantemo_passwd']),
-                      https: ENV.key?("https"))
+creds=Credentials.new($store.substitute_string(ENV['cantemo_user']),
+                      $store.substitute_string(ENV['cantemo_passwd']),
+                      $store.substitute_string(ENV['cantemo_host']),
+                      ENV.key?("https"))
 
 unless(ENV['message'])
     puts "-ERROR: You need to specify a message with <message>"

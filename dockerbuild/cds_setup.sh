@@ -105,8 +105,9 @@ if [ -x "${GEM}" ]; then
 			exit 1
 	fi
 
+    cd ${SOURCE_DIR}/Ruby/PLUTO
 	echo Building and installing Pluto interface for Ruby...
-	gem build plutolib.gemspec
+	rake build
 	gem install plutolib-1.0.gem
 
 	if [ "$?" != "0" ]; then
