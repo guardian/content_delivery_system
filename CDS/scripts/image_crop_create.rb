@@ -17,7 +17,6 @@
 
 require 'xmp'
 require 'exifr/jpeg'
-#require 'awesome_print'
 require 'CDS/Datastore'
 require 'fileutils'
 
@@ -25,86 +24,76 @@ class FileError < StandardError
 end
 
 def find_available_filename(target_path,original_path,append)
-
-target_filename=File.basename(original_path)
-
-unless(Dir.exists?(target_path))
-    FileUtils.mkdir_p(target_path)
-end
-
-target_out=""
-
-fileparts=target_filename.match(/^(.*)\.([^\.]+)/)
-if(fileparts and fileparts[1])
-    filebase=fileparts[1]+append
-    filextn="."+fileparts[2]
-else
-    filebase=target_filename+append
-    filextn=".jpg"
-end
-target_filename=filebase+filextn
-
-n=1
-loop do
-    target_out=File.join(target_path,target_filename)
-    unless(File.exists?(target_out))
-        break
+    target_filename=File.basename(original_path)
+    unless(Dir.exists?(target_path))
+        FileUtils.mkdir_p(target_path)
     end
-    target_filename=filebase+"_#{n}"+filextn
-    n+=1
-end
+    target_out=""
 
-return target_out
+    fileparts=target_filename.match(/^(.*)\.([^\.]+)/)
+    if(fileparts and fileparts[1])
+        filebase=fileparts[1]+append
+        filextn="."+fileparts[2]
+    else
+        filebase=target_filename+append
+        filextn=".jpg"
+    end
+    target_filename=filebase+filextn
 
+    n=1
+    loop do
+        target_out=File.join(target_path,target_filename)
+        unless(File.exists?(target_out))
+            break
+        end
+        target_filename=filebase+"_#{n}"+filextn
+        n+=1
+    end
+
+    target_out
 end
 
 def make_crop(source_file,dest_file,target_width,target_height,strict_crop)
+    unless(File.exists?(source_file))
+        raise FileError,"File #{source_file} does not exist."
+    end
 
-unless(File.exists?(source_file))
-    raise FileError,"File #{source_file} does not exist."
-end
+    #ensure that the output directory exists
+    FileUtils.mkdir_p(File.dirname(dest_file))
 
-#ensure that the output directory exists
-FileUtils.mkdir_p(File.dirname(dest_file))
+    exifmeta=EXIFR::JPEG.new(source_file)
 
-exifmeta=EXIFR::JPEG.new(source_file)
+    target_scale=target_width.to_f/exifmeta.width.to_f
 
-#if($debug)
-#    puts "make_crop: EXIF data of incoming image:"
-#    ap exifmeta
-#end
+    if(exifmeta.height*target_scale < target_height)
+            target_scale=target_height.to_f/exifmeta.height.to_f
+    end
 
-target_scale=target_width.to_f/exifmeta.width.to_f
+    horiz_crop=(exifmeta.width.to_f*target_scale)-target_width
+    vert_crop=(exifmeta.height.to_f*target_scale)-target_height
 
-if(exifmeta.height*target_scale < target_height)
-        target_scale=target_height.to_f/exifmeta.height.to_f
-end
+    if($debug)
+        puts "make_crop: Original size: #{exifmeta.width}x#{exifmeta.height}"
+        puts "make_crop: Target size: #{target_width}x#{target_height}"
+        puts "make_crop: Scaling factor: #{target_scale}"
+        puts "make_crop: Vertical crop amount: #{vert_crop}, Horizontal crop amount: #{horiz_crop}"
+    end
 
-horiz_crop=(exifmeta.width.to_f*target_scale)-target_width
-vert_crop=(exifmeta.height.to_f*target_scale)-target_height
+    horiz_crop=(horiz_crop/2).to_i #crop is applied to both sides
+    vert_crop=(vert_crop/2).to_i
 
-if($debug)
-    puts "make_crop: Original size: #{exifmeta.width}x#{exifmeta.height}"
-    puts "make_crop: Target size: #{target_width}x#{target_height}"
-    puts "make_crop: Scaling factor: #{target_scale}"
-    puts "make_crop: Vertical crop amount: #{vert_crop}, Horizontal crop amount: #{horiz_crop}"
-end
+    target_scale*=100 #Scale factor needs to be expressed as a percentage
+    cmdline="convert '#{source_file}' -scale #{target_scale}% -shave #{horiz_crop}x#{vert_crop} '#{dest_file}'"
 
-horiz_crop=(horiz_crop/2).to_i #crop is applied to both sides
-vert_crop=(vert_crop/2).to_i
+    if($debug)
+        puts "I will run #{cmdline}"
+    end
 
-target_scale*=100 #Scale factor needs to be expressed as a percentage
-cmdline="convert '#{source_file}' -scale #{target_scale}% -shave #{horiz_crop}x#{vert_crop} '#{dest_file}'"
+    system(cmdline)
 
-if($debug)
-    puts "I will run #{cmdline}"
-end
-
-system(cmdline)
-
-if($?.exitstatus != 0)
-    raise StandardError,"ImageMagick returned an error."
-end
+    if($?.exitstatus != 0)
+        raise StandardError,"ImageMagick returned an error."
+    end
 end
 
 def recrop(source_file,dest_file,horiz_remain,vert_remain)
