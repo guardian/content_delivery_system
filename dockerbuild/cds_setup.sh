@@ -105,9 +105,6 @@ if [ -x "${GEM}" ]; then
 			exit 1
 	fi
 
-	cd ${SOURCE_DIR}
-	echo ------------------------------------------------------
-
 	echo Building and installing Pluto interface for Ruby...
 	gem build plutolib.gemspec
 	gem install plutolib-1.0.gem
@@ -117,6 +114,8 @@ if [ -x "${GEM}" ]; then
         echo Ensure that the Ruby development files are installed \(ruby-dev package on Debian-based systems\), or try updating your Ruby installation and trying again.
         exit 1
 	fi
+	cd ${SOURCE_DIR}
+	echo ------------------------------------------------------
 else
 	echo I couldn\'t find a working copy of Gem, ruby\'s package tool.  If you want to use methods that talk to AWS, Google or Vidispine,
 	echo you should install the relevant SDK.  The simplest way is to install gem and re-run this installer, or run \"sudo gem install aws-sdk google-api-client launchy thin\"
