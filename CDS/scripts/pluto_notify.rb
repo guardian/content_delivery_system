@@ -5,6 +5,7 @@ version='$Rev: 959 $ $LastChangedDate: 2014-07-31 16:10:05 +0100 (Thu, 31 Jul 20
 #Arguments:
 # <cantemo_host>cantemo.hostname.com - contact Cantemo on this server
 # <cantemo_user>username - use this username (must be an admin for this to work)
+# <https/> - use an https connection insead of http
 # <cantemo_passwd>password - use this password
 # <message>blah - text of the message to output
 # <type>commission|project|master|publish - what the message refers to
@@ -31,7 +32,8 @@ unless(ENV['cantemo_host'] and ENV['cantemo_user'] and ENV['cantemo_passwd'])
 end
 creds=Credentials.new(server: $store.substitute_string(ENV['cantemo_host']),
                       user: $store.substitute_string(ENV['cantemo_user']),
-                      password: $store.substitute_string(ENV['cantemo_passwd']))
+                      password: $store.substitute_string(ENV['cantemo_passwd']),
+                      https: ENV.key?("https"))
 
 unless(ENV['message'])
     puts "-ERROR: You need to specify a message with <message>"

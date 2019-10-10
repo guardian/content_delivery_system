@@ -141,45 +141,27 @@ if(scalar @moduleslist<1){
 	exit 0;
 }
 
-my $cpan=`which cpan`;
+my $cpan=`which cpanm`;
 chomp $cpan;
 if(! -x $cpan){
-	print STDERR "\n\nERROR: unable to find a runnable copy of CPAN.  Please manually install the following modules: @moduleslist\n";
+	print STDERR "\n\nERROR: unable to find a runnable copy of CPAN-minus.  Please manually install the following modules: @moduleslist\n";
 	exit 1;
 }
 
 if($do_install){
-	print "Installing cpanminimus...\n";
-	system("curl -L https://cpanmin.us | perl - --sudo App::cpanminus");
 
 	print "\n\nI am about to attempt an automatic installation of the modules @moduleslist.  You may be asked for your password, to allow this installer to make changes to your system.\n";
 	print "\nI STRONGLY RECOMMEND that you update your CPAN installation before proceeding, otherwise strange installation errors have been known to crop up.\n\n";
 
 	print "When CPAN asks you questions, you are safe to just press ENTER to accept the default values.\nYou will need to specify a mirror server to download from, just choose one near your location\nIf there is a problem, then re-run this script.  If there is still a problem, enter sudo rm -rf ~/.cpan in a Terminal window to delete your CPAN configuration.  Then re-run this script.\n\n";
-	while(lc $doupdate !~/^y/ and lc $doupdate !~/^n/ and not $yestoall){
-		print "Do you want to update your CPAN installation now (this may take a while)? (y/n) ";
-		$doupdate=<>;
-		chomp $doupdate;
-	}
-	#if(lc $doupdate =~/^y/ or $yestoall){
-	#	print "\nAttempting update.....\n";
-	#	system("sudo cpan -i Bundle::CPAN");
-	#	print "\n---------------------------------------------------------\n";
-	#	print "Update completed.  Now attempting to install modules...\n";
-	#	print "---------------------------------------------------------\n";
-	#} else {
-	#	print "`nSkipping update.  If any module installs fail, then try running sudo cpan -i Bundle::CPAN and then retrying module install\n";
-	#}
-#Press ENTER to continue...";
-#	$junk=<>;
+
 	print "\n\n";
 	$ENV{'PERL_MM_USE_DEFAULT'}=1;
-	system("sudo cpanm --force --notest -i @force_moduleslist");
-	system("sudo cpanm --notest -i @moduleslist");
+	system("cpanm --force --notest -i @force_moduleslist");
+	system("cpanm --notest -i @moduleslist");
 
 	print "\n\nInstallation complete, assuming that you saw no errors above.  Enjoy CDS!\n";
 } else {
 	print "\n\nI am not able to attempt an automatic installation, probably because you are missing the Developer Tools for your platform.  Please install them then re-run this script, or\n
 alternately run this command in a Terminal window: cpan -i @moduleslist.\n\nPlease save this message for future reference.\n\n";
 }
-

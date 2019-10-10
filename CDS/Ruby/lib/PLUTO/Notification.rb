@@ -18,11 +18,13 @@ class Credentials
 attr_accessor :user
 attr_accessor :password
 attr_accessor :server
+attr_accessor :https
 
-def initialize(user: user,password: password, server: server)
-@user=user
-@password=password
-@server=server
+def initialize(user: user,password: password, server: server, https: https)
+    @user=user
+    @password=password
+    @server=server
+    @https = https
 end #def initialize
 
 end #class Credentials
@@ -80,7 +82,7 @@ def send!(creds)
     uri = URI("http://#{creds.server}:80/notifications/api/")
     
     if(@url==nil and @object_id!=nil and @object_type!=nil)
-        @url="http://#{creds.server}/#{@object_type.downcase}/#{@object_id}/"
+        @url="#{creds.https ? "https" : "http"}://#{creds.server}/#{@object_type.downcase}/#{@object_id}/"
     end
     
     hashdata = {
