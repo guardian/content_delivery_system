@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "argparse": "^1.0.9",
-    "eslint": "^3.12.2",
+    "eslint": "^6.5.1",
     "jshint": "^2.9.4",
     "nock": "^9.0.2"
   }
