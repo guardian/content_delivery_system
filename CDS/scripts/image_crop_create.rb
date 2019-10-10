@@ -15,10 +15,8 @@
 
 #END DOC
 
-version="$Rev: 1106 $ $LastChangedDate: 2014-11-25 12:07:55 +0000 (Tue, 25 Nov 2014) $"
-
 require 'xmp'
-require 'exifr'
+require 'exifr/jpeg'
 #require 'awesome_print'
 require 'CDS/Datastore'
 require 'fileutils'
@@ -124,7 +122,7 @@ end
 end #def recrop
 
 def reshave(source_file,dest_file,horiz_crop,vert_crop)
-    
+
 if($debug)
     puts "reshave: Shaving an extra #{horiz_crop} x #{vert_crop} from #{source_file} and outputting to #{dest_file}"
 end
@@ -184,7 +182,7 @@ end
 
 output_path=store.substitute_string(ENV['output_path'])
 
-puts "image_crop_create version 1.0 (#{version})"
+puts "image_crop_create version 1.0"
 puts
 puts "Files to operate on:"
 files_to_process.each do |fn|
@@ -230,8 +228,7 @@ if(ENV['output_key'])
         new_value=filename_list
     end
     store.set('meta',keyname,new_value)
-    
+
 else
     puts "-WARNING: No <output_key> specified so not outputting cropped image paths to datastore."
 end
-
