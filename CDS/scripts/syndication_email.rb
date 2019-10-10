@@ -39,11 +39,15 @@ thumbnails = thumbnail_path.split('|')
 #content = Net::HTTP.get(thumbnail_url)
 puts "DEBUG: thumbnail path is #{thumbnail_path}"
 
-
-if thumbnails[0] != ""
-	content = File.read(thumbnails[0])
-else
-	content = File.read(thumbnails[1])
+begin
+  if thumbnails[0] != ""
+    content = File.read(thumbnails[0])
+  else
+	  content = File.read(thumbnails[1])
+  end
+rescue Exception=>e
+  puts "-ERROR: #{e.message}. Thumbnail data not present so exiting."
+  abort("Thumbnail data not present so exiting.")
 end
 
 #content = File.read(thumbnail_path)
