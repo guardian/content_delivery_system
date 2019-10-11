@@ -104,7 +104,7 @@ if rpt.include? " 0"
   rpt = rpt.gsub! '/0', '/'
 end
 
-isecs1 = $store.substitute_string(ENV['duration']).to_f  
+isecs1 = $store.substitute_string(ENV['duration']).to_f
 
 isecs = isecs1.to_i
 
@@ -288,7 +288,7 @@ html_code = "<table width=\"688\" cellspacing=\"0\" bgcolor=\"#ffffff\">
         </td>
     </tr>
 </table>"
-        
+
 plain_text = "GNM Syndication: New Video Details
 
 Title: #{$store.substitute_string(ENV['title'])}
@@ -301,10 +301,10 @@ Tags: #{tags}
 
 Guardian News & Media Limited - a member of Guardian Media Group PLC
 Registered Office: Kings Place, 90 York Way, London, N1 9GU. Registered in England No. 908396"
-             
+
 st = $store.substitute_string(ENV['subject']) + $store.substitute_string(ENV['title'])
 
-mail=Mail.new do |mail|
+mail=Mail.new do
     to      rr
     cc      ccrr
     bcc     bccrr
@@ -340,6 +340,3 @@ end
 mail.attachments['thumbnail.jpg'] = {:content_id=>'<tnimage@dc1-workflow-02.mail>',:content=>content}
 mail.deliver
 puts mail.to_s #=>
-
-
-
