@@ -20,7 +20,7 @@ class Credentials
     attr_accessor :server
     attr_accessor :https
 
-    def initialize(user,password, server, https)
+    def initialize(user,password, server, https=false)
         @user=user
         @password=password
         @server=server
@@ -77,9 +77,7 @@ class Notification
 
         headers = {}
         headers['Authorization'] = 'Basic ' + Base64.encode64("#{creds.user}:#{creds.password}").chop
-        #headers['Authorization'] = "Basic #{creds.user}:#{creds.password}"
-        #ap headers
-        uri = URI("http://#{creds.server}:80/notifications/api/")
+        uri = URI("#{creds.https ? "https" : "http"}://#{creds.server}/notifications/api/")
 
         if(@url==nil and @object_id!=nil and @object_type!=nil)
             @url="#{creds.https ? "https" : "http"}://#{creds.server}/#{@object_type.downcase}/#{@object_id}/"
@@ -125,7 +123,7 @@ class Notification
             end
 
             #FIXME: how to enable HTTPS here?
-            Net::HTTP.start(uri.host,uri.port) do |http|
+            Net::HTTP.start(uri.host,uri.port,:use_ssl => uri.scheme == 'https') do |http|
                 #result=http.request Net::HTTP::Post.new(uri,bodycontent,headers)
                 result=http.post(uri.path, bodycontent, headers)
             end
