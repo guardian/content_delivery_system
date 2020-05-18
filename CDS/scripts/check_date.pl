@@ -56,5 +56,5 @@ if ($date_time_from_datastore < $oldest_allowed_date_time) {
 	$store->set(@keyparts,$finalstring,undef);
 	print "+SUCCESS: Value set.\n";
 } else {
-	print "INFO: Date/time is after midnight on 1/1/2008. Nothing to do.\n"
+	print "INFO: $key is $date_time_from_datestore which is after midnight on 1/1/2008. Leaving alone.\n"
 }
