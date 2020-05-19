@@ -11,6 +11,7 @@ use CDS::Datastore;
 use File::Slurp qw/read_file/;
 use DateTime::Format::Strptime;
 use DateTime;
+use Date::Manip qw(ParseDate);
 
 #START MAIN
 my $store=CDS::Datastore->new('check_date');
@@ -46,6 +47,11 @@ my $existing_value=$store->get(@keyparts,undef);
 
 my $value=$existing_value;
 my $finalstring=$existing_value;
+my $test_date = ParseDate($value);
+if (!$test_$date) {
+	print "-ERROR - Perl could not parse the supplied string ($value) as a date. Aborting.\n";
+	exit 1;
+}
 my $format = DateTime::Format::Strptime->new( pattern => '%FT%T%z');
 my $date_time_from_datastore = $format->parse_datetime($value);
 my $oldest_allowed_date_time = $format->parse_datetime('2008-01-01T00:00:00');
