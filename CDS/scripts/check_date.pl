@@ -48,7 +48,7 @@ my $existing_value=$store->get(@keyparts,undef);
 my $value=$existing_value;
 my $finalstring=$existing_value;
 my $test_date = ParseDate($value);
-if (!$test_$date) {
+if (!$test_date) {
 	print "-ERROR - Perl could not parse the supplied string ($value) as a date. Aborting.\n";
 	exit 1;
 }
