@@ -12,6 +12,7 @@ use File::Slurp qw/read_file/;
 use DateTime::Format::Strptime;
 use DateTime;
 use Date::Manip qw(ParseDate);
+use Date::Parse;
 
 #START MAIN
 my $store=CDS::Datastore->new('check_date');
@@ -48,13 +49,12 @@ my $existing_value=$store->get(@keyparts,undef);
 my $value=$existing_value;
 my $finalstring=$existing_value;
 my $test_date = ParseDate($value);
-if (!$test_$date) {
+if (!$test_date) {
 	print "-ERROR - Perl could not parse the supplied string ($value) as a date. Aborting.\n";
 	exit 1;
 }
-my $format = DateTime::Format::Strptime->new( pattern => '%FT%T%z');
-my $date_time_from_datastore = $format->parse_datetime($value);
-my $oldest_allowed_date_time = $format->parse_datetime('2008-01-01T00:00:00');
+my $date_time_from_datastore = str2time($value);
+my $oldest_allowed_date_time = 1199145600;
 if ($date_time_from_datastore < $oldest_allowed_date_time) {
 	my $now = DateTime->now()->iso8601().'Z';
 	$finalstring = $now;
@@ -62,5 +62,5 @@ if ($date_time_from_datastore < $oldest_allowed_date_time) {
 	$store->set(@keyparts,$finalstring,undef);
 	print "+SUCCESS: Value set.\n";
 } else {
-	print "INFO: $key is $date_time_from_datestore which is after midnight on 1/1/2008. Leaving alone.\n"
+	print "INFO: $key is $value which is after midnight on 1/1/2008. Leaving alone.\n"
 }
