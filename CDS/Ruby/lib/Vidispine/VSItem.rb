@@ -55,7 +55,6 @@ class VSItem < VSApi
     end
 
     qparms['storageId'] = storage_id unless storage_id.nil?
-
     qparms['priority'] = priority unless priority.nil?
 
     jobDocument = request('/import/raw', method: 'POST', query: qparms, body: data, content_type: 'application/octet-stream')

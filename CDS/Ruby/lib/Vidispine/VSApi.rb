@@ -168,7 +168,9 @@ class VSApi
     # ap rq
 
     response = nil
-    http = Net::HTTP.new(uri.host, uri.port, use_ssl: uri.scheme == 'https', verify_mode: OpenSSL::SSL::VERIFY_NONE)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = @https
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     if block_given?
       http.request(rq) do |response|
         response.read_body do |segment|
