@@ -25,9 +25,8 @@ class VSException < StandardError
       xmlstring = xmlstring.body
     end
     if xmlstring.is_a?(String)
-      xmlstring.chomp!
       begin
-        xmldata = Nokogiri::XML(xmlstring)
+        xmldata = Nokogiri::XML(xmlstring.chomp)
       rescue Exception => e # if the xml parse fails, assume what we were given isn't XML
         @message = xmlstring
         return
@@ -169,7 +168,7 @@ class VSApi
 
     response = nil
     http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = @https
+    http.use_ssl = uri.scheme == "https"
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
     if block_given?
       http.request(rq) do |response|
