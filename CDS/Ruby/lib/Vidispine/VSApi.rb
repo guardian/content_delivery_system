@@ -70,7 +70,7 @@ end
 class VSApi
   attr_accessor :debug
 
-  def initialize(host="localhost", port=8080, user="", passwd="", parent: nil, run_as: nil)
+  def initialize(host="localhost", port=8080, user="", passwd="", parent: nil, run_as: nil, https: true)
     #puts "debug: VSApi::initialize: #{host} #{port} #{user} #{passwd}"
     @id=nil
 
@@ -82,6 +82,7 @@ class VSApi
       @port=parent.port
       @debug=parent.debug
       @run_as=parent.run_as
+      @https=parent.https
       #   @retry_delay=parent.retry_delay
       #   @retry_times=parent.retry_times
     else
@@ -93,6 +94,7 @@ class VSApi
       @run_as=run_as
       @retry_delay=5
       @retry_times=10
+      @https=https
       @attempt=0
     end
 
@@ -110,6 +112,11 @@ class VSApi
 
   def sendAuthorized(conn, method, url, body, headers, &block)
 #auth=Base64.encode64("#{@user}:#{@passwd}".gsub("\n",""))
+  if @https
+    puts "debug: sendAuthorized using https"
+  else
+    puts "debug: sendAuthorized using http only"
+  end
 
     if (headers==nil)
       headers=Hash.new
@@ -167,9 +174,8 @@ class VSApi
 #ap rq
 
     response=nil
-    http=Net::HTTP.new(uri.host, uri.port)
-    if (block_given?)
-      #puts "DEBUG: VSApi::sendAuthorized: using block return"
+    http=Net::HTTP.new(uri.host, uri.port,  :use_ssl => uri.scheme == 'https', :verify_mode=>OpenSSL::SSL::VERIFY_NONE)
+    if block_given?
       http.request(rq) do |response|
         response.read_body do |segment|
           #puts "DEBUG: VSAPI::sendAuthorized: sending segment #{segment}"
@@ -178,11 +184,8 @@ class VSApi
         return response
       end #http.request
     else
-      #puts "DEBUG: VSApi::sendAuthorized: using conventional return"
-      response=http.request(rq)
-      return response
+      http.request(rq)
     end
-
   end
 
   class NeedRedirectException < StandardError

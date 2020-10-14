@@ -63,6 +63,8 @@ begin
     vshost = $store.substitute_string(ENV['vidispine_host'])
     vsuser = $store.substitute_string(ENV['vidispine_user'])
     vspass = $store.substitute_string(ENV['vidispine_password'])
+    vshttps = false
+    vshttps = true if ENV["vidispine_https"]
     vsid = $store.substitute_string(ENV['item_id'])
     shapetag = $store.substitute_string(ENV['shape_tag'])
     vsport = 8080

@@ -10,7 +10,7 @@ end #VSTranscodeError
 class VSItem < VSApi
     attr_accessor :id
     
-    def initialize(host="localhost",port=8080,user="",passwd="",parent: nil)
+    def initialize(host="localhost",port=8080,user="",passwd="",parent: nil, run_as: nil, https: true)
         #super.initialize(host,port,user,passwd,parent: p)
         super
         
