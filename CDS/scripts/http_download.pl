@@ -13,7 +13,7 @@ $|=1;
 # <retries>n [OPTIONAL -defaults to 10]
 # <retry-delay>n [OPTIONAL -defaults to 5]
 
-
+use Net::SSL;	#force SSLeay version - https://stackoverflow.com/questions/17756776/perl-lwp-ssl-verify-hostname-setting-to-0-is-not-working
 use LWP::UserAgent;
 use CDS::Datastore;
 use File::Spec;
