@@ -22,11 +22,21 @@ store=Datastore.new('png_to_jpeg')
 
 input_image=store.substitute_string(ENV['input_key'])
 
+if input_image==""
+  puts "-ERROR No input image provided in 'input_key', can't continue"
+  exit(1)
+end
+
+unless File.exist?(input_image)
+  puts "-ERROR File '#{input_image}' does not exist, can't continue"
+  exit(1)
+end
+
 cmdline="identify -format '%m' '#{input_image}'"
 
 command_result = system(cmdline)
 
-if (command_result)
+if command_result
   cmdline="convert '#{input_image}' '#{input_image}'"
   system(cmdline)
 else
@@ -35,7 +45,7 @@ end
 
 output_path=store.substitute_string(ENV['output_path'])
 
-if(ENV['output_key'])
+if ENV['output_key']
   keyname=ENV['output_key']
   store.set('meta',keyname,input_image)
 else
