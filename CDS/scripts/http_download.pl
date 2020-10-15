@@ -79,7 +79,6 @@ if($ENV{'output-filename'}){
 my $outputpath=File::Spec->catdir(($outputdir,$outputfile));
 print "*MESSAGE - downloading from $url to $outputpath\n";
 
-my $content=undef;
 my $attempt=0;
 my $ua = LWP::UserAgent->new( ssl_opts => { verify_hostname => 0 });
 do{
@@ -87,10 +86,9 @@ do{
 	$rc=$ua->get($url, ':content_file'=>$outputfile);
 	if($rc->is_success) {
 		print "INFO - Downloaded content from $url, saved to $outputpath...\n";
-	}
-	if(is_error($rc)){
+	} else {
 		if($attempt>$retries){
-			print "-ERROR - unable to download from $url after $attempt attempts: error code $rc.  Giving up.\n";
+			print "-ERROR - unable to download from $url after $attempt attempts: ". $rc->status_line .".  Giving up.\n";
 			exit 1;
 		}
 		print "-WARNING - unable to download (".status_message($rc).").  Retrying in $retrydelay seconds...\n";
