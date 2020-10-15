@@ -9,6 +9,7 @@
 #  <completed/>         - if set, signal completion
 #  <failed/>            - if set, signal failure
 #  <message>            - log message to send
+# <uploaded_url> [optional] - set if the upload has succeeded and you want to tell deliverables about the location it's arrived at
 #  <sender>             - name of the sender to set. "CDS" unless otherwise specified.
 #  <baseurl>            - base URL for pluto-deliverables
 #  <user>
@@ -54,6 +55,11 @@ else
   failed = false
 end
 
+uploaded_url = nil
+if ENV["uploaded_url"]
+  uploaded_url = $store.substitute_string(ENV["uploaded_url"])
+end
+
 uri = URI(baseurl + "/api/bundle/#{project_id}/asset/#{asset_id}/#{platform}/logupdate")
 payload = {
     :sender => sender,
@@ -61,6 +67,10 @@ payload = {
     :failed => failed,
     :log => message
 }
+if uploaded_url
+  payload[:uploadedUrl] = uploaded_url
+end
+
 json_body = JSON.generate(payload)
 
 puts "DEBUG: uri is #{uri}" if $debug
