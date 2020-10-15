@@ -13,8 +13,8 @@ $|=1;
 # <retries>n [OPTIONAL -defaults to 10]
 # <retry-delay>n [OPTIONAL -defaults to 5]
 
-
-use LWP::Simple;
+use Net::SSL;	#force SSLeay version - https://stackoverflow.com/questions/17756776/perl-lwp-ssl-verify-hostname-setting-to-0-is-not-working
+use LWP::UserAgent;
 use CDS::Datastore;
 use File::Spec;
 use HTTP::Status;
@@ -56,7 +56,10 @@ unless(check_args(qw/url output-directory set-output/)){
 $debug=$ENV{'debug'};
 
 my $url=$store->substitute_string($ENV{'url'});
-my $outputdir=$store->substitute_string($ENV{'output-directory'});
+my $rawdir = $ENV{'output-directory'};
+$rawdir = $ENV{'output_directory'} if($rawdir=="");
+
+my $outputdir=$store->substitute_string($rawdir);
 my $outputfile;
 
 if($ENV{'output-filename'}){
@@ -76,22 +79,22 @@ if($ENV{'output-filename'}){
 my $outputpath=File::Spec->catdir(($outputdir,$outputfile));
 print "*MESSAGE - downloading from $url to $outputpath\n";
 
-my $content=undef;
 my $attempt=0;
+my $ua = LWP::UserAgent->new( ssl_opts => { verify_hostname => 0 });
 do{
 	++$attempt;
-	$rc=getstore($url,$outputpath);
-	if(is_error($rc)){
+	$rc=$ua->get($url, ':content_file'=>$outputfile);
+	if($rc->is_success) {
+		print "INFO - Downloaded content from $url, saved to $outputpath...\n";
+	} else {
 		if($attempt>$retries){
-			print "-ERROR - unable to download from $url after $attempt attempts.  Giving up.\n";
+			print "-ERROR - unable to download from $url after $attempt attempts: ". $rc->status_line .".  Giving up.\n";
 			exit 1;
 		}
 		print "-WARNING - unable to download (".status_message($rc).").  Retrying in $retrydelay seconds...\n";
 		sleep $retrydelay;
 	}
-} while(is_error($rc));
-
-#set_cds_file('xml',$outputpath);
+} while(! $rc->is_success);
 
 #ok so the downloaded content should now be saved to $outputfile.
 my @locations=split /\|/,$ENV{'set-output'};

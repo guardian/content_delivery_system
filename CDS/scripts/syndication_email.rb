@@ -20,7 +20,7 @@ vidispine_server = $store.substitute_string(ENV['vidispine_host'])
 vidispine_port = 8080
 if ENV['vidispine_port']
     begin
-      vidispine_port=int($store.substitute_string(ENV['vidispine_port']))
+      vidispine_port=$store.substitute_string(ENV['vidispine_port']).to_i
     rescue Exception=>e
       puts "-WARNING: #{e.message}. Using default port value of 8080"
     end
@@ -34,9 +34,6 @@ thumbnail_path = $store.substitute_string(ENV['thumbnail'])
 thumbnails = thumbnail_path.split('|')
 
 
-#thumbnail_url = URI("http://#{vidispine_server}:#{vidispine_port}#{thumbnail_path}")
-#puts "DEBUG: thumbnail url is #{thumbnail_url.to_s}"
-#content = Net::HTTP.get(thumbnail_url)
 puts "DEBUG: thumbnail path is #{thumbnail_path}"
 
 begin
