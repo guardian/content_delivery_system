@@ -153,6 +153,7 @@ class VSItem < VSApi
     raise NameError, 'Unable to get job ID!!' if jobid == -1
 
     # puts "found job at id #{jobid}"
+    job = nil
     loop do
       job = VSJob.new(@host, @port, @user, @passwd)
       job.populate(jobid)
@@ -169,7 +170,6 @@ class VSItem < VSApi
       end
 
       sleep(20)
-      break unless true
     end
     job
   end
