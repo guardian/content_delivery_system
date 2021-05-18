@@ -75,16 +75,6 @@ if [ -x "${GEM}" ]; then
 		exit 1
 	fi
 
-	echo Building and installing R2 Newspaper Integration interface for Ruby...
-	gem build R2NewspaperIntegration.gemspec
-	gem install R2NewspaperIntegration-1.0.gem
-
-	if [ "$?" != "0" ]; then
-		echo Gem reported an error building or installing the library.
-		echo Ensure that the Ruby development files are installed \(ruby-dev package on Debian-based systems\), or try updating your Ruby installation and trying again.
-		exit 1
-	fi
-
 	echo Building and installing Elemental interface for Ruby...
 	gem build elementallib.gemspec
 	gem install elementallib-1.0.gem
