@@ -55,7 +55,6 @@ $debug=$ENV{'debug'};
 
 my $url=$store->substitute_string($ENV{'url'});
 my $rawdir = $ENV{'output-directory'};
-#$rawdir = $ENV{'output_directory'} if($rawdir=="");
 
 my $outputdir=$store->substitute_string($rawdir);
 my $outputfile;
@@ -82,7 +81,7 @@ my $ua = LWP::UserAgent->new( ssl_opts => { verify_hostname => 0 });
 my $rc;
 do{
 	++$attempt;
-	$rc=$ua->get($url, ':content_file'=>$outputfile);
+	$rc=$ua->get($url, ':content_file'=>$outputpath);
 	if($rc->is_success) {
 		print "INFO - Downloaded content from $url, saved to $outputpath...\n";
 	} else {
