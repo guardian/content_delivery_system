@@ -1,7 +1,5 @@
 #!/usr/bin/perl
 
-my $version='$Rev: 472 $ $LastChangedDate: 2013-08-14 14:25:30 +0100 (Wed, 14 Aug 2013) $';
-
 $|=1;
 #this is a CDS module to pull down media or metadata via HTTP
 #arguments:
@@ -57,7 +55,6 @@ $debug=$ENV{'debug'};
 
 my $url=$store->substitute_string($ENV{'url'});
 my $rawdir = $ENV{'output-directory'};
-$rawdir = $ENV{'output_directory'} if($rawdir=="");
 
 my $outputdir=$store->substitute_string($rawdir);
 my $outputfile;
@@ -81,9 +78,10 @@ print "*MESSAGE - downloading from $url to $outputpath\n";
 
 my $attempt=0;
 my $ua = LWP::UserAgent->new( ssl_opts => { verify_hostname => 0 });
+my $rc;
 do{
 	++$attempt;
-	$rc=$ua->get($url, ':content_file'=>$outputfile);
+	$rc=$ua->get($url, ':content_file'=>$outputpath);
 	if($rc->is_success) {
 		print "INFO - Downloaded content from $url, saved to $outputpath...\n";
 	} else {
