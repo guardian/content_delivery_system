@@ -5,7 +5,6 @@
 # Arguments:
 #    <project_id>int - look up this project id.
 #    <server>hostname - talk to pluto-core on this computer
-#    <vidispine_host>hostname - talk to Vidispine on this computer
 #END DOC
 
 require 'CDS/Datastore'
