@@ -5,10 +5,11 @@
 # Arguments:
 #    <project_id>int - look up this project id.
 #    <server>hostname - talk to pluto-core on this computer
+#    <shared_secret>blah - secret to use for encoding HMAC authorization header
+
 #END DOC
 
 require 'CDS/Datastore'
-require 'awesome_print'
 require 'net/http'
 require 'json'
 require 'digest'
@@ -18,30 +19,20 @@ require 'openssl'
 
 def sign_request(original_headers, method, path, content_type, content_body, shared_secret)
   new_headers = original_headers
-
   content_hasher = Digest::SHA2.new(384)
   content_hasher.update(content_body.encode("UTF-8"))
-
   date_time_now = Time.now.utc
   now_date = date_time_now.strftime("%a, %d %b %Y %H:%M:%S GMT")
-
   check_sum_string = content_hasher.hexdigest()
-
   new_headers["Digest"] = "SHA-384=" + check_sum_string
   new_headers["Content-Length"] = content_body.length.to_s
   new_headers["Content-Type"] = content_type
   new_headers["Date"] = now_date
-
   string_to_sign = path + "\n" + now_date + "\n" + content_type + "\n" + check_sum_string + "\n" + method
-
   puts "Debug: string to sign: " + string_to_sign
-
   result_data = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha384'), shared_secret.encode("UTF-8"), string_to_sign.encode("UTF-8"))
-
   puts "Debug: final digest is : " + result_data
-
   new_headers["Authorization"] = "HMAC " + result_data
-
   return new_headers
 end
 
