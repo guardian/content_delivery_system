@@ -58,16 +58,45 @@ end
 #START MAIN
 $store = Datastore.new('pluto_get_data')
 
+# Check if we have input data
+
+if $store.substitute_string(ENV['project_id']) == ''
+  puts 'Error: No project_id set so exiting.'
+  exit
+end
+
+if $store.substitute_string(ENV['server']) == ''
+  puts 'Error: No server set so exiting.'
+  exit
+end
+
+if $store.substitute_string(ENV['shared_secret']) == ''
+  puts 'Error: No shared_secret set so exiting.'
+  exit
+end
+
 # Get the project data
 
 returned_json = get_json('https://' + $store.substitute_string(ENV['server']) + '/pluto-core/api/project/' + $store.substitute_string(ENV['project_id']))
 
 # Get the commission data
 
-commission_returned_json = get_json('https://' + $store.substitute_string(ENV['server']) + '/pluto-core/api/pluto/commission/' + returned_json["result"]["commissionId"].to_s)
+begin
+  commission_returned_json = get_json('https://' + $store.substitute_string(ENV['server']) + '/pluto-core/api/pluto/commission/' + returned_json["result"]["commissionId"].to_s)
+  commisson_to_use = commission_returned_json["result"]["title"]
+rescue
+  commisson_to_use = ''
+  puts 'Warning: the commission title could not be loaded.'
+end
 
 # Get the working group data
 
-group_returned_json = get_json('https://' + $store.substitute_string(ENV['server']) + '/pluto-core/api/pluto/workinggroup/' + returned_json["result"]["workingGroupId"].to_s)
+begin
+  group_returned_json = get_json('https://' + $store.substitute_string(ENV['server']) + '/pluto-core/api/pluto/workinggroup/' + returned_json["result"]["workingGroupId"].to_s)
+  group_to_use = group_returned_json["result"]["name"]
+rescue
+  group_to_use = ''
+  puts 'Warning: the working group name could not be loaded.'
+end
 
-$store.set('meta',{ "commission" => commission_returned_json["result"]["title"], "workinggroup" => group_returned_json["result"]["name"]})
+$store.set('meta',{ "commission" => commisson_to_use, "workinggroup" => group_to_use})
