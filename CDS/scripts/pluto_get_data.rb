@@ -29,9 +29,7 @@ def sign_request(original_headers, method, path, content_type, content_body, sha
   new_headers["Content-Type"] = content_type
   new_headers["Date"] = now_date
   string_to_sign = path + "\n" + now_date + "\n" + content_type + "\n" + check_sum_string + "\n" + method
-  puts "Debug: string to sign: " + string_to_sign
   result_data = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha384'), shared_secret.encode("UTF-8"), string_to_sign.encode("UTF-8"))
-  puts "Debug: final digest is : " + result_data
   new_headers["Authorization"] = "HMAC " + result_data
   return new_headers
 end
