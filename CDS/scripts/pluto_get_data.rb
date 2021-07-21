@@ -77,12 +77,12 @@ end
 
 # Get the project data
 
-returned_json = get_json('https://' + $store.substitute_string(ENV['server']) + '/pluto-core/api/project/' + $store.substitute_string(ENV['project_id']))
+returned_json = get_json($store.substitute_string(ENV['base_url']) + '/api/project/' + $store.substitute_string(ENV['project_id']))
 
 # Get the commission data
 
 begin
-  commission_returned_json = get_json('https://' + $store.substitute_string(ENV['server']) + '/pluto-core/api/pluto/commission/' + returned_json["result"]["commissionId"].to_s)
+  commission_returned_json = get_json($store.substitute_string(ENV['base_url']) + '/api/pluto/commission/' + returned_json["result"]["commissionId"].to_s)
   commisson_to_use = commission_returned_json["result"]["title"]
 rescue
   commisson_to_use = ''
@@ -92,7 +92,7 @@ end
 # Get the working group data
 
 begin
-  group_returned_json = get_json('https://' + $store.substitute_string(ENV['server']) + '/pluto-core/api/pluto/workinggroup/' + returned_json["result"]["workingGroupId"].to_s)
+  group_returned_json = get_json($store.substitute_string(ENV['base_url']) + '/api/pluto/workinggroup/' + returned_json["result"]["workingGroupId"].to_s)
   group_to_use = group_returned_json["result"]["name"]
 rescue
   group_to_use = ''
