@@ -165,17 +165,7 @@ end
 
 el = VSMetadataElements.new(vidispine_server,vidispine_port,username,passwd)
 
-wg = 'n/a'
-
-el.findUUID($store.substitute_string(ENV['working_group'])) do |entry|
-  puts entry.name
-  puts entry.uuid
-  entry.each do |item,values|
-    puts item
-    puts values
-    wg = values
-  end
-end
+wg = $store.substitute_string(ENV['working_group'])
 
 html_code = "<table width=\"688\" cellspacing=\"0\" bgcolor=\"#ffffff\">
     <tr bgcolor=\"#005689\">
