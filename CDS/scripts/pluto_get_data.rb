@@ -4,7 +4,7 @@
 #
 # Arguments:
 #    <project_id>int - look up this project id.
-#    <server>hostname - talk to pluto-core on this computer
+#    <base_url>URL - talk to pluto-core at this URL
 #    <shared_secret>blah - secret to use for encoding HMAC authorization header
 
 #END DOC
