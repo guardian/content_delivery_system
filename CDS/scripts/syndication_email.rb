@@ -222,18 +222,6 @@ html_code = "<table width=\"688\" cellspacing=\"0\" bgcolor=\"#ffffff\">
         </td>
     </tr>
     <tr>
-        <td align=\"right\" style=\"padding-top:8px;padding-bottom:8px;padding-right:8px;\" valign=\"top\">
-            <font face=\"Arial,Helvetica,sans-serif\" size=\"3\" color=\"#000000\">
-                Platforms:
-            </font>
-        </td>
-        <td style=\"padding-top:8px;padding-bottom:8px;\">
-            <font face=\"Arial,Helvetica,sans-serif\" size=\"3\" color=\"#000000\">
-                #{uploadpr}
-            </font>
-        </td>
-    </tr>
-    <tr>
         <td valign=\"top\" align=\"right\" style=\"padding-top:8px;padding-bottom:8px;padding-right:8px;\">
             <font face=\"Arial,Helvetica,sans-serif\" size=\"3\" color=\"#000000\">
                 Working Group:
@@ -281,7 +269,6 @@ plain_text = "GNM Syndication: New Video Details
 Title: #{$store.substitute_string(ENV['title'])}
 Publication Time: #{rpt}
 Duration: #{duration}
-Platforms: #{uploadpr}
 Working Group: #{wg}
 Tags: #{tags}
 #{text_field_data}
