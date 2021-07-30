@@ -167,8 +167,27 @@ el = VSMetadataElements.new(vidispine_server,vidispine_port,username,passwd)
 
 wg = $store.substitute_string(ENV['working_group'])
 
+colour_value = "af1674"
+colour_switch = rand 1..5
+
+if colour_switch == 1
+  colour_value = "d10a10"
+end
+
+if colour_switch == 2
+  colour_value = "ea5a0b"
+end
+
+if colour_switch == 3
+  colour_value = "006d67"
+end
+
+if colour_switch == 4
+  colour_value = "0074a6"
+end
+
 html_code = "<table width=\"688\" cellspacing=\"0\" bgcolor=\"#ffffff\">
-    <tr bgcolor=\"#005689\">
+    <tr bgcolor=\"##{colour_value}\">
         <td style=\"padding:10px;\">
             <font face=\"Georgia,serif\" size=\"4\" color=\"#ffffff\">
                 GNM Syndication: New Video Details
@@ -301,7 +320,7 @@ end
 image_base_path = Pathname.new($store.substitute_string(ENV['image_path']))
 
 begin
-    mail.attachments['round.gif'] = {:content_id=>'<roundimage@dc1-workflow-02.mail>',:content=>File.read(image_base_path + 'round.gif')}
+    mail.attachments['round.png'] = {:content_id=>'<roundimage@dc1-workflow-02.mail>',:content=>File.read(image_base_path + 'round.png')}
 rescue Errno::ENOENT=>e
     puts "-WARNING: Unable to attach file to email: #{e.message}"
 end
