@@ -168,22 +168,16 @@ el = VSMetadataElements.new(vidispine_server,vidispine_port,username,passwd)
 wg = $store.substitute_string(ENV['working_group'])
 
 colour_value = "af1674"
-colour_switch = rand 1..5
 
-if colour_switch == 1
-  colour_value = "d10a10"
-end
-
-if colour_switch == 2
-  colour_value = "ea5a0b"
-end
-
-if colour_switch == 3
-  colour_value = "006d67"
-end
-
-if colour_switch == 4
-  colour_value = "0074a6"
+case rand 1..5
+  when 1
+    colour_value="d10a10"
+  when 2
+    colour_value="ea5a0b"
+  when 3
+    colour_value="006d67"
+  when 4
+    colour_value="0074a6"
 end
 
 html_code = "<table width=\"688\" cellspacing=\"0\" bgcolor=\"#ffffff\">
