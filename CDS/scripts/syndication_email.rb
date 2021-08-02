@@ -205,7 +205,7 @@ html_code = "<table width=\"688\" cellspacing=\"0\" bgcolor=\"#ffffff\">
         </td>
         <td width=\"140\" height=\"64\" align=\"right\" style=\"padding-right:8px;\" valign=\"bottom\">
             <font face=\"Arial,Helvetica,sans-serif\" size=\"3\" color=\"#000000\">
-                Publication Time:
+                Syndication Time:
             </font>
         </td>
         <td valign=\"bottom\">
@@ -286,7 +286,7 @@ html_code = "<table width=\"688\" cellspacing=\"0\" bgcolor=\"#ffffff\">
 plain_text = "GNM Syndication: New Video Details
 
 Title: #{$store.substitute_string(ENV['title'])}
-Publication Time: #{rpt}
+Syndication Time: #{rpt}
 Duration: #{duration}
 Working Group: #{wg}
 Tags: #{tags}
