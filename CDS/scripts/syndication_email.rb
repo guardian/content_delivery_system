@@ -165,20 +165,23 @@ end
 
 el = VSMetadataElements.new(vidispine_server,vidispine_port,username,passwd)
 
-wg = 'n/a'
+wg = $store.substitute_string(ENV['working_group'])
 
-el.findUUID($store.substitute_string(ENV['working_group'])) do |entry|
-  puts entry.name
-  puts entry.uuid
-  entry.each do |item,values|
-    puts item
-    puts values
-    wg = values
-  end
+colour_value = "af1674"
+
+case rand 1..5
+  when 1
+    colour_value="d10a10"
+  when 2
+    colour_value="ea5a0b"
+  when 3
+    colour_value="006d67"
+  when 4
+    colour_value="0074a6"
 end
 
 html_code = "<table width=\"688\" cellspacing=\"0\" bgcolor=\"#ffffff\">
-    <tr bgcolor=\"#005689\">
+    <tr bgcolor=\"##{colour_value}\">
         <td style=\"padding:10px;\">
             <font face=\"Georgia,serif\" size=\"4\" color=\"#ffffff\">
                 GNM Syndication: New Video Details
@@ -196,7 +199,7 @@ html_code = "<table width=\"688\" cellspacing=\"0\" bgcolor=\"#ffffff\">
         </td>
         <td width=\"140\" height=\"64\" align=\"right\" style=\"padding-right:8px;\" valign=\"bottom\">
             <font face=\"Arial,Helvetica,sans-serif\" size=\"3\" color=\"#000000\">
-                Publication Time:
+                Syndication Time:
             </font>
         </td>
         <td valign=\"bottom\">
@@ -228,18 +231,6 @@ html_code = "<table width=\"688\" cellspacing=\"0\" bgcolor=\"#ffffff\">
         <td style=\"padding-top:8px;padding-bottom:8px;\">
             <font face=\"Arial,Helvetica,sans-serif\" size=\"3\" color=\"#000000\">
                 <strong>#{$store.substitute_string(ENV['title'])}</strong>
-            </font>
-        </td>
-    </tr>
-    <tr>
-        <td align=\"right\" style=\"padding-top:8px;padding-bottom:8px;padding-right:8px;\" valign=\"top\">
-            <font face=\"Arial,Helvetica,sans-serif\" size=\"3\" color=\"#000000\">
-                Platforms:
-            </font>
-        </td>
-        <td style=\"padding-top:8px;padding-bottom:8px;\">
-            <font face=\"Arial,Helvetica,sans-serif\" size=\"3\" color=\"#000000\">
-                #{uploadpr}
             </font>
         </td>
     </tr>
@@ -289,9 +280,8 @@ html_code = "<table width=\"688\" cellspacing=\"0\" bgcolor=\"#ffffff\">
 plain_text = "GNM Syndication: New Video Details
 
 Title: #{$store.substitute_string(ENV['title'])}
-Publication Time: #{rpt}
+Syndication Time: #{rpt}
 Duration: #{duration}
-Platforms: #{uploadpr}
 Working Group: #{wg}
 Tags: #{tags}
 #{text_field_data}
@@ -324,7 +314,7 @@ end
 image_base_path = Pathname.new($store.substitute_string(ENV['image_path']))
 
 begin
-    mail.attachments['round.gif'] = {:content_id=>'<roundimage@dc1-workflow-02.mail>',:content=>File.read(image_base_path + 'round.gif')}
+    mail.attachments['round.png'] = {:content_id=>'<roundimage@dc1-workflow-02.mail>',:content=>File.read(image_base_path + 'round.png')}
 rescue Errno::ENOENT=>e
     puts "-WARNING: Unable to attach file to email: #{e.message}"
 end
