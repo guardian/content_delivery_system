@@ -930,7 +930,7 @@ sub openLogfile()
     mkdir "/var/log/cds_backend/podnames", 0755;
   }
 
-  my $hostFileName = "/var/log/cds_backend/podnames/".$ENV{'HOSTNAME'}.".txt";
+  my $hostFileName = "/var/log/cds_backend/podnames/".substr($ENV{'HOSTNAME'}, 0, -5).".txt";
   open FH,'>:utf8',$hostFileName;
   print FH $fileName . "\n";
   close FH;
