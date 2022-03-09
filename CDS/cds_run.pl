@@ -19,10 +19,10 @@ use File::Spec;
 use File::Touch;
 
 # name of SAX parser module
-use CDS::Parser::saxRoutes;	
+use CDS::Parser::saxRoutes;
 #used to dump out objects, useful for debugging
 use Data::Dumper;
-use File::Temp qw/ tempfile /;	
+use File::Temp qw/ tempfile /;
 
 use CDS::Datastore::Master;
 
@@ -32,7 +32,7 @@ sub createTempFile;
 sub parseTempFile;
 sub deleteTempFile;
 sub logOutput;
- 
+
 print "\ncds_run version $version\n";
 
 #note that each of these is actually a regex expression, that will be evaluated as (start-of-string)expression(end-of-string).  Hence, .* means 'anything else' and all regex chars are valid.
@@ -48,7 +48,7 @@ my $inputMedia = "";
 my $inputMeta = "";
 my $inputXML = "";
 my $inputInMeta = "";
- 
+
 my $runParser = 0;
 my @processOutput;
 my $routes_data;
@@ -95,7 +95,7 @@ my $debugLevel = 2;
 my $tempFileName;
 
 # The script will in running in batch mode if multiple files are downloaded by the "ftp_pull.pl" script.
-# The mode gets set by subroutine parseTempFile. 
+# The mode gets set by subroutine parseTempFile.
 my $batchRouteMode = 0;
 
 my @filesToProcess;
@@ -114,13 +114,13 @@ my $configData=readConfigFile();
 		uploaderHelp;
 		exit 0;
 	}
-	else 
+	else
 	{
 		# not all the arguments are required according to the documentation(?)
-	GetOptions( "input-media=s"  => \$inputMedia,     
-	            "input-meta=s"    => \$inputMeta,      
-	            "input-inmeta=s"    => \$inputInMeta,      
-	            "input-xml=s"    => \$inputXML,             
+	GetOptions( "input-media=s"  => \$inputMedia,
+	            "input-meta=s"    => \$inputMeta,
+	            "input-inmeta=s"    => \$inputInMeta,
+	            "input-xml=s"    => \$inputXML,
 		    "keep-datastore" => \$keepDatastore,
 		    "logging-id=s" => \$loggingID,
 		    "logging-db=s" =>\$logDB,
@@ -128,7 +128,7 @@ my $configData=readConfigFile();
 		    "db-login=s" =>\$dbUser,
 		    "db-pass=s" =>\$dbPass,
 		    "db-driver=s" =>\$dbDriver,
-	            "route=s" => \$routeFileName ); 
+	            "route=s" => \$routeFileName );
 
 $dbHost=$configData->{'db-host'} unless($dbHost);
 $logDB=$configData->{'logging-db'} unless($logDB);
@@ -187,12 +187,12 @@ else
 {
 	print STDERR "ERROR: cds_run no route file was specifed\n";
 	uploaderHelp;
-	exit 1;		
-}	
+	exit 1;
+}
 }
 
 	# parse the routes file
-	
+
 	if( $runParser == 1 )
 	{
 		my $routes_parser = XML::SAX::ParserFactory->parser(Handler =>CDS::Parser::saxRoutes->new);
@@ -209,37 +209,37 @@ else
 			print STDERR "CDS ERROR PARSING $routeFileName.\nError was: '$error'.\n";
 			exit 3;
 		}
-		print "DBEUG: get data from parser\n" if $debugLevel > 0;	
-		
+		print "DBEUG: get data from parser\n" if $debugLevel > 0;
+
 		if($debugLevel > 0)
 		{
 			print Dumper($routes_parser->{'Handler'});
 		}
-		
+
 		# TO DO: there should be some validation done on the parser contents.
-	
-		@inputMethods = @{$routes_parser->{'Handler'}->{'methods'}->{'input'}} if(defined $routes_parser->{'Handler'}->{'methods'}->{'input'});	
+
+		@inputMethods = @{$routes_parser->{'Handler'}->{'methods'}->{'input'}} if(defined $routes_parser->{'Handler'}->{'methods'}->{'input'});
 		$numberOfInputMethods = @inputMethods;
-		
+
 		@processMethods =  @{$routes_parser->{'Handler'}->{'methods'}->{'process'}} if(defined $routes_parser->{'Handler'}->{'methods'}->{'process'});
-		$numberOfProcessMethods = @processMethods;	
-		
-		@outputMethods = @{$routes_parser->{'Handler'}->{'methods'}->{'output'}} if(defined $routes_parser->{'Handler'}->{'methods'}->{'output'});	
+		$numberOfProcessMethods = @processMethods;
+
+		@outputMethods = @{$routes_parser->{'Handler'}->{'methods'}->{'output'}} if(defined $routes_parser->{'Handler'}->{'methods'}->{'output'});
 		$numberOfOutputMethods = @outputMethods;
-		
+
 		@failMethods=@{$routes_parser->{'Handler'}->{'methods'}->{'fail'}} if(defined $routes_parser->{'Handler'}->{'methods'}->{'fail'});
 		$_->{'nonfatal'}=1 foreach(@failMethods); #don't bomb if a fail method fails
 		$numberOfFailMethods=@failMethods;
-		
+
 		@successMethods=@{$routes_parser->{'Handler'}->{'methods'}->{'success'}} if(defined $routes_parser->{'Handler'}->{'methods'}->{'success'});
 		$_->{'nonfatal'}=1 foreach(@successMethods);	#don't bomb if a success method fails
 		$numberOfSuccessMethods=@successMethods;
-		
+
 	}
-	
+
 	if($numberOfInputMethods == 0 && $numberOfProcessMethods == 0 && $numberOfOutputMethods == 0)
 	{
-		$outputString = "-ERROR: There are no methods to process.\ncds_run will now exit.\n"; 
+		$outputString = "-ERROR: There are no methods to process.\ncds_run will now exit.\n";
 		print STDERR $outputString;
 		logOutput($outputString,method=>'CDS');
 		exit 1;
@@ -261,7 +261,7 @@ else
 	$store->set('meta','loggingid',$loggingID);
 	my $method;
 	my $i;
-	
+
 	createTempFile();
 
 
@@ -272,41 +272,41 @@ else
 		$externalLogger->update_status('id'=>$loggingID,'status'=>'input');
 	}
 
-    for ($i = 0; $i < $numberOfInputMethods; $i++) 
+    for ($i = 0; $i < $numberOfInputMethods; $i++)
     {
     	$method = $inputMethods[$i];
-		$processReturnCode = executeMethod($method);	
-		
+		$processReturnCode = executeMethod($method);
+
 	    if($processReturnCode == 1)
 	    {
 	    	   if(defined $method->{'nonfatal'}){
 	    			logOutput("MESSAGE: 'nonfatal' option set, so continuing on route.\n",method=>'CDS');
 	    		} else {
 	   				runFailMethods(\@failMethods,$method);
-					deleteTempFile();	
+					deleteTempFile();
 					goto exitScript; # HACK to short ciruit and jump out of the loop
 				}
-	    }						
-    }    
-    
+	    }
+    }
+
 	# Now for some fun, is ths script running in batch mode?
-	
+
 	# Batch mode is set after doing a ftp-pull and multiple file groups have been downloaded.
-	
+
 	if( $batchRouteMode == 1)
 	{
 		print "MESSAGE: cds_run is running in batch mode\n";
 		logOutput("MESSAGE: cds_run is running in batch mode\n",method=>'CDS');
-		
+
 		my $numberOfFileGroups = @filesToProcess;
 		my $index;
-		
+
 		for ($index = 0; $index < $numberOfFileGroups; $index++)
 		{
 			print "MESSAGE: batch processing at index $index\n";
-			logOutput("MESSAGE: batch processing at index $index\n",method=>'CDS');	
-			
-			
+			logOutput("MESSAGE: batch processing at index $index\n",method=>'CDS');
+
+
 			my $record = $filesToProcess[$index];
 
 			if($debugLevel > 0)
@@ -314,15 +314,15 @@ else
 				print STDOUT "DEBUG: current file group\n";
 				logOutput("DEBUG: current file group\n",method=>'CDS');
 				print Dumper(\$record);
-				logOutput (Dumper(\$record),method=>'CDS');				
-			}		
-			
+				logOutput (Dumper(\$record),method=>'CDS');
+			}
+
 			# Not all the files may be in use at any given time.
 			$inputMedia = $record->{'cf_media_file'};
 			$inputInMeta = $record->{'cf_inmeta_file'};
 			$inputXML = $record->{'cf_xml_file'};
-			$inputMeta = $record->{'cf_meta_file'};	
-		
+			$inputMeta = $record->{'cf_meta_file'};
+
 			print "-----------------------------------------------------------\n";
 			print "MESSAGE: number of process methods $numberOfProcessMethods\n";
 			logOutput("MESSAGE: number of process methods $numberOfProcessMethods\n",method=>'CDS');
@@ -334,7 +334,7 @@ if($externalLogger){
 		    {
 		    	$method = $processMethods[$i];
 		    	$processReturnCode = executeMethod($method);
-		    	
+
 	    		if($processReturnCode == 1)
 	    		{
 	    			if(defined $method->{'nonfatal'}){
@@ -343,22 +343,22 @@ if($externalLogger){
 	    				runFailMethods(\@failMethods,$method);
 	    				goto nextInBatch;
 	    			}
-	    		}		    	
+	    		}
 		    }
-			
+
 			print "-----------------------------------------------------------\n";
 			if($externalLogger){
 				$externalLogger->update_status('id'=>$loggingID,'status'=>'output');
 			}
 
 			$numberOfOutputMethods = @outputMethods;
-			print "MESSAGE: number of output methods $numberOfOutputMethods\n";	
+			print "MESSAGE: number of output methods $numberOfOutputMethods\n";
 			logOutput("MESSAGE: number of output methods $numberOfOutputMethods\n",method=>'CDS');
-		    for ($i = 0; $i < $numberOfOutputMethods; $i++) 
+		    for ($i = 0; $i < $numberOfOutputMethods; $i++)
 		    {
 		    	$method = $outputMethods[$i];
-		    	$processReturnCode = executeMethod($method);	
-		    	
+		    	$processReturnCode = executeMethod($method);
+
 	    		if($processReturnCode == 1)
 	    		{
 	    			if(defined $method->{'nonfatal'}){
@@ -367,12 +367,12 @@ if($externalLogger){
 						runFailMethods(\@failMethods,$method);
 	    				goto nextInBatch;
 	    			}
-	    		}				
+	    		}
 		    }
 		   	nextInBatch:
 		}
-		
-	
+
+
 	}	#batchmode==1
 	else
 	{
@@ -387,7 +387,7 @@ if($externalLogger){
 	    {
 	    	$method = $processMethods[$i];
 	    	$processReturnCode = executeMethod($method);
-	    	
+
 	    	if($processReturnCode != 0)
 	    	{
 	    		if(defined $method->{'nonfatal'}){
@@ -395,25 +395,25 @@ if($externalLogger){
 	    		} else {
 	    			runFailMethods(\@failMethods,$method);
 	  	    		close LOG;
-					deleteTempFile();	  		
+					deleteTempFile();
 	    			goto exitScript;
 	    		}
 	    	}
 	    }
-		
+
 		print "-----------------------------------------------------------\n";
-		print "MESSAGE number of output methods $numberOfOutputMethods\n";	
+		print "MESSAGE number of output methods $numberOfOutputMethods\n";
 		logOutput("MESSAGE number of output methods $numberOfOutputMethods\n");
 
 if($externalLogger){
 	$externalLogger->update_status('id'=>$loggingID,'status'=>'output');
 }
 
-	    for ($i = 0; $i < $numberOfOutputMethods; $i++) 
+	    for ($i = 0; $i < $numberOfOutputMethods; $i++)
 	    {
 	    	$method = $outputMethods[$i];
-	    	$processReturnCode = executeMethod($method);	
-	    	
+	    	$processReturnCode = executeMethod($method);
+
 	    	if($processReturnCode != 0)
 	    	{
 	    		if(defined $method->{'nonfatal'}){
@@ -421,18 +421,18 @@ if($externalLogger){
 	    		} else {
 	    			runFailMethods(\@failMethods,$method);
 	   	    		close LOG;
-					deleteTempFile();	 		
+					deleteTempFile();
 	    			goto exitScript;
 			}
-	    	}	    	
-	    					
-	    }		
+	    	}
+
+	    }
 	}
-	
+
 	logOutput("\n\n-----------------------------------------\nEnd of route.\n-----------------------------------------\n",method=>'CDS');
-	
+
 	runSuccessMethods(\@successMethods);
-	
+
 	exitScript:
 
 	#should output our metadata here
@@ -443,17 +443,17 @@ if($externalLogger){
 	# Clean up
 	deleteTempFile();
 	unlink(untaint($ENV{'cf_datastore_location'})) unless($keepDatastore);
-	
+
 	print STDOUT "MESSAGE:cds_run.pl has exited.\n";
 	logOutput("MESSAGE:cds_run.pl has exited.\n",method=>'CDS');
-	close LOG;		
-	
+	close LOG;
+
 #------------------------------------------------------------------------------
 # sub routines
 
 sub uploaderHelp {
 	print STDERR "\n";
-	print STDERR "--route filename (required)\n";			
+	print STDERR "--route filename (required)\n";
 	print STDERR "--input-media filename (optional)\n";
 	print STDERR "--input-meta filename (optional)\n";
 	print STDERR "--input-inmeta filename (optional)\n";
@@ -466,29 +466,29 @@ sub uploaderHelp {
 
 
 sub commandLineInput {
-	
+
 	my $mediaType;
-	
+
 	if (defined($ENV{'media-filetype'}))
 	{
 		$mediaType = untaint($ENV{'media-filetype'});
-		unless (  $mediaType =~ m/^\./ ) 
+		unless (  $mediaType =~ m/^\./ )
 		{
 			$mediaType = "." .  untaint($ENV{'media-filetype'});
 		}
 	}
 	else
 	{
-		$mediaType = ".mov";	
-	}	
-		
+		$mediaType = ".mov";
+	}
+
 	unless ($inputMedia || $inputMeta || $inputXML || $inputInMeta)
 	{
 		print STDERR "ERROR: command line input : required argument missing\nat least one of  \"input-media\",\"input-meta\",\"input-inmeta\" or \"input-xml\" needs to be specified\n";
 		print "exiting script\n";
 		deleteTempFile();
 		exit 1;
-	}	
+	}
 	elsif ($inputMedia && $inputMeta)
 	{
 		#check if arguments needs expanding to full paths
@@ -498,25 +498,25 @@ sub commandLineInput {
 		$inputMeta = $inputMedia;
 		$inputMeta =~ s/\.[^.]*$/.meta/; # replace file exstension using an anchor
 	}
-	elsif ($inputMeta) 
+	elsif ($inputMeta)
 	{ 	# this is prolematic, how do you know what the media extension is?
 		# assume ".mov"
 		#$inputMedia = $inputMeta;
 		#$inputMedia =~ s/.meta/$mediaType/;
 	}
-	elsif ($inputXML) 
+	elsif ($inputXML)
 	{ 	# this is prolematic, how do you know what the media extension is?
 		# assume ".mov"
 		#$inputMedia = $inputXML;
 		#$inputMedia =~ s/.xml/$mediaType/;
 	}
-	elsif ($inputInMeta) 
+	elsif ($inputInMeta)
 	{ 	# this is prolematic, how do you know what the media extension is?
 		# assume ".mov"
 		#$inputMedia = $inputInMeta;
 		#$inputMedia =~ s/.inmeta/$mediaType/;
-	}	
-		
+	}
+
 	# check if the path is relative and if so expand it to a fully qualified path
 	if($inputMeta =~ /~/ )
 	{
@@ -553,7 +553,7 @@ sub commandLineInput {
 			$inputInMeta = $list[0];
 		}
 	}
-	
+
 	print STDOUT "MESSAGE: cds_run argument meta $inputMeta\n";
 	print STDOUT "MESSAGE: cds_run argument media $inputMedia\n";
 	print STDOUT "MESSAGE: cds_run argument XML $inputXML\n";
@@ -573,11 +573,11 @@ logOutput("\n\n------------------------------------------\nRoute failed.  Execut
 $ENV{'cf_failed_method'}=$failedMethod->{'name'};
 $ENV{'cf_last_error'}=$failedMethod->{'lastError'};
 $ENV{'cf_last_line'}=$failedMethod->{'lastLine'};
-	 
+
 foreach(@$methodList){
 	$method = $_;
 	$processReturnCode = executeMethod($method,update_status=>0);
-	   
+
 #	print Dumper($failedMethod);
 	if($processReturnCode != 0)
 	 {
@@ -628,7 +628,7 @@ sub executeMethod{
 	my ($methodData,%args) = @_;
 	my $systemArguments;
 	my $methodName = $methodData->{'name'};
-	
+
 	my $returnCode = 0;
 
 	my $update_status=1;
@@ -638,15 +638,15 @@ sub executeMethod{
 		$externalLogger->update_status(id=>$loggingID,'current_operation'=>$methodName);
 	}
 	if( $methodName eq "commandline")
-	{	
+	{
 		# get any specified arguments for the process method and set environment varaibles accordingly
-		setUpProcessArguments($methodData);	
+		setUpProcessArguments($methodData);
 		commandLineInput();
 	}
 	else
 	{
 		my $filename = find_filename($methodScriptsFolder . $methodName);
-		
+
 		# get any specified arguments for the process method and set environment varaibles accordingly
 		if(not setUpProcessArguments($methodData)){
 			logOutput("-ERROR: Arguments to method not properly defined.  Not running method $methodName.\n",method=>$methodName);
@@ -667,7 +667,7 @@ sub executeMethod{
 				unless($loggingStarted)
 				{
 					openLogfile();
-				}	
+				}
 
 				logOutput("\n------------------------------------------\n",'method'=>'CDS');
 				logOutput("\nExecuting method $methodName\n",'method'=>'CDS');
@@ -680,7 +680,7 @@ sub executeMethod{
 				$methodData->{'lastError'}=$lastError;
 				$methodData->{'lastLine'}=$lastLine;
 				close PIPE;
-	
+
 				logOutput("------------------------------------------\n\n",'method'=>'CDS');
 				my $ret = $?;
 				my $exitCode = ($ret >> 8);
@@ -691,7 +691,7 @@ sub executeMethod{
 				if($exitCode > 0)
 				{
 					print STDOUT "-ERROR: an error occurred with '$methodName' script.\n";
-					logOutput("-ERROR: an error occurred with '$methodName' script.\n",'method'=>'CDS');	
+					logOutput("-ERROR: an error occurred with '$methodName' script.\n",'method'=>'CDS');
 					$returnCode = 1;
 				}
 				else
@@ -730,19 +730,19 @@ sub executeMethod{
 	purgeProcessArguments($methodData);
 	return $returnCode;
 }
-	
-		
+
+
 	sub clearScriptArugments{
 		$ENV{"cf_media_file"} = "";
 		$ENV{"cf_meta_file"} = "";
 		$ENV{"cf_inmeta_file"} = "";
-		$ENV{"cf_xml_file"} = "";						
+		$ENV{"cf_xml_file"} = "";
 	}
-	
+
 sub purgeProcessArguments{
 	my $processAttributesRef = shift @_;
-	
-	while ( my ($key,$value) = each(%$processAttributesRef) ) { 
+
+	while ( my ($key,$value) = each(%$processAttributesRef) ) {
 		if($key ne "take-files"){
 			delete $ENV{$key};
 		}
@@ -766,24 +766,24 @@ sub is_argument_valid {
 # MSB, May 2009
 sub setUpProcessArguments{
 	my $processAttributesRef = shift(@_);
-		
+
 	my $value;
 	my $name;
 	my $key;
-	
-	clearScriptArugments();	
+
+	clearScriptArugments();
 
 	if($debugLevel > 0)
 	{
 		print "DEBUG: dump of process attributes to be passed via environment variables on next line\n:";
   		print Dumper(\%$processAttributesRef);
 	}
-  		
+
 
     #first, set vars for the relevant files.
     $value=$processAttributesRef->{'take-files'};
-        
-        
+
+
     #set the route name
 	#this regex matches: forward-slash, anything except forward slash (extracting this as $1), dot, anything except dot, end-of-string.
  	#i.e., it extracts the name of the file from the sequence path-name-extension.
@@ -793,20 +793,20 @@ sub setUpProcessArguments{
 		$routeFileName=~/\/([^\/]*)$/;
 		$ENV{'cf_routename'}=$1;
 	}
-	
+
     my $i; my $size; my $contentType;
 	#Note: the character is escaped using a backslash otherwise, it is handled as an operator!
 	my @array = split( /\|/, $value);
-	
+
 	$size = @array;
 	for ( $i = 0; $i < $size; $i++)
 	{
 		$contentType = $array[$i];
-		
+
 		if ($contentType eq "media")
 		{
 		if(defined($inputMedia))
-			{	
+			{
 				$ENV{"cf_media_file"} = $inputMedia;
 			}
 			else
@@ -814,39 +814,39 @@ sub setUpProcessArguments{
 				$ENV{"cf_media_file"} = "";
 				print STDERR "WARNING: a required value is undefined 'cf_media_file'\n";
 				#return 0;
-			}		
+			}
 		}
 		elsif ($contentType eq "meta")
 		{
 			if(defined($inputMeta))
-			{	
-				$ENV{"cf_meta_file"} = $inputMeta;				
+			{
+				$ENV{"cf_meta_file"} = $inputMeta;
 			}
 			else
 			{
 				$ENV{"cf_meta_file"} = "";
 				print STDERR "WARNING: a required value is undefined 'cf_meta_file'\n";
 				#return 0;
-			}		
-			
+			}
+
 		}
 		elsif ($contentType eq "inmeta")
 		{
 			if(defined($inputInMeta))
-			{	
-				$ENV{"cf_inmeta_file"} = $inputInMeta;		
+			{
+				$ENV{"cf_inmeta_file"} = $inputInMeta;
 			}
 			else
 			{
 				$ENV{"cf_inmeta_file"} = "";
 				print STDERR "WARNING: a required value is undefined 'cf_inmeta_file'\n";
 				#return 0;
-			}						
+			}
 		}
 		elsif ($contentType eq "xml")
 		{
 			if(defined($inputXML))
-			{	
+			{
 				$ENV{"cf_xml_file"} = $inputXML;
 			}
 			else
@@ -854,13 +854,13 @@ sub setUpProcessArguments{
 				$ENV{"cf_xml_file"} = "";
 				print STDERR "WARNING: a required value is undefined 'cf_xml_file'\n";
 				#return 0;
-			}		
-		}  	
+			}
+		}
     }
     while ( my ($key, $value) = each(%$processAttributesRef) ) {
        	print "$key => $value\n";
        	$ENV{$key} = $value if(is_argument_valid($key) and $key ne "take-files");
-   	} 		
+   	}
 return 1;
 }
 
@@ -872,7 +872,7 @@ my $safeRouteFileName=basename($routeFileName);
 chomp $safeRouteFileName;
 $safeRouteFileName=~s/\.[^\.]$//;
 $safeRouteFileName=~s/[^\w\d]/_/g;
-	
+
 my $outputfilename="cds_". $safeRouteFileName .'_' . $currentTime;
 return ($safeRouteFileName,$outputfilename);
 }
@@ -883,9 +883,9 @@ sub openLogfile()
 	my $currentTime = `date "+%Y-%m-%d_%H_%M_%S"`;
 	chomp($currentTime);
 	$currentTime =~ s/ |://g;
-	
+
 	$loggingStarted = 1;
-	
+
 	# Does the log file directory exist?
 	# NOTE: this script needs to be run with super user rights to write to the directory.
 	unless ( -d "/var/log/cds_backend/")
@@ -893,7 +893,7 @@ sub openLogfile()
 		print "MESSAGE: created log file directory at '/var/log/cds_backend'\n";
 		mkdir "/var/log/cds_backend/", 0755;
 	}
-	
+
 	my $safeRouteFileName;
 
 	if($loggingID){
@@ -909,7 +909,7 @@ sub openLogfile()
 		print "MESSAGE: created log file directory at '/var/log/cds_backend/$safeRouteFileName'\n";
 		mkdir "/var/log/cds_backend/$safeRouteFileName", 0755;
 	}
-	
+
 	my $fileName = "/var/log/cds_backend/$safeRouteFileName/cds_". $safeRouteFileName  . $currentTime . ".log";
 	while(-f $fileName) {
 		sleep 1;
@@ -917,30 +917,40 @@ sub openLogfile()
 		chomp($currentTime);
 		$fileName = "/var/log/cds_backend/$safeRouteFileName/cds_". $safeRouteFileName  . $currentTime . ".log";
 	}
-	
+
 	my $fileOpenStatus = open LOG, ">", untaint($fileName);
-	
+
 	unless ($fileOpenStatus)
 	{
 		print STDERR "-WARNING: File open failed for log file $fileName\n";
 	}
-}	
-	
+
+  unless ( -d "/var/log/cds_backend/podnames"){
+    print "MESSAGE: Created pod name directory at '/var/log/cds_backend/podnames'\n";
+    mkdir "/var/log/cds_backend/podnames", 0755;
+  }
+
+  my $hostFileName = "/var/log/cds_backend/podnames/".$ENV{'HOSTNAME'}.".txt";
+  open FH,'>:utf8',$hostFileName;
+  print FH $fileName . "\n";
+  close FH;
+}
+
 sub logOutput
 {
 	my ($processOutput,%args) = @_;
-	
+
 	unless($loggingStarted)
 	{
 		openLogfile();
-	}		
-	
+	}
+
 	if($args{'method'}){
 		print LOG "\t".$args{'method'}.": $processOutput\n";
 	} else {
 		print LOG $processOutput;
 	}
-	
+
 	if($externalLogger){
 		if($processOutput=~/^-ERROR/){
 			$externalLogger->logerror(id=>$loggingID,message=>$processOutput,%args);
@@ -954,7 +964,7 @@ sub logOutput
 			$externalLogger->logmsg(id=>$loggingID,message=>$processOutput,%args);
 		}
 	}
-}	
+}
 
 #
 # A need arose to use temporary files in the CDS system.  Process scripts that called by cds_run will
@@ -969,10 +979,10 @@ sub createTempFile()
 	my $suffix = ".txt";
 	my $template = "cds_XXXXXXXXXX";
 	my $dir = "/var/tmp/";
-	
+
 	# NOTE: the file handle is not actually is being used.
 	($fh, $tempFileName) = tempfile($template, SUFFIX => $suffix, DIR => $dir);
-	
+
 	print "MESSAGE: temporary file created with name '$tempFileName'\n";
 	$ENV{'cf_temp_file'} = $tempFileName;
 }
@@ -981,11 +991,11 @@ sub createTempFile()
 sub chain_route
 {
     my @params=@_;
-    
+
     my $cds_exec=File::Spec->rel2abs( __FILE__ );
     my $routeName=$params[0];
     my $cmdline="$cds_exec --route $routeName";
-    
+
     my $n=1;
     foreach(qw/media inmeta meta xml/){
         if($params[$n] and length $params[$n]>0){
@@ -998,14 +1008,14 @@ sub chain_route
     #fire n forget. this is ugly, but won't get run often.
     sleep(1);	#ensure that we don't get name clashes on logs or datastore repos
     system("$cmdline </dev/null >/dev/null 2>&1 &");
-    
+
 }
 
 sub parseTempFile()
 {
 	my $batchMode = 0;
 	my $fileOpenStatus = open CDS_TMP, "<", $tempFileName;
-	
+
 	my @records = <CDS_TMP>;
 
 	foreach(@records){
@@ -1013,10 +1023,10 @@ sub parseTempFile()
 		print "temp file contents: record: '$_'\n" if $debugLevel > 0;
 
 		if($batchMode == 0)
-		{	
+		{
 			my $name;
 			my $value;
-			($name, $value) = split /=/;	
+			($name, $value) = split /=/;
 			if($name eq "batch" )
 			{
 				$batchMode = 1;
@@ -1045,23 +1055,23 @@ sub parseTempFile()
             {
                 my @params = split /,/,$value;
                 print "DEBUG: chain route requested: @params\n" if $debugLevel >0;
-                chain_route(@params); 
+                chain_route(@params);
             }
 		}
 		else
 		{ # the record contains comma seperated data
-					
+
 			my $currentFileName;
 			my $keyName;
 			my $arraySize;
 			my $rec;
-		 	 # get the file names 
+		 	 # get the file names
 		  	my @fileNames = split /,/;
-		  
+
 		 	foreach(@fileNames){
 		 		/\.([^\.]*)$/;
 		 		my $fileNameExtension = $1;
-		 		
+
 				if(lc $fileNameExtension eq "meta")
 				{
 					$keyName = "cf_meta_file";
@@ -1085,15 +1095,15 @@ sub parseTempFile()
 			$batchRouteMode = 1;
 		}
 	}
-	
+
 	if ($batchRouteMode == 1  && $debugLevel > 0 && $fileListDumped == 0)
 	{
 		$fileListDumped = 1;
 		#print Dumper(\@filesToProcess);
 	}
-	
+
 	close CDS_TMP;
-	
+
 	#truncate file by opening to write then closing again.
 	open CDS_TMP,">", $tempFileName;
 	close CDS_TMP;
@@ -1181,5 +1191,5 @@ sub untaint
 	} else {
 		die "Potentially tainted data: $data\n";
 	}
-	
+
 }
