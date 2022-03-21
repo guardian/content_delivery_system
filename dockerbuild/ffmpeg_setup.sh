@@ -5,7 +5,7 @@ echo ------------------------------------------
 echo Kickstarter: Installing ffmpeg
 echo ------------------------------------------
 cd /tmp
-curl https://gnm-multimedia-archivedtech.s3-eu-west-1.amazonaws.com/WorkflowMaster/ffmpeg-bin.tar.bz2 > ffmpeg-bin.tar.bz2
+curl https://gnm-multimedia-deployables.s3.eu-west-1.amazonaws.com/ffmpeg/ffmpeg-bin.tar.bz2 > ffmpeg-bin.tar.bz2
 tar xvjf ffmpeg-bin.tar.bz2
 cp -v ffmpeg-bin/ffmpeg /usr/local/bin
 cp -v ffmpeg-bin/ffmpeg_g /usr/local/bin
