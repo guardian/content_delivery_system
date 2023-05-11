@@ -57,6 +57,7 @@ if [ -x "${GEM}" ]; then
 	echo -----------------------------------------------------
 	cd ${SOURCE_DIR}/Ruby
 	echo Building and installing CDS library for Ruby...
+  gem install sqlite3 -v 1.5.0
 	gem build cdslib.gemspec
 	gem install cdslib-1.0.gem
 	if [ "$?" != "0" ]; then
