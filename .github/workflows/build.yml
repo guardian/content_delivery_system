@@ -19,12 +19,14 @@ jobs:
       packages: write
 
     steps:
+      - uses: actions/checkout@v2
+
       # GITHUB_RUN_NUMBER always starts from 1, so to maintain compatibility we adjust it here
       - name: Make GITHUB_RUN_NUMBER env var available outside of shells
         working-directory: ${{env.GITHUB_WORKSPACE}}
         shell: bash
         run: |
-          echo GITHUB_RUN_NUMBER=$(( GITHUB_RUN_NUMBER + 1019 ))>> $GITHUB_ENV
+          echo GITHUB_RUN_NUMBER=$(( GITHUB_RUN_NUMBER + 70 ))>> $GITHUB_ENV
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
