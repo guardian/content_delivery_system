@@ -11,5 +11,5 @@ RUN bash -e /tmp/dockerbuild/ffmpeg_setup.sh
 ADD CDS /usr/src/CDS
 COPY dockerbuild/cds_setup.sh /tmp/dockerbuild/
 RUN bash -e /tmp/dockerbuild/cds_setup.sh
-COPY tests/runtests.sh /usr/src/CDS
+COPY tests/runtests.sh /usr/src/CDS/
 RUN chmod +x /usr/src/CDS/runtests.sh
