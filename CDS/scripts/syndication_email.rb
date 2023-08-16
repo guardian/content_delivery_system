@@ -297,7 +297,7 @@ mail=Mail.new do
     bcc     bccrr
     from    $store.substitute_string(ENV['from'])
     subject st
-    delivery_method :smtp, address: $store.substitute_string(ENV['smtp_server']), port: 25
+    delivery_method :smtp, address: $store.substitute_string(ENV['smtp_server']), port: 25, openssl_verify_mode: "none"
     content_type 'multipart/related'
     @bodypart = Mail::Part.new do
         text_part do
