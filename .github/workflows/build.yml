@@ -2,9 +2,9 @@ name: Build and test CDS
 
 on:
   push:
-    branches:
-  # pull_request:
-  #   branches:
+    branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   build:
