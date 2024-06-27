@@ -5,9 +5,9 @@ require 'base64'
 require 'nokogiri'
 require 'awesome_print'
 require 'Vidispine/VSAcl'
+require 'retryable'
 
-class HTTPError < StandardError
-end
+class HTTPError < StandardError; end
 
 class VSException < StandardError
   attr_accessor :message, :id, :context, :type, :code
@@ -27,7 +27,7 @@ class VSException < StandardError
     if xmlstring.is_a?(String)
       begin
         xmldata = Nokogiri::XML(xmlstring.chomp)
-      rescue Exception => e # if the xml parse fails, assume what we were given isn't XML
+      rescue Exception => e
         @message = xmlstring
         return
       end
@@ -35,7 +35,7 @@ class VSException < StandardError
 
     unless xmldata.nil?
       exceptnode = xmldata.xpath('vs:ExceptionDocument/*', 'vs' => 'http://xml.vidispine.com/schema/vidispine')[0]
-      unless exceptnode # if we don't have an ExceptionDocument node, then assume it isn't parseable
+      unless exceptnode
         @message = xmlstring
         return
       end
@@ -43,40 +43,31 @@ class VSException < StandardError
       @context = exceptnode.xpath('vs:context', 'vs' => 'http://xml.vidispine.com/schema/vidispine').inner_text
       @id = exceptnode.xpath('vs:id', 'vs' => 'http://xml.vidispine.com/schema/vidispine').inner_text
       @message = exceptnode.xpath('vs:explanation', 'vs' => 'http://xml.vidispine.com/schema/vidispine').inner_text
-    end # if xmldata!=nil
+    end
   end
 
   def to_s
-    rtn = ''
     rtn = "Vidispine Exception Details:\n"
     rtn += "\tClass: " + self.class.name + "\n"
     rtn += "\tID of affected object: #{@id}\n"
     rtn += "\tContext: #{@context}\n"
     rtn += "\tMessage: #{@message}\n"
     rtn += "\tResponse code: #{@code}\n"
-
     rtn
   end
 end
 
-class VSInvalidInput < VSException
-end
-
-class VSNotFound < VSException
-end
-
-class VSPermissionDenied < VSException
-end
+class VSInvalidInput < VSException; end
+class VSNotFound < VSException; end
+class VSPermissionDenied < VSException; end
 
 class VSApi
   attr_accessor :debug
 
   def initialize(host = 'localhost', port = 8080, user = '', passwd = '', parent: nil, run_as: nil, https: true)
-    # puts "debug: VSApi::initialize: #{host} #{port} #{user} #{passwd}"
     @id = nil
 
     if parent
-      # puts "debug: VSApi::initialize: init from parent object"
       @user = parent.user
       @passwd = parent.passwd
       @host = parent.host
@@ -84,8 +75,6 @@ class VSApi
       @debug = parent.debug
       @run_as = parent.run_as
       @https = parent.https
-      #   @retry_delay=parent.retry_delay
-      #   @retry_times=parent.retry_times
     else
       @user = user
       @passwd = passwd
@@ -100,8 +89,6 @@ class VSApi
     end
   end
 
-  # def initialize
-
   def initialize_headers(rq, h)
     h.each do |key, value|
       rq.add_field(key, value)
@@ -109,21 +96,13 @@ class VSApi
   end
 
   def sendAuthorized(_conn, method, url, body, headers)
-    # auth=Base64.encode64("#{@user}:#{@passwd}".gsub("\n",""))
     if @https
       puts 'debug: sendAuthorized using https'
     else
       puts 'debug: sendAuthorized using http only'
     end
 
-    headers = {} if headers.nil?
-
-    if @debug
-      # puts "debug: sendAuthorized - block given is #{block_given?}"
-    end
-
-    # headers['Authorization']="Basic #{auth}"
-
+    headers ||= {}
     headers['RunAs'] = @run_as unless @run_as.nil?
 
     uri = URI(url)
@@ -132,67 +111,49 @@ class VSApi
     case method.downcase
     when 'get'
       rq = Net::HTTP::Get.new(uri)
-      rq.body = body
-      initialize_headers(rq, headers)
-      rq.basic_auth(@user, @passwd)
     when 'post'
       rq = Net::HTTP::Post.new(uri)
-      rq.body = body
-      initialize_headers(rq, headers)
-      rq.basic_auth(@user, @passwd)
     when 'put'
       rq = Net::HTTP::Put.new(uri)
-      rq.body = body
-      initialize_headers(rq, headers)
-      rq.basic_auth(@user, @passwd)
     when 'delete'
       rq = Net::HTTP::Delete.new(uri)
-      rq.body = body
-      initialize_headers(rq, headers)
-      rq.basic_auth(@user, @passwd)
     when 'head'
       rq = Net::HTTP::Head.new(uri)
-      rq.body = body
-      initialize_headers(rq, headers)
-      rq.basic_auth(@user, @passwd)
     when 'options'
       rq = Net::HTTP::Options.new(uri)
-      rq.body = body
-      initialize_headers(rq, headers)
-      rq.basic_auth(@user, @passwd)
     else
       raise HTTPError, "VSApi::SendAuthorized: #{method} is not a recognised HTTP method"
     end
 
-    # ap rq
+    rq.body = body
+    initialize_headers(rq, headers)
+    rq.basic_auth(@user, @passwd)
 
-    response = nil
     http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = uri.scheme == "https"
+    http.use_ssl = uri.scheme == 'https'
     http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    http.open_timeout = 10 # seconds
+    http.read_timeout = 60 # seconds
+
     if block_given?
       http.request(rq) do |response|
         response.read_body do |segment|
-          # puts "DEBUG: VSAPI::sendAuthorized: sending segment #{segment}"
           yield segment
-        end # response.read_body
+        end
         return response
-      end # http.request
+      end
     else
-      http.request(rq)
+      Retryable.retryable(tries: 3, on: [OpenSSL::SSL::SSLError, Net::ReadTimeout, Net::OpenTimeout], sleep: 5) do
+        response = http.request(rq)
+      end
     end
   end
 
-  class NeedRedirectException < StandardError
-  end
-
-  class ServerUnavailable < StandardError
-  end
+  class NeedRedirectException < StandardError; end
+  class ServerUnavailable < StandardError; end
 
   def request(path, method: 'GET', matrix: nil, query: nil, body: nil, headers: {}, accept: 'application/xml', content_type: 'application/xml')
-    if @debug
-      # puts "debug: request - block given is #{block_given?}"
-    end
+    puts "debug: request - block given is #{block_given?}" if @debug
 
     begin
       if block_given?
@@ -211,7 +172,7 @@ class VSApi
         return Nokogiri::XML(response.body)
       end
 
-      raise VSPermissionDenied, response if (response.code == '401') || (response.code == '403')
+      raise VSPermissionDenied, response if response.code == '401' || response.code == '403'
       raise VSNotFound, response if response.code == '404'
       raise VSInvalidInput, response if response.code == '400'
       raise ServerUnavailable, response if response.code == '503'
@@ -219,52 +180,54 @@ class VSApi
 
       raise HTTPError, "#{response.body} (#{response.code})"
     rescue NeedRedirectException => e
-      puts "debug: VSAPI::Request: redirecting to #{e.message}" if debug
-
+      puts "debug: VSAPI::Request: redirecting to #{e.message}" if @debug
       path = e.message
       retry
     rescue VSPermissionDenied => e
       @attempt += 1
       raise e if @attempt > @retry_times
-
       puts "-WARNING: VSAPI::Request: permission denied error accessing #{e.context} #{e.id}: #{e.message} on attempt #{@attempt}"
       sleep(@retry_delay)
       retry
     rescue ServerUnavailable => e
       @attempt += 1
       raise ServerUnavailable, response if @attempt > @retry_times
-
-      puts "debug: VSAPI::Request: Got 503 error on attempt #{@attempt} of #{@retry_times}" if debug
+      puts "debug: VSAPI::Request: Got 503 error on attempt #{@attempt} of #{@retry_times}" if @debug
       sleep(@retry_delay)
-      retr
+      retry
+    rescue OpenSSL::SSL::SSLError => e
+      @attempt += 1
+      raise e if @attempt > @retry_times
+      puts "debug: VSAPI::Request: SSL error on attempt #{@attempt} of #{@retry_times} - #{e.message}"
+      sleep(@retry_delay)
+      retry
     end
   end
 
   def raw_request(path, method = 'GET', matrix = nil, query = nil, body = nil, headers: {}, content_type: 'application/xml', accept: 'application/xml')
     base_headers = { 'Accept' => accept, 'Content-Type' => content_type }
-
     base_headers.merge!(headers) unless headers.nil?
 
     matrixpart = ''
     unless matrix.nil?
       matrix.each do |key, value|
         matrixpart += ";#{key}=#{URI.escape(value, %r{[^:/\w\d]})}"
-      end # matrix.each
+      end
       puts "VSApi::raw_request: matrix part is #{matrixpart}" if @debug
-    end # if(matrix!=nil)
+    end
 
     querypart = ''
     unless query.nil?
       querypart = '?'
       query.each do |key, value|
         querypart += "#{key}=#{URI.escape(value, %r{[^:/\w\d]})}&"
-      end # query.each
-      querypart.chomp('&')
+      end
+      querypart.chomp!('&')
       puts "VSApi::raw_request: query part is #{querypart}" if @debug
-    end # if(query!=nil)
+    end
 
-    protopart = "http://"
-    protopart = "https://" if @https
+    protopart = 'http://'
+    protopart = 'https://' if @https
     url = if path !~ /^http/
             protopart + @host + ':' + @port.to_s + '/API' + path + matrixpart + querypart
           else
@@ -278,24 +241,18 @@ class VSApi
     end
 
     if block_given?
-      # puts "VSApi::raw_request: using block"
       sendAuthorized(nil, method, url, body, base_headers) do |b|
         yield b
       end
     else
-      # puts "VSApi::raw_request: using conventional return"
       sendAuthorized(nil, method, url, body, base_headers)
     end
   end
 
-  # def raw_request
-
   def get_access(path)
-    data = request("/#{path}/access", method = 'GET')
+    data = request("/#{path}/access", method: 'GET')
     VSACL.new(xmldoc: data)
   end
-
-  # get_access
 
   def set_metadata(path, md, groupname)
     doc = '<SimpleMetadataDocument xmlns="http://xml.vidispine.com/schema/vidispine">'
@@ -303,7 +260,7 @@ class VSApi
 
     md.each do |key, value|
       doc += "\n<field><key>#{key}</key><value>#{value}</value></field>"
-    end # md.each
+    end
 
     doc += '</group>' if groupname
     doc += '</SimpleMetadataDocument>'
@@ -314,27 +271,24 @@ class VSApi
       puts doc
       puts "\n"
     end
-    request(path, method = 'PUT', matrix = nil, query = nil, body = doc)
+    request(path, method: 'PUT', matrix: nil, query: nil, body: doc)
   end
-
-  # def set_metadata
 
   def get_metadata(path)
     path += '/metadata'
 
     data = request(path, method: 'GET')
     groupname = nil
-    # should only get one of these, really
     data.xpath('//vs:group', 'vs' => 'http://xml.vidispine.com/schema/vidispine').each do |groupnode|
       groupname = groupnode.inner_text
-    end # groupnode
+    end
 
     rtn = {}
     data.xpath('//vs:field', 'vs' => 'http://xml.vidispine.com/schema/vidispine').each do |node|
       key = node.xpath('vs:name', 'vs' => 'http://xml.vidispine.com/schema/vidispine').inner_text
       val = node.xpath('vs:value', 'vs' => 'http://xml.vidispine.com/schema/vidispine')
       if val.count > 1
-        if !(rtn[key])
+        if rtn[key].nil?
           rtn[key] = []
         elsif !rtn[key].is_a?(Array)
           rtn[key] = [rtn[key]]
@@ -351,14 +305,11 @@ class VSApi
         else
           rtn[key] = val.inner_text
         end
-      end # if(val.count>1)
+      end
     end
     [rtn, groupname]
   end
 
-  # def get_metadata
-
-  # Return the inner_text content of the given xpath from the nokogiri doc data, or nil if it doesn't exist.
   def valueForXpath(data, path)
     data.xpath(path, 'vs' => 'http://xml.vidispine.com/schema/vidispine').each do |n|
       if block_given?
@@ -367,23 +318,15 @@ class VSApi
         return n.text
       end
     end
-    # if(node)
-    #    return node.text
-    # end
     nil
   end
 
-  # def valueForXpath
-
-  # Adds an entry to the objects ACL. This method is a generic one which is subclassed in actual entities to provide the correct path.
   def addAccess(path, access)
     raise TypeError, 'You need to pass a VSAccess to addAccess' unless access.is_a?(VSAccess)
 
-    request("#{path}/access", method: 'POST',
-                              body: access.to_xml)
+    request("#{path}/access", method: 'POST', body: access.to_xml)
   end
 
-  # private method to recursively generate group sections and field name/value sections depending on data type in the hash
   protected
 
   def output_xml_fieldgroup(xml, metadata, top: false)
@@ -399,53 +342,40 @@ class VSApi
           xml.name k
           values.each do |v|
             xml.value v
-          end # values.each
-        end # xml.field
+          end
+        end
       end
-    end # metadata.each
+    end
   end
 
-  # def _output_xml_fieldgroup
-
-  # uses nokogiri builder to construct a Vidispine representation of the given metadata hash. Hash should be in fieldname=>fieldvalue or fieldname=>[value1,value2,...] format.
   def mdhash_to_xml(metadata, documentType: 'MetadataDocument', group: nil)
     return nil if metadata.nil?
     raise StandardError, 'You need to pass a hash to mdhash_to_xml' unless metadata.is_a?(Hash)
 
-    # build the xml document
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.method_missing(documentType, 'xmlns' => 'http://xml.vidispine.com/schema/vidispine') do
-        if group
-          xml.group(group)
-        end # if(group)
+        xml.group(group) if group
         xml.timespan('start' => '-INF', 'end' => '+INF') do
-          # recursively descend the metadata hash, creating fields and groups as we go.
           output_xml_fieldgroup(xml, metadata, top: true)
-        end # xml.timespan
-      end # xml.MetadataDocument
-    end # Nokogiri::XML::Builder do |xml|
+        end
+      end
+    end
 
     doc = builder.to_xml
-    # if(@debug)
     puts 'debug: VSApi::mdhash_to_xml'
     puts 'source data:'
     ap metadata
     puts 'generated document'
     puts doc
     puts '---------------------------'
-    # end
     doc
   end
 
-  # def mdhash_to_xml
-
-  # convenience method to call mdhash_to_xml for setting metadata
   def makeMetadataDocument(metadata)
     mdhash_to_xml(metadata, documentType: 'MetadataDocument')
   end
 
-  # convenience method to call mdhash_to_xml for generating search document
   def makeItemSearchDocument(metadata)
     mdhash_to_xml(metadata, documentType: 'ItemSearchDocument')
   end
-end # class VSAPI
+end
