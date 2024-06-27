@@ -1,4 +1,4 @@
-FROM ubuntu:bionic
+FROM ubuntu:22.04
 
 COPY dockerbuild/base_setup.sh /tmp/dockerbuild/
 RUN bash -e /tmp/dockerbuild/base_setup.sh
