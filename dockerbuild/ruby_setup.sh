@@ -11,7 +11,7 @@ apt-get -y install ruby2.7 ruby2.7-dev ruby-switch
 ruby-switch --set ruby2.7
 gem install nokogiri -v 1.13.10
 gem install faraday -v 2.8.1
-gem install faraday-net_http -v 3.1.2
+gem install faraday-net_http -v 3.1.0
 gem install retryable -v 3.0.5
 gem install awesome_print trollop sentry-raven aws-sdk-v1 aws-sdk-core aws-sdk-resources google-api-client:'<0.9' \
     launchy thin rest-client certifi sentry-raven xmp mail exifr elasticsearch rake rspec webmock
