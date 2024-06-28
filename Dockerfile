@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM rubylang/ruby:3.2-jammy
 
 COPY dockerbuild/base_setup.sh /tmp/dockerbuild/
 RUN bash -e /tmp/dockerbuild/base_setup.sh
