@@ -2,7 +2,7 @@
 
 #This module creates a crop of a provided image file. This is done as a new filename, and the paths of created files are output to the datastore.
 #It depends on ImageMagick being available on the local node (apt-get install ImageMagick or yum install ImageMagick or port install ImageMagick etc.), specifically the 'convert' command
-#It also depends on having the xmp and exifr ruby gems available
+#It also depends on having the mini_exiftool and exifr ruby gems available
 #
 #Arguments:
 # <image_files>file1|/path/to/file2|{meta:FileNameKey} - use the provided image file(s)
@@ -15,7 +15,7 @@
 
 #END DOC
 
-require 'xmp'
+require 'mini_exiftool'
 require 'exifr/jpeg'
 require 'CDS/Datastore'
 require 'fileutils'
