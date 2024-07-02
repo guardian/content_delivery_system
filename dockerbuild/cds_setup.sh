@@ -1,14 +1,10 @@
 #!/bin/bash -e
+
 #from http://stackoverflow.com/questions/3915040/bash-fish-command-to-print-absolute-path-to-a-file
 function abspath() {
-    # generate absolute path from relative path
-    # $1     : relative filename
-    # return : absolute path
     if [ -d "$1" ]; then
-        # dir
         (cd "$1"; pwd)
     elif [ -f "$1" ]; then
-        # file
         if [[ $1 == */* ]]; then
             echo "$(cd "${1%/*}"; pwd)/${1##*/}"
         else
@@ -17,9 +13,7 @@ function abspath() {
     fi
 }
 
-#this script #installs the Content Delivery System onto the given system
-
-#Configuration
+# Configuration
 MANIFEST="/etc/cds_backend/manifest"
 MODULES_PATH="/usr/local/lib/cds_backend/"
 BINARIES_PATH="/usr/local/bin"
@@ -38,7 +32,6 @@ ROUTES_PERM=0660
 TEMPLATES_PERM=0660
 MAPPINGS_PERM=0660
 LOG_PERM=0770
-#End config
 
 SOURCE_DIR=/usr/src/CDS
 if [ "${SOURCE_DIR}" == "." ]; then
@@ -50,8 +43,8 @@ PRINSTALLED=0
 
 echo CDS Backend Installer script v1.3
 echo
-#Attempt to install the AWS SDK for Ruby....
-GEM=`which gem`
+# Attempt to install the AWS SDK for Ruby....
+GEM=$(which gem)
 
 if [ -x "${GEM}" ]; then
 	echo -----------------------------------------------------
@@ -120,7 +113,7 @@ echo Installing CDS from ${SOURCE_DIR}.
 echo Creating a new usergroup for CDS.
 groupadd -r cds 2>/dev/null
 
-OWNER_GID=`grep cds: /etc/group | cut -d : -f 3`
+OWNER_GID=$(grep cds: /etc/group | cut -d : -f 3)
 if [ "${OWNER_GID}" == "" ]; then
 	echo Unable to create a group for some reason.  Scripts will be owned by root.
 	echo Press ENTER to continue
@@ -132,7 +125,7 @@ else
 	echo CDS group is at group ID ${OWNER_GID}
 fi
 
-mkdir -p `dirname $MANIFEST`
+mkdir -p $(dirname $MANIFEST)
 if [ "$?" != "0" ]; then
 	echo Unable to create configuration location.  Maybe you need to run the installer as root?
 	echo Edit the top of the script to install scripts with another owner or group

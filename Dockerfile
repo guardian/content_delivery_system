@@ -1,4 +1,7 @@
-FROM ubuntu:bionic
+FROM rubylang/ruby:3.2-jammy
+
+RUN apt-get update && \
+    apt-get install -y pkg-config libsqlite3-dev build-essential
 
 COPY dockerbuild/base_setup.sh /tmp/dockerbuild/
 RUN bash -e /tmp/dockerbuild/base_setup.sh

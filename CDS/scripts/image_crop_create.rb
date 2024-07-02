@@ -2,7 +2,7 @@
 
 #This module creates a crop of a provided image file. This is done as a new filename, and the paths of created files are output to the datastore.
 #It depends on ImageMagick being available on the local node (apt-get install ImageMagick or yum install ImageMagick or port install ImageMagick etc.), specifically the 'convert' command
-#It also depends on having the xmp and exifr ruby gems available
+#It also depends on having the mini_exiftool and exifr ruby gems available
 #
 #Arguments:
 # <image_files>file1|/path/to/file2|{meta:FileNameKey} - use the provided image file(s)
@@ -15,7 +15,7 @@
 
 #END DOC
 
-require 'xmp'
+require 'mini_exiftool'
 require 'exifr/jpeg'
 require 'CDS/Datastore'
 require 'fileutils'
@@ -25,7 +25,7 @@ end
 
 def find_available_filename(target_path,original_path,append)
     target_filename=File.basename(original_path)
-    unless(Dir.exists?(target_path))
+    unless(Dir.exist?(target_path))
         FileUtils.mkdir_p(target_path)
     end
     target_out=""
@@ -43,7 +43,7 @@ def find_available_filename(target_path,original_path,append)
     n=1
     loop do
         target_out=File.join(target_path,target_filename)
-        unless(File.exists?(target_out))
+        unless(File.exist?(target_out))
             break
         end
         target_filename=filebase+"_#{n}"+filextn
@@ -54,7 +54,7 @@ def find_available_filename(target_path,original_path,append)
 end
 
 def make_crop(source_file,dest_file,target_width,target_height,strict_crop)
-    unless(File.exists?(source_file))
+    unless(File.exist?(source_file))
         raise FileError,"File #{source_file} does not exist."
     end
 
@@ -139,7 +139,7 @@ end
 files_to_process=[]
 source_file_string=store.substitute_string(ENV['image_files'])
 source_file_string.split('|').each do |filename|
-    if(File.exists?(filename))
+    if(File.exist?(filename))
         files_to_process << filename
     else
         puts "-WARNING: File '#{filename}' does not exist or cannot be read"
