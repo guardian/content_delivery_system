@@ -120,7 +120,8 @@ begin
   puts "Found #{s.id} at " + URI.decode_www_form_component(s.fileURI().path)
 
   if ENV['download']
-    output_file_path = File.join(download_path, File.basename(s.fileURI().path))
+    download_path = ENV['download_path'] ? ENV['download_path'] : "/tmp"
+    output_file_path = File.join(download_path, File.basename(URI.decode_www_form_component(s.fileURI().path)))
 
     File.open(output_file_path, "w") do |f|
       s.fileData do |data|
