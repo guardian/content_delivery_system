@@ -122,14 +122,14 @@ begin
   if ENV['download']
     download_path = ENV['download_path'] ? ENV['download_path'] : "/tmp"
     output_file_path = File.join(download_path, File.basename(URI.decode_www_form_component(s.fileURI().path)))
-
+    puts "Downloading #{s.id} to " + output_file_path
     File.open(output_file_path, "w") do |f|
       s.fileData do |data|
         f.write(data)
       end
     end
   else
-    output_file_path = URI.decode_www_form_component(s.fileURI(scheme: "file").path)
+    output_file_path = URI.decode_www_form_component(s.fileURI().path)
     puts "Found #{s.id} at " + output_file_path
   end
 rescue VSNotFound => e
