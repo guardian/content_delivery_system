@@ -66,7 +66,7 @@ class VSItem < VSApi
 
   def import_uri(uri, shape_tags: [], initial_metadata: nil, metadata_group: 'Asset', original_shape: nil, thumbs: true, storage_id: nil, priority: 'MEDIUM')
     qparms = {
-      'uri' => URI.escape(uri),
+      'uri' => URI.encode_www_form_component(uri),
       'filename' => File.basename(uri)
     }
 
@@ -74,7 +74,7 @@ class VSItem < VSApi
 
     unless shape_tags.nil?
       shape_tags = [shape_tags] unless shape_tags.is_a?(Array)
-      qparms['tag'] = URI.escape(shape_tags.join(','))
+      qparms['tag'] = URI.encode_www_form_component(shape_tags.join(','))
     end
 
     if !shape_tags.nil? && !original_shape.nil?
@@ -85,8 +85,7 @@ class VSItem < VSApi
       qparms['original'] = original_shape
     end
 
-    qparms['storageId'] = URI.escape(storage_id) unless storage_id.nil?
-
+    qparms['storageId'] = URI.encode_www_form_component(storage_id) unless storage_id.nil?
     qparms['priority'] = priority unless priority.nil?
 
     filebase = File.basename(uri)
@@ -177,7 +176,7 @@ class VSItem < VSApi
   def transcode!(shapetag, priority: 'MEDIUM', silent: 'false')
     jobDocument = request("/item/#{@id}/transcode", method: 'POST',
                                                     query: { 'priority' => priority,
-                                                             'tag' => URI.escape(shapetag) })
+                                                             'tag' => URI.encode_www_form_component(shapetag) })
     # it's up to the caller to catch exceptions...
 
     _waitjob(jobDocument)
