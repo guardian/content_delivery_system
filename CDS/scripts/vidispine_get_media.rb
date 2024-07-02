@@ -117,7 +117,7 @@ begin
     puts "Shape exists, but path is zero-length. Probably still transcoding, waiting for a valid path..."
     s = item.shapes.shapeForTag(shapetag, refresh: true)
   end
-  puts "Found #{s.id} at " + URI.unescape(s.fileURI().path)
+  puts "Found #{s.id} at " + URI.decode_www_form_component(s.fileURI().path)
 
   if ENV['download']
     output_file_path = File.join(download_path, File.basename(s.fileURI().path))
@@ -128,7 +128,7 @@ begin
       end
     end
   else
-    output_file_path = URI.unescape(s.fileURI(scheme: "file").path)
+    output_file_path = File.join(download_path, File.basename(URI.decode_www_form_component(s.fileURI().path)))
     puts "Found #{s.id} at " + output_file_path
   end
 rescue VSNotFound => e
