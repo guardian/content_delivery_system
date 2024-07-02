@@ -129,8 +129,7 @@ begin
       end
     end
   else
-    download_path = ENV['download_path'] ? ENV['download_path'] : "/tmp"
-    output_file_path = File.join(download_path, File.basename(URI.decode_www_form_component(s.fileURI().path)))
+    output_file_path = URI.decode_www_form_component(s.fileURI(scheme: "file").path)
     puts "Found #{s.id} at " + output_file_path
   end
 rescue VSNotFound => e
